@@ -1,0 +1,33 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Dependency directories
+vendor/
+node_modules/
+
+# Uploads & Temp files
+public/uploads/
+uploads/
+storage/
+logs/
+*.log
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.suo
+*.ntvs*
+*.njsproj
+
+# Test & Coverage reports
+coverage/
+.phpunit.result.cache

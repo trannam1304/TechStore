@@ -1,0 +1,2 @@
+-- TechStore - Seed Data
+-- Demo accounts, initial categories, brands, products, vouchers

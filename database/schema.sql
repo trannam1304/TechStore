@@ -1,0 +1,4 @@
+-- ===================================================
+-- TechStore - Database Schema
+-- Định nghĩa cấu trúc bảng: users, products, categories, orders...
+-- ===================================================
