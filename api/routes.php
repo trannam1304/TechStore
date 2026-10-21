@@ -424,7 +424,7 @@ function getCurrentAuthUser(array $db): ?array {
         }
         return $db['users'][1];
     }
-    return $db['users'][1]; // default user for easy testing
+    return $db['users'][1];
 }
 
 // =========================================================================
@@ -437,10 +437,6 @@ if ($subPath === '/ping' && $reqMethod === 'GET') {
 }
 
 $db = getDb();
-
-// -------------------------------------------------------------------------
-// 1-5 & 37. AUTH GROUP
-// -------------------------------------------------------------------------
 
 // 1. POST /auth/register
 if ($subPath === '/auth/register' && $reqMethod === 'POST') {
@@ -493,7 +489,6 @@ if ($subPath === '/auth/login' && $reqMethod === 'POST') {
         }
     }
 
-    // Default mock user if not found but testing admin credentials
     if (!$found && str_contains($email, 'admin')) {
         $found = $db['users'][0];
     } elseif (!$found) {
@@ -566,10 +561,6 @@ if ($subPath === '/auth/google' && $reqMethod === 'POST') {
     ], 200, true, 'Đăng nhập Google OAuth thành công');
 }
 
-// -------------------------------------------------------------------------
-// 6-11. PRODUCTS CRUD & SEARCH/FILTER
-// -------------------------------------------------------------------------
-
 // 6. GET /products (search, filter, sort, pagination)
 if ($subPath === '/products' && $reqMethod === 'GET') {
     $items = $db['products'];
@@ -581,7 +572,6 @@ if ($subPath === '/products' && $reqMethod === 'GET') {
     $ram = $_GET['ram'] ?? null;
     $sort = $_GET['sort'] ?? 'featured';
 
-    // Filter
     $items = array_values(array_filter($items, function($p) use ($search, $catId, $brandId, $minPrice, $maxPrice, $ram) {
         if ($search !== '') {
             $inName = str_contains(strtolower($p['name']), $search);
@@ -597,7 +587,6 @@ if ($subPath === '/products' && $reqMethod === 'GET') {
         return true;
     }));
 
-    // Sort
     usort($items, function($a, $b) use ($sort) {
         switch ($sort) {
             case 'price_asc': return $a['price'] <=> $b['price'];
@@ -608,7 +597,6 @@ if ($subPath === '/products' && $reqMethod === 'GET') {
         }
     });
 
-    // Pagination
     $page = max(1, (int)($_GET['page'] ?? 1));
     $limit = max(1, min(100, (int)($_GET['limit'] ?? 50)));
     $total = count($items);
@@ -699,10 +687,6 @@ if (preg_match('#^/products/(\d+)$#', $subPath, $m) && $reqMethod === 'DELETE') 
     jsonRes(null, 204);
 }
 
-// -------------------------------------------------------------------------
-// 12-14. CATEGORIES & BRANDS CRUD
-// -------------------------------------------------------------------------
-
 // 12. GET /categories
 if ($subPath === '/categories' && $reqMethod === 'GET') {
     jsonRes($db['categories']);
@@ -785,10 +769,6 @@ if (preg_match('#^/brands/(\d+)$#', $subPath, $m) && $reqMethod === 'DELETE') {
     jsonRes(null, 204);
 }
 
-// -------------------------------------------------------------------------
-// 15-18. CART ENDPOINTS
-// -------------------------------------------------------------------------
-
 // 15. GET /cart
 if ($subPath === '/cart' && $reqMethod === 'GET') {
     $cart = $db['cart'] ?? ['items' => [], 'total' => 0];
@@ -866,10 +846,6 @@ if (preg_match('#^/cart/items/(\d+)$#', $subPath, $m) && $reqMethod === 'DELETE'
     jsonRes(null, 204);
 }
 
-// -------------------------------------------------------------------------
-// 19. COUPONS VALIDATE & CRUD
-// -------------------------------------------------------------------------
-
 // 19. POST /coupons/validate
 if ($subPath === '/coupons/validate' && $reqMethod === 'POST') {
     $code = strtoupper(trim($body['code'] ?? ''));
@@ -906,10 +882,6 @@ if ($subPath === '/coupons' && $reqMethod === 'GET') {
     jsonRes($db['coupons']);
 }
 
-// -------------------------------------------------------------------------
-// 20-23, 27. ORDERS
-// -------------------------------------------------------------------------
-
 // 20. POST /orders
 if ($subPath === '/orders' && $reqMethod === 'POST') {
     $newId = count($db['orders']) ? max(array_column($db['orders'], 'id')) + 1 : 1001;
@@ -932,7 +904,6 @@ if ($subPath === '/orders' && $reqMethod === 'POST') {
     ];
 
     $db['orders'][] = $order;
-    // Clear cart on successful order
     $db['cart']['items'] = [];
     $db['cart']['total'] = 0;
     saveDb($db);
@@ -986,17 +957,13 @@ if (preg_match('#^/orders/(\d+)/status$#', $subPath, $m) && $reqMethod === 'PATC
     jsonErr('Không tìm thấy đơn hàng', 'NOT_FOUND', 404);
 }
 
-// -------------------------------------------------------------------------
-// 24-26. VIETQR PAYMENTS & WEBHOOK
-// -------------------------------------------------------------------------
-
 // 24. POST /payments/qr
 if ($subPath === '/payments/qr' && $reqMethod === 'POST') {
     $orderId = (int)($body['order_id'] ?? 1001);
     $amount = (int)($body['amount'] ?? 1000000);
     $orderCode = $body['order_code'] ?? "TS-{$orderId}";
 
-    $bank = 'MB'; // MB Bank
+    $bank = 'MB';
     $account = '0987654321';
     $accountName = 'TECHSTORE VIETNAM';
     $qrUrl = "https://img.vietqr.io/image/{$bank}-{$account}-compact2.png?amount={$amount}&addInfo=" . urlencode($orderCode) . "&accountName=" . urlencode($accountName);
@@ -1046,11 +1013,7 @@ if ($subPath === '/payments/webhook' && $reqMethod === 'POST') {
     jsonRes(['acknowledged' => true], 200, true, 'Webhook processed');
 }
 
-// -------------------------------------------------------------------------
-// 28. ADMIN USERS
-// -------------------------------------------------------------------------
-
-// GET /admin/users
+// 28. GET /admin/users
 if ($subPath === '/admin/users' && $reqMethod === 'GET') {
     $users = array_map(function($u) {
         unset($u['password_hash']);
@@ -1073,10 +1036,6 @@ if (preg_match('#^/admin/users/(\d+)$#', $subPath, $m) && $reqMethod === 'PATCH'
     }
     jsonErr('Không tìm thấy người dùng', 'NOT_FOUND', 404);
 }
-
-// -------------------------------------------------------------------------
-// 29-30. REVIEWS
-// -------------------------------------------------------------------------
 
 // 30. GET /products/{id}/reviews
 if (preg_match('#^/products/(\d+)/reviews$#', $subPath, $m) && $reqMethod === 'GET') {
@@ -1106,18 +1065,13 @@ if (preg_match('#^/products/(\d+)/reviews$#', $subPath, $m) && $reqMethod === 'P
     jsonRes($newReview, 201, true, 'Gửi đánh giá thành công');
 }
 
-// -------------------------------------------------------------------------
 // 31. WISHLIST
-// -------------------------------------------------------------------------
-
-// GET /wishlist
 if ($subPath === '/wishlist' && $reqMethod === 'GET') {
     $wishlistProductIds = array_column($db['wishlist'] ?? [], 'product_id');
     $wishlistProducts = array_values(array_filter($db['products'], fn($p) => in_array($p['id'], $wishlistProductIds)));
     jsonRes($wishlistProducts);
 }
 
-// POST /wishlist
 if ($subPath === '/wishlist' && $reqMethod === 'POST') {
     $prodId = (int)($body['product_id'] ?? 0);
     $exists = false;
@@ -1138,7 +1092,6 @@ if ($subPath === '/wishlist' && $reqMethod === 'POST') {
     jsonRes(['product_id' => $prodId, 'active' => true], 201, true, 'Đã thêm vào yêu thích');
 }
 
-// DELETE /wishlist/{productId}
 if (preg_match('#^/wishlist/(\d+)$#', $subPath, $m) && $reqMethod === 'DELETE') {
     $prodId = (int)$m[1];
     $db['wishlist'] = array_values(array_filter($db['wishlist'] ?? [], fn($w) => $w['product_id'] !== $prodId));
@@ -1146,18 +1099,10 @@ if (preg_match('#^/wishlist/(\d+)$#', $subPath, $m) && $reqMethod === 'DELETE') 
     jsonRes(null, 204);
 }
 
-// -------------------------------------------------------------------------
-// 32. EVENTS TRACKING
-// -------------------------------------------------------------------------
-
 // 32. POST /events/view (HTTP 202 Accepted)
 if ($subPath === '/events/view' && $reqMethod === 'POST') {
     jsonRes(['tracked' => true, 'event' => 'product_view'], 202, true, 'Ghi nhận lượt xem');
 }
-
-// -------------------------------------------------------------------------
-// 33-34. RECOMMENDATIONS
-// -------------------------------------------------------------------------
 
 // 33. GET /products/{id}/recommendations
 if (preg_match('#^/products/(\d+)/recommendations$#', $subPath, $m) && $reqMethod === 'GET') {
@@ -1175,10 +1120,6 @@ if ($subPath === '/recommendations/me' && $reqMethod === 'GET') {
         'for_you' => array_slice($db['products'], 0, 6)
     ]);
 }
-
-// -------------------------------------------------------------------------
-// 35-36. ADMIN STATS & AUDIT LOGS
-// -------------------------------------------------------------------------
 
 // 35. GET /admin/stats
 if ($subPath === '/admin/stats' && $reqMethod === 'GET') {
