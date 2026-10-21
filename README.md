@@ -137,6 +137,8 @@ mysql -u root -p < database/schema.sql
 mysql -u root -p techstore < database/seed.sql
 # Đặt document root vào /public (XAMPP/Laragon) hoặc:
 php -S localhost:8000 -t public
+# Hoặc khởi chạy nhanh bằng file .bat trên Windows:
+start.bat
 ```
 
 Tài khoản demo (seed): `admin@techstore.local / Admin@123`, `user@techstore.local / User@123`.
