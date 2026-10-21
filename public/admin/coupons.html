@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Mã Giảm Giá - TechStore Admin</title>
+  <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sidebar-brand">
+        TechStore <span>ADMIN</span>
+      </div>
+
+      <div class="sidebar-menu">
+        <div class="menu-label">Tổng Quan</div>
+        <a href="/admin/index.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Dashboard
+        </a>
+
+        <div class="menu-label">Quản Lý Bán Hàng</div>
+        <a href="/admin/products.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+          Sản phẩm
+        </a>
+        <a href="/admin/orders.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+          Đơn hàng & VietQR
+        </a>
+        <a href="/admin/coupons.html" class="sidebar-link active">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+          Mã giảm giá
+        </a>
+
+        <div class="menu-label">Hệ Thống</div>
+        <a href="/admin/users.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          Người dùng
+        </a>
+        <a href="/pages/index.html" class="sidebar-link" style="color: #38bdf8;">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+          Xem Website Khách
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <button class="btn-sidebar-toggle" onclick="toggleSidebar()">☰</button>
+          <div style="font-weight: 700; font-size: 16px;">Quản Lý Mã Giảm Giá (Coupons)</div>
+        </div>
+        <div class="topbar-right">
+          <button class="btn btn-primary btn-sm" onclick="openCouponModal()">
+            + Tạo mã giảm giá mới
+          </button>
+        </div>
+      </header>
+
+      <main class="admin-content-area">
+        <div class="admin-card">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Mã Coupon</th>
+                  <th>Mô tả</th>
+                  <th>Loại</th>
+                  <th>Giá trị giảm</th>
+                  <th>Đơn tối thiểu</th>
+                  <th>Trạng thái</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="coupons-tbody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Add Coupon -->
+  <div class="modal-backdrop" id="coupon-modal">
+    <div class="modal-dialog" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Tạo Mã Giảm Giá Mới</h3>
+        <button class="modal-close" onclick="closeCouponModal()">✕</button>
+      </div>
+      <form id="coupon-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Mã code (Viết hoa, liền nhau) *</label>
+            <input type="text" id="coup-code" class="form-control" required style="text-transform: uppercase;" placeholder="SALE50">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Loại giảm *</label>
+              <select id="coup-type" class="form-select">
+                <option value="amount">Số tiền cố định (VNĐ)</option>
+                <option value="percent">Phần trăm (%)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Giá trị giảm *</label>
+              <input type="number" id="coup-value" class="form-control" required min="1" placeholder="50000">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Đơn hàng tối thiểu (VNĐ) *</label>
+            <input type="number" id="coup-min-order" class="form-control" required min="0" value="500000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mô tả hiển thị</label>
+            <input type="text" id="coup-desc" class="form-control" placeholder="Giảm 50k cho đơn từ 500k">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeCouponModal()">Hủy</button>
+          <button type="submit" class="btn btn-primary">Tạo mã</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/assets/js/api.js"></script>
+  <script>
+    let couponsList = [...DEFAULT_COUPONS];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!api.isAdmin()) {
+        showToast('Vui lòng đăng nhập quyền Admin!', 'danger');
+        setTimeout(() => window.location.href = '/pages/login.html', 800);
+        return;
+      }
+      renderCouponsTable();
+      document.getElementById('coupon-form').addEventListener('submit', handleAddCoupon);
+    });
+
+    function toggleSidebar() {
+      document.getElementById('admin-sidebar').classList.toggle('open');
+    }
+
+    function renderCouponsTable() {
+      const tbody = document.getElementById('coupons-tbody');
+      tbody.innerHTML = couponsList.map(c => `
+        <tr>
+          <td><strong style="color: var(--color-primary); font-size: 15px;">${c.code}</strong></td>
+          <td>${c.description}</td>
+          <td>${c.discount_type === 'percent' ? 'Phần trăm (%)' : 'Số tiền cố định'}</td>
+          <td style="font-weight: 700;">${c.discount_type === 'percent' ? c.value + '%' : formatVND(c.value)}</td>
+          <td>${formatVND(c.min_order)}</td>
+          <td><span class="status-pill status-completed">Đang hoạt động</span></td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="deleteCoupon('${c.code}')" style="color: var(--color-danger);">✕ Xóa</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openCouponModal() {
+      document.getElementById('coupon-form').reset();
+      document.getElementById('coupon-modal').classList.add('active');
+    }
+
+    function closeCouponModal() {
+      document.getElementById('coupon-modal').classList.remove('active');
+    }
+
+    function handleAddCoupon(e) {
+      e.preventDefault();
+      const newCoupon = {
+        code: document.getElementById('coup-code').value.trim().toUpperCase(),
+        discount_type: document.getElementById('coup-type').value,
+        value: parseInt(document.getElementById('coup-value').value, 10),
+        min_order: parseInt(document.getElementById('coup-min-order').value, 10),
+        description: document.getElementById('coup-desc').value.trim()
+      };
+      couponsList.unshift(newCoupon);
+      showToast(`Đã tạo mã giảm giá ${newCoupon.code}!`, 'success');
+      closeCouponModal();
+      renderCouponsTable();
+    }
+
+    function deleteCoupon(code) {
+      if (confirm(`Bạn có chắc chắn muốn xóa coupon ${code}?`)) {
+        couponsList = couponsList.filter(c => c.code !== code);
+        showToast(`Đã xóa coupon ${code}`, 'info');
+        renderCouponsTable();
+      }
+    }
+  </script>
+</body>
+</html>

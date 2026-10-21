@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanh Toán VietQR - TechStore</title>
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <style>
+    .qr-container {
+      max-width: 680px;
+      margin: var(--space-6) auto;
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-gray-border);
+      padding: var(--space-8);
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+    }
+
+    .qr-image-wrap {
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      display: inline-block;
+      border: 2px dashed #cbd5e1;
+      margin: var(--space-4) 0;
+      position: relative;
+    }
+    .qr-img {
+      width: 260px;
+      height: 260px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Polling Status Pill */
+    .polling-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-bold);
+      margin-bottom: var(--space-4);
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+    .polling-status.paid {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #d97706;
+      animation: pulse 1.5s infinite;
+    }
+    .polling-status.paid .pulse-dot {
+      background: #16a34a;
+      animation: none;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      50% { transform: scale(1.4); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.7; }
+    }
+
+    /* Bank Info Table */
+    .bank-info-box {
+      text-align: left;
+      background: #f8fafc;
+      border: 1px solid var(--color-gray-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      margin: var(--space-4) 0;
+      font-size: var(--font-size-sm);
+    }
+    .bank-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .bank-info-row:last-child {
+      border-bottom: none;
+    }
+    .bank-label {
+      color: var(--color-gray);
+    }
+    .bank-value {
+      font-weight: var(--font-weight-bold);
+      color: var(--color-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .copy-btn {
+      font-size: 11px;
+      background: #e2e8f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      color: var(--color-dark);
+    }
+    .copy-btn:hover {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    /* Success Overlay */
+    .payment-success-card {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+    .success-checkmark {
+      font-size: 64px;
+      color: var(--color-success);
+      margin-bottom: 16px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="container">
+      <div>Cổng thanh toán tự động VietQR - TechStore</div>
+      <div class="topbar-links">
+        <a href="tel:18006018">Hotline hỗ trợ kỹ thuật: 1800.6018</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header-main">
+    <div class="container header-container">
+      <a href="/pages/index.html" class="logo">TechStore <span class="logo-badge">VietQR</span></a>
+      <div style="font-size: 13px; color: white;">Thanh toán đơn hàng qua mã QR</div>
+    </div>
+  </header>
+
+  <!-- Main QR Body -->
+  <main class="container">
+    <div class="qr-container">
+      <!-- Waiting / Active QR View -->
+      <div id="qr-active-view">
+        <div class="polling-status" id="polling-status-pill">
+          <span class="pulse-dot"></span>
+          <span id="polling-status-text">Đang chờ quét mã chuyển khoản...</span>
+        </div>
+
+        <h2 style="font-size: 20px; font-weight: 800; color: var(--color-dark); margin-bottom: 4px;">
+          Quét mã VietQR để thanh toán
+        </h2>
+        <p style="font-size: 13px; color: var(--color-gray); margin-bottom: 8px;">
+          Mở ứng dụng ngân hàng bất kỳ (App Mobile Banking) và quét mã bên dưới
+        </p>
+
+        <!-- Countdown -->
+        <div style="font-size: 14px; font-weight: 700; color: var(--color-primary); margin-bottom: 16px;">
+          ⏳ Mã QR hết hạn sau: <span id="qr-timer">14:59</span>
+        </div>
+
+        <!-- QR Image -->
+        <div class="qr-image-wrap">
+          <img id="vietqr-image" class="qr-img" src="" alt="Mã VietQR thanh toán">
+          <div style="font-size: 11px; color: var(--color-gray); margin-top: 8px; font-weight: 600;">
+            Chuẩn Napas 247 • VietQR
+          </div>
+        </div>
+
+        <!-- Bank Details -->
+        <div class="bank-info-box">
+          <div class="bank-info-row">
+            <span class="bank-label">Ngân hàng thụ hưởng:</span>
+            <span class="bank-value" id="bank-name">MB Bank (Ngân hàng Quân Đội)</span>
+          </div>
+          <div class="bank-info-row">
+            <span class="bank-label">Số tài khoản:</span>
+            <span class="bank-value">
+              <span id="bank-account">0987654321</span>
+              <button class="copy-btn" onclick="copyToClipboard('bank-account')">Sao chép</button>
+            </span>
+          </div>
+          <div class="bank-info-row">
+            <span class="bank-label">Chủ tài khoản:</span>
+            <span class="bank-value" id="bank-owner">TECHSTORE VIETNAM</span>
+          </div>
+          <div class="bank-info-row">
+            <span class="bank-label">Số tiền:</span>
+            <span class="bank-value">
+              <span id="payment-amount" style="color: var(--color-primary); font-size: 16px;">0₫</span>
+              <button class="copy-btn" onclick="copyText(rawAmount)">Sao chép</button>
+            </span>
+          </div>
+          <div class="bank-info-row">
+            <span class="bank-label">Nội dung chuyển khoản:</span>
+            <span class="bank-value">
+              <span id="payment-code" style="color: #2563eb;">TS-1001</span>
+              <button class="copy-btn" onclick="copyToClipboard('payment-code')">Sao chép</button>
+            </span>
+          </div>
+        </div>
+
+        <div style="font-size: 12px; color: var(--color-gray); margin-bottom: 20px;">
+          Lưu ý: Vui lòng <strong>giữ nguyên nội dung chuyển khoản</strong> để hệ thống tự động ghi nhận đơn hàng sau 1-3 giây.
+        </div>
+
+        <!-- Action / Demo simulation buttons -->
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-success btn-lg" id="btn-demo-pay" style="font-weight: 700;">
+            ✓ Tôi đã chuyển khoản (Xác nhận nhanh Demo)
+          </button>
+          <a href="/pages/account.html#orders" class="btn btn-outline btn-lg">Xem danh sách đơn</a>
+        </div>
+      </div>
+
+      <!-- Payment Success View -->
+      <div id="payment-success-view" class="payment-success-card">
+        <div class="success-checkmark">🎉 ✓</div>
+        <h2 style="font-size: 24px; font-weight: 900; color: var(--color-success); margin-bottom: 8px;">
+          Thanh toán thành công!
+        </h2>
+        <p style="font-size: 14px; color: var(--color-gray-dark); margin-bottom: 20px;">
+          Cảm ơn bạn! Đơn hàng <strong id="success-order-code"></strong> đã được xác nhận thanh toán qua VietQR. TechStore đang chuẩn bị hàng và sẽ giao sớm nhất!
+        </p>
+
+        <div style="display: flex; gap: 12px; justify-content: center;">
+          <a href="/pages/account.html#orders" class="btn btn-primary btn-lg">Xem chi tiết đơn hàng</a>
+          <a href="/pages/index.html" class="btn btn-outline btn-lg">Tiếp tục mua hàng</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-bottom">
+      © 2026 TechStore Vietnam. Hệ thống thanh toán chuẩn VietQR phục vụ đồ án Topic 1: REST API (Tuấn Kiệt phụ trách Front-end).
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/assets/js/api.js"></script>
+  <script>
+    let currentOrderId = null;
+    let rawAmount = 0;
+    let pollInterval = null;
+    let countdownTimer = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      currentOrderId = parseInt(urlParams.get('orderId') || '1001', 10);
+
+      // 1. Fetch Order Details
+      const ordRes = await api.orders.getById(currentOrderId);
+      const order = ordRes.data;
+      if (!order) {
+        showToast('Không tìm thấy đơn hàng', 'danger');
+        return;
+      }
+
+      rawAmount = order.total_amount;
+      const orderCode = order.order_code || `TS-${order.id}`;
+
+      // 2. Generate VietQR (API List #24)
+      const qrRes = await api.payments.generateQr(order.id, rawAmount, orderCode);
+      const qrData = qrRes.data;
+
+      // 3. Render Info
+      document.getElementById('vietqr-image').src = qrData.qr_url;
+      document.getElementById('payment-amount').textContent = formatVND(rawAmount);
+      document.getElementById('payment-code').textContent = orderCode;
+      document.getElementById('bank-name').textContent = qrData.bank_name;
+      document.getElementById('bank-account').textContent = qrData.account_number;
+      document.getElementById('bank-owner').textContent = qrData.account_name;
+      document.getElementById('success-order-code').textContent = orderCode;
+
+      // If already paid
+      if (order.payment_status === 'paid') {
+        showSuccessState();
+        return;
+      }
+
+      // 4. Start 15 mins Countdown
+      startCountdown(qrData.expires_in || 900);
+
+      // 5. Start Polling Status every 3 seconds (API List #25)
+      startPolling();
+
+      // 6. Demo simulated instant pay button
+      document.getElementById('btn-demo-pay').addEventListener('click', async () => {
+        await api.payments.simulateSuccess(currentOrderId);
+        showToast('Hệ thống ngân hàng xác nhận: Đã nhận tiền thành công!', 'success');
+        showSuccessState();
+      });
+    });
+
+    function startCountdown(seconds) {
+      const timerEl = document.getElementById('qr-timer');
+      countdownTimer = setInterval(() => {
+        if (seconds <= 0) {
+          clearInterval(countdownTimer);
+          timerEl.textContent = 'Hết hạn';
+          timerEl.style.color = '#ef4444';
+          return;
+        }
+        seconds--;
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        timerEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function startPolling() {
+      pollInterval = setInterval(async () => {
+        const res = await api.payments.getStatus(currentOrderId);
+        if (res.data?.is_paid || res.data?.payment_status === 'paid') {
+          clearInterval(pollInterval);
+          clearInterval(countdownTimer);
+          showSuccessState();
+        }
+      }, 3000);
+    }
+
+    function showSuccessState() {
+      if (pollInterval) clearInterval(pollInterval);
+      if (countdownTimer) clearInterval(countdownTimer);
+
+      document.getElementById('qr-active-view').style.display = 'none';
+      document.getElementById('payment-success-view').style.display = 'block';
+
+      const pill = document.getElementById('polling-status-pill');
+      if (pill) {
+        pill.className = 'polling-status paid';
+        document.getElementById('polling-status-text').textContent = '✓ Đã thanh toán thành công';
+      }
+    }
+
+    function copyToClipboard(elementId) {
+      const text = document.getElementById(elementId).textContent;
+      copyText(text);
+    }
+
+    function copyText(text) {
+      navigator.clipboard.writeText(String(text)).then(() => {
+        showToast(`Đã sao chép: ${text}`, 'success');
+      }).catch(() => {
+        showToast('Không thể sao chép tự động', 'warning');
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - TechStore</title>
+  <link rel="stylesheet" href="/assets/css/admin.css">
+  <style>
+    .chart-container {
+      background: white;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-gray-border);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-4);
+    }
+    .chart-canvas {
+      width: 100%;
+      height: 260px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sidebar-brand">
+        TechStore <span>ADMIN</span>
+      </div>
+
+      <div class="sidebar-menu">
+        <div class="menu-label">Tổng Quan</div>
+        <a href="/admin/index.html" class="sidebar-link active">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Dashboard
+        </a>
+
+        <div class="menu-label">Quản Lý Bán Hàng</div>
+        <a href="/admin/products.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+          Sản phẩm
+        </a>
+        <a href="/admin/orders.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+          Đơn hàng & VietQR
+        </a>
+        <a href="/admin/coupons.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+          Mã giảm giá
+        </a>
+
+        <div class="menu-label">Hệ Thống</div>
+        <a href="/admin/users.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          Người dùng
+        </a>
+        <a href="/docs/openapi.yaml" target="_blank" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          OpenAPI Specification
+        </a>
+        <a href="/pages/index.html" class="sidebar-link" style="color: #38bdf8;">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+          Xem Website Khách
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <button id="btn-admin-logout" class="btn btn-outline btn-block" style="border-color: #334155; color: #f87171;">
+          🚪 Đăng xuất Admin
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+      <!-- Topbar -->
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <button class="btn-sidebar-toggle" onclick="toggleSidebar()">☰</button>
+          <div style="font-weight: 700; font-size: 16px; color: var(--color-dark);">
+            Bảng Điều Khiển Hệ Thống
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="admin-user-profile">
+            <div class="admin-avatar">AD</div>
+            <div>
+              <div style="font-weight: 700; font-size: 13px;" id="admin-user-name">Quản trị viên</div>
+              <div style="font-size: 11px; color: var(--color-primary); font-weight: 600;">Super Admin</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard Body -->
+      <main class="admin-content-area">
+        <!-- Stats Cards Grid -->
+        <div class="stats-grid">
+          <!-- Card 1 -->
+          <div class="stat-card">
+            <div class="stat-info">
+              <h5>Tổng doanh thu</h5>
+              <div class="stat-value" id="stat-revenue">184.500.000₫</div>
+              <div class="stat-trend trend-up">
+                ↑ <span id="stat-growth">+14.8%</span> so với tuần trước
+              </div>
+            </div>
+            <div class="stat-icon icon-blue">💰</div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="stat-card">
+            <div class="stat-info">
+              <h5>Đơn hàng mới</h5>
+              <div class="stat-value" id="stat-orders">28</div>
+              <div class="stat-trend trend-up">
+                ↑ 6 đơn chờ xử lý VietQR
+              </div>
+            </div>
+            <div class="stat-icon icon-green">📦</div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="stat-card">
+            <div class="stat-info">
+              <h5>Tổng sản phẩm</h5>
+              <div class="stat-value" id="stat-products">8</div>
+              <div class="stat-trend">
+                6 danh mục hoạt động
+              </div>
+            </div>
+            <div class="stat-icon icon-amber">📱</div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="stat-card">
+            <div class="stat-info">
+              <h5>Khách hàng</h5>
+              <div class="stat-value" id="stat-users">142</div>
+              <div class="stat-trend trend-up">
+                ↑ +12 tài khoản mới
+              </div>
+            </div>
+            <div class="stat-icon icon-purple">👥</div>
+          </div>
+        </div>
+
+        <!-- Revenue Analytics Chart -->
+        <div class="chart-container">
+          <div class="chart-header">
+            <div>
+              <h3 style="font-size: 16px; font-weight: 800; margin: 0; color: var(--color-dark);">Biểu đồ tăng trưởng doanh thu 7 ngày</h3>
+              <p style="font-size: 12px; color: var(--color-gray); margin: 0;">Theo dõi dòng tiền thanh toán VietQR & COD theo thời gian thực</p>
+            </div>
+            <span class="badge-discount" style="background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd;">
+              Tuần hiện tại
+            </span>
+          </div>
+
+          <canvas id="revenueCanvas" class="chart-canvas" height="260"></canvas>
+        </div>
+
+        <!-- Two Columns: Recent Orders & Top Products -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-6);">
+          <!-- Recent Orders -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div class="admin-card-title">Đơn hàng mới nhất</div>
+              <a href="/admin/orders.html" class="btn btn-outline btn-sm">Xem tất cả ></a>
+            </div>
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Mã đơn</th>
+                    <th>Khách hàng</th>
+                    <th>Tổng tiền</th>
+                    <th>PTTT</th>
+                    <th>Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-orders-tbody">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Quick Actions & Alerts -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div class="admin-card-title">Cảnh báo kho hàng</div>
+            </div>
+            <div class="admin-card-body" style="padding: 16px;">
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #fffbeb; border: 1px solid #fef3c7; border-radius: 8px;">
+                  <div>
+                    <div style="font-size: 13px; font-weight: 700; color: #92400e;">ROG Zephyrus G16</div>
+                    <div style="font-size: 11px; color: #b45309;">Chỉ còn 8 chiếc trong kho</div>
+                  </div>
+                  <a href="/admin/products.html" class="btn btn-sm btn-outline" style="border-color: #d97706; color: #d97706;">Nhập</a>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f0fdf4; border: 1px solid #dcfce7; border-radius: 8px;">
+                  <div>
+                    <div style="font-size: 13px; font-weight: 700; color: #166534;">Cổng VietQR Online</div>
+                    <div style="font-size: 11px; color: #15803d;">Kết nối ngân hàng MB Bank ổn định 100%</div>
+                  </div>
+                  <span style="font-size: 12px; color: #16a34a; font-weight: bold;">✓ OK</span>
+                </div>
+
+                <div style="margin-top: 12px;">
+                  <a href="/admin/products.html?action=new" class="btn btn-primary btn-block btn-sm">
+                    + Thêm sản phẩm mới
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/assets/js/api.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Auth Guard (role == admin)
+      if (!api.isAdmin()) {
+        showToast('Bạn không có quyền truy cập trang quản trị! Vui lòng đăng nhập với tài khoản Admin.', 'danger');
+        setTimeout(() => {
+          window.location.href = '/pages/login.html';
+        }, 1200);
+        return;
+      }
+
+      const user = api.getCurrentUser();
+      if (user) {
+        document.getElementById('admin-user-name').textContent = user.name || 'Quản trị viên';
+      }
+
+      // 2. Fetch Admin Stats (API List #35)
+      const res = await api.admin.getStats();
+      const stats = res.data;
+
+      if (stats) {
+        document.getElementById('stat-revenue').textContent = formatVND(stats.total_revenue);
+        document.getElementById('stat-growth').textContent = stats.revenue_growth;
+        document.getElementById('stat-orders').textContent = stats.new_orders_count;
+        document.getElementById('stat-products').textContent = stats.total_products;
+        document.getElementById('stat-users').textContent = stats.total_users;
+
+        renderRevenueChart(stats.revenue_chart);
+        renderRecentOrders(stats.recent_orders);
+      }
+
+      document.getElementById('btn-admin-logout').addEventListener('click', () => {
+        api.auth.logout();
+        window.location.href = '/pages/login.html';
+      });
+    });
+
+    function toggleSidebar() {
+      document.getElementById('admin-sidebar').classList.toggle('open');
+    }
+
+    function renderRevenueChart(chartData) {
+      const canvas = document.getElementById('revenueCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const width = canvas.clientWidth || 800;
+      const height = canvas.clientHeight || 260;
+      canvas.width = width;
+      canvas.height = height;
+
+      if (!chartData || !chartData.length) return;
+
+      const paddingLeft = 60;
+      const paddingBottom = 40;
+      const paddingTop = 20;
+      const paddingRight = 20;
+
+      const plotWidth = width - paddingLeft - paddingRight;
+      const plotHeight = height - paddingTop - paddingBottom;
+
+      const maxVal = Math.max(...chartData.map(d => d.amount)) * 1.15;
+
+      // Draw Grid Lines
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = paddingTop + (plotHeight / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(paddingLeft, y);
+        ctx.lineTo(width - paddingRight, y);
+        ctx.stroke();
+
+        const labelVal = maxVal - (maxVal / 4) * i;
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '11px sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText((labelVal / 1000000).toFixed(0) + ' Tr', paddingLeft - 8, y + 4);
+      }
+
+      // Points calculation
+      const stepX = plotWidth / (chartData.length - 1);
+      const points = chartData.map((d, i) => {
+        const x = paddingLeft + i * stepX;
+        const y = paddingTop + plotHeight - (d.amount / maxVal) * plotHeight;
+        return { x, y, ...d };
+      });
+
+      // Gradient Fill
+      const gradient = ctx.createLinearGradient(0, paddingTop, 0, height - paddingBottom);
+      gradient.addColorStop(0, 'rgba(215, 0, 24, 0.25)');
+      gradient.addColorStop(1, 'rgba(215, 0, 24, 0.0)');
+
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i++) {
+        ctx.lineTo(points[i].x, points[i].y);
+      }
+      ctx.lineTo(points[points.length - 1].x, height - paddingBottom);
+      ctx.lineTo(points[0].x, height - paddingBottom);
+      ctx.closePath();
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      // Draw Line
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i++) {
+        ctx.lineTo(points[i].x, points[i].y);
+      }
+      ctx.strokeStyle = '#d70018';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Draw Dots & Labels
+      points.forEach(pt => {
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#d70018';
+        ctx.stroke();
+
+        // X-axis label
+        ctx.fillStyle = '#475569';
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(pt.day, pt.x, height - paddingBottom + 20);
+      });
+    }
+
+    function renderRecentOrders(orders) {
+      const tbody = document.getElementById('recent-orders-tbody');
+      if (!orders || !orders.length) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #94a3b8;">Chưa có đơn hàng nào</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = orders.map(o => {
+        let statusBadge = '<span class="status-pill status-pending">Chờ xử lý</span>';
+        if (o.status === 'confirmed' || o.payment_status === 'paid') statusBadge = '<span class="status-pill status-paid">Đã TT / Xác nhận</span>';
+        if (o.status === 'shipping') statusBadge = '<span class="status-pill status-shipping">Đang giao</span>';
+        if (o.status === 'completed') statusBadge = '<span class="status-pill status-completed">Hoàn tất</span>';
+        if (o.status === 'cancelled') statusBadge = '<span class="status-pill status-cancelled">Đã hủy</span>';
+
+        return `
+          <tr>
+            <td><strong>#${o.order_code || o.id}</strong></td>
+            <td>${o.customer_name}</td>
+            <td style="font-weight: 700; color: var(--color-dark);">${formatVND(o.total_amount)}</td>
+            <td>${o.payment_method === 'vietqr' ? '🏦 VietQR' : '💵 COD'}</td>
+            <td>${statusBadge}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html>

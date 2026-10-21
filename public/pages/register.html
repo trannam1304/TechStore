@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng Ký Tài Khoản - TechStore</title>
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: var(--space-6) var(--space-4);
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+    .auth-card {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-gray-border);
+      padding: var(--space-8);
+      width: 100%;
+      max-width: 480px;
+      box-shadow: var(--shadow-xl);
+    }
+    .auth-logo {
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+    .auth-logo a {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-black);
+      color: var(--color-primary);
+    }
+  </style>
+</head>
+<body class="auth-page">
+
+  <div class="auth-card">
+    <div class="auth-logo">
+      <a href="/pages/index.html">TechStore <span class="logo-badge">REST</span></a>
+      <p style="font-size: 14px; color: var(--color-gray); margin-top: 6px;">Tạo tài khoản thành viên để nhận ngập tràn ưu đãi</p>
+    </div>
+
+    <form id="register-form">
+      <div class="form-group">
+        <label class="form-label">Họ và tên *</label>
+        <input type="text" id="reg-name" class="form-control" required placeholder="Nguyễn Tuấn Kiệt">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Địa chỉ Email *</label>
+        <input type="email" id="reg-email" class="form-control" required placeholder="tuankiet@gmail.com">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Số điện thoại *</label>
+        <input type="tel" id="reg-phone" class="form-control" required placeholder="0987654321">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Mật khẩu *</label>
+          <input type="password" id="reg-password" class="form-control" required minlength="6" placeholder="Tối thiểu 6 ký tự">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Xác nhận mật khẩu *</label>
+          <input type="password" id="reg-confirm-password" class="form-control" required minlength="6" placeholder="Nhập lại mật khẩu">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--color-gray-dark); cursor: pointer;">
+          <input type="checkbox" id="reg-terms" required checked style="margin-top: 3px;" accent-color="var(--color-primary)">
+          <span>Tôi đồng ý với <a href="#" style="color: var(--color-primary);">Điều khoản sử dụng</a> và <a href="#" style="color: var(--color-primary);">Chính sách bảo mật</a> của TechStore.</span>
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-reg-submit" style="font-weight: 700; margin-top: 8px;">
+        Đăng Ký Tài Khoản
+      </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 24px; font-size: 14px; color: var(--color-gray);">
+      Đã có tài khoản? <a href="/pages/login.html" style="color: var(--color-primary); font-weight: 600;">Đăng nhập ngay</a>
+    </div>
+
+    <div style="text-align: center; margin-top: 12px;">
+      <a href="/pages/index.html" style="font-size: 13px; color: var(--color-gray);">&lt; Quay lại trang chủ</a>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/assets/js/api.js"></script>
+  <script>
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const phone = document.getElementById('reg-phone').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const confirmPassword = document.getElementById('reg-confirm-password').value;
+      const btn = document.getElementById('btn-reg-submit');
+
+      if (password !== confirmPassword) {
+        showToast('Mật khẩu xác nhận không khớp!', 'danger');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Đang khởi tạo tài khoản...';
+
+      const res = await api.auth.register({ name, email, phone, password });
+      if (res.success) {
+        showToast('Đăng ký tài khoản thành công!', 'success');
+        setTimeout(() => {
+          window.location.href = '/pages/account.html';
+        }, 600);
+      } else {
+        showToast(res.message || 'Lỗi khi đăng ký, vui lòng thử lại', 'danger');
+        btn.disabled = false;
+        btn.textContent = 'Đăng Ký Tài Khoản';
+      }
+    });
+  </script>
+</body>
+</html>

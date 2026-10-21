@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng Nhập - TechStore</title>
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: var(--space-6) var(--space-4);
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+    .auth-card {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-gray-border);
+      padding: var(--space-8);
+      width: 100%;
+      max-width: 440px;
+      box-shadow: var(--shadow-xl);
+    }
+    .auth-logo {
+      text-align: center;
+      margin-bottom: var(--space-6);
+    }
+    .auth-logo a {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-black);
+      color: var(--color-primary);
+    }
+    .quick-login-box {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: var(--radius-lg);
+      padding: var(--space-3);
+      margin-top: var(--space-6);
+    }
+    .quick-btn {
+      width: 100%;
+      margin-top: 6px;
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+  </style>
+</head>
+<body class="auth-page">
+
+  <div class="auth-card">
+    <div class="auth-logo">
+      <a href="/pages/index.html">TechStore <span class="logo-badge">REST</span></a>
+      <p style="font-size: 14px; color: var(--color-gray); margin-top: 6px;">Đăng nhập để trải nghiệm mua sắm công nghệ</p>
+    </div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label class="form-label">Email tài khoản</label>
+        <input type="email" id="login-email" class="form-control" required placeholder="admin@techstore.local">
+      </div>
+
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <label class="form-label" style="margin: 0;">Mật khẩu</label>
+          <a href="#" style="font-size: 12px; color: var(--color-primary);">Quên mật khẩu?</a>
+        </div>
+        <div style="position: relative;">
+          <input type="password" id="login-password" class="form-control" required placeholder="••••••••">
+          <button type="button" onclick="togglePasswordVisibility('login-password', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--color-gray);">👁️</button>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-gray-dark); cursor: pointer;">
+          <input type="checkbox" id="remember-me" checked accent-color="var(--color-primary)"> Ghi nhớ đăng nhập
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-login-submit" style="font-weight: 700;">
+        Đăng Nhập
+      </button>
+
+      <!-- OAuth 2.0 Google Demo -->
+      <button type="button" class="btn btn-outline btn-block" style="margin-top: 12px; gap: 8px;" onclick="demoGoogleLogin()">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.27v3.15C3.25 21.37 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.27C.46 8.2 0 10.04 0 12s.46 3.8 1.27 5.42l4.01-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.63 1.27 6.58l4.01 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+        Đăng nhập với Google (OAuth 2.0 Demo)
+      </button>
+
+      <!-- Quick Demo Login Credentials -->
+      <div class="quick-login-box">
+        <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">
+          ⚡ Tài khoản demo (Click để đăng nhập nhanh):
+        </div>
+        <button type="button" class="btn btn-outline quick-btn" onclick="fillAndLogin('admin@techstore.local', 'Admin@123')">
+          👤 Đăng nhập Admin (admin@techstore.local)
+        </button>
+        <button type="button" class="btn btn-outline quick-btn" onclick="fillAndLogin('user@techstore.local', 'User@123')">
+          🛍️ Đăng nhập Khách hàng (user@techstore.local)
+        </button>
+      </div>
+    </form>
+
+    <div style="text-align: center; margin-top: 24px; font-size: 14px; color: var(--color-gray);">
+      Chưa có tài khoản? <a href="/pages/register.html" style="color: var(--color-primary); font-weight: 600;">Đăng ký ngay</a>
+    </div>
+
+    <div style="text-align: center; margin-top: 12px;">
+      <a href="/pages/index.html" style="font-size: 13px; color: var(--color-gray);">&lt; Quay lại trang chủ</a>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/assets/js/api.js"></script>
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const btn = document.getElementById('btn-login-submit');
+
+      btn.disabled = true;
+      btn.textContent = 'Đang xác thực...';
+
+      const res = await api.auth.login(email, password);
+      if (res.success) {
+        showToast('Đăng nhập thành công!', 'success');
+        setTimeout(() => {
+          if (api.isAdmin()) {
+            window.location.href = '/admin/index.html';
+          } else {
+            window.location.href = '/pages/account.html';
+          }
+        }, 500);
+      } else {
+        showToast(res.message || 'Sai thông tin đăng nhập', 'danger');
+        btn.disabled = false;
+        btn.textContent = 'Đăng Nhập';
+      }
+    });
+
+    function togglePasswordVisibility(fieldId, btn) {
+      const field = document.getElementById(fieldId);
+      if (field.type === 'password') {
+        field.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        field.type = 'password';
+        btn.textContent = '👁️';
+      }
+    }
+
+    function fillAndLogin(email, password) {
+      document.getElementById('login-email').value = email;
+      document.getElementById('login-password').value = password;
+      document.getElementById('login-form').dispatchEvent(new Event('submit'));
+    }
+
+    function demoGoogleLogin() {
+      showToast('Đăng nhập Google OAuth 2.0 thành công (Demo Token Verified)', 'success');
+      const mockGoogleUser = {
+        id: 3,
+        name: 'Google User (Demo)',
+        email: 'user.google@gmail.com',
+        role: 'customer'
+      };
+      api.setAuthTokens('google_oauth_token_' + Date.now(), 'google_refresh_token', mockGoogleUser);
+      setTimeout(() => {
+        window.location.href = '/pages/account.html';
+      }, 600);
+    }
+  </script>
+</body>
+</html>

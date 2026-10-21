@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Người Dùng - TechStore Admin</title>
+  <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sidebar-brand">
+        TechStore <span>ADMIN</span>
+      </div>
+
+      <div class="sidebar-menu">
+        <div class="menu-label">Tổng Quan</div>
+        <a href="/admin/index.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Dashboard
+        </a>
+
+        <div class="menu-label">Quản Lý Bán Hàng</div>
+        <a href="/admin/products.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+          Sản phẩm
+        </a>
+        <a href="/admin/orders.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+          Đơn hàng & VietQR
+        </a>
+        <a href="/admin/coupons.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+          Mã giảm giá
+        </a>
+
+        <div class="menu-label">Hệ Thống</div>
+        <a href="/admin/users.html" class="sidebar-link active">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          Người dùng
+        </a>
+        <a href="/pages/index.html" class="sidebar-link" style="color: #38bdf8;">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+          Xem Website Khách
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <button class="btn-sidebar-toggle" onclick="toggleSidebar()">☰</button>
+          <div style="font-weight: 700; font-size: 16px;">Quản Lý Người Dùng & Phân Quyền</div>
+        </div>
+      </header>
+
+      <main class="admin-content-area">
+        <div class="admin-card">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Họ và tên</th>
+                  <th>Email</th>
+                  <th>Vai trò</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày đăng ký</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/assets/js/api.js"></script>
+  <script>
+    let usersList = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!api.isAdmin()) {
+        showToast('Vui lòng đăng nhập quyền Admin!', 'danger');
+        setTimeout(() => window.location.href = '/pages/login.html', 800);
+        return;
+      }
+      loadUsers();
+    });
+
+    function toggleSidebar() {
+      document.getElementById('admin-sidebar').classList.toggle('open');
+    }
+
+    async function loadUsers() {
+      const res = await api.admin.getUsers();
+      usersList = res.data || [];
+      renderUsersTable(usersList);
+    }
+
+    function renderUsersTable(users) {
+      const tbody = document.getElementById('users-tbody');
+      tbody.innerHTML = users.map(u => `
+        <tr>
+          <td><strong>#${u.id}</strong></td>
+          <td><strong>${u.name}</strong></td>
+          <td>${u.email}</td>
+          <td>
+            <span class="badge-discount" style="background: ${u.role === 'admin' ? '#d70018' : '#2563eb'};">
+              ${u.role === 'admin' ? 'Super Admin' : 'Khách hàng'}
+            </span>
+          </td>
+          <td>
+            <span class="status-pill ${u.status === 'active' ? 'status-completed' : 'status-cancelled'}">
+              ${u.status === 'active' ? 'Hoạt động' : 'Đã khóa'}
+            </span>
+          </td>
+          <td>${u.created_at}</td>
+          <td>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn btn-outline btn-sm" onclick="toggleUserStatus(${u.id})">
+                ${u.status === 'active' ? '🔒 Khóa' : '🔓 Mở khóa'}
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="toggleUserRole(${u.id})">
+                ${u.role === 'admin' ? 'Hạ quyền' : 'Thăng Admin'}
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function toggleUserStatus(userId) {
+      const u = usersList.find(x => x.id === userId);
+      if (u) {
+        u.status = u.status === 'active' ? 'locked' : 'active';
+        showToast(`Đã đổi trạng thái tài khoản #${userId}`, 'info');
+        renderUsersTable(usersList);
+      }
+    }
+
+    function toggleUserRole(userId) {
+      const u = usersList.find(x => x.id === userId);
+      if (u) {
+        u.role = u.role === 'admin' ? 'customer' : 'admin';
+        showToast(`Đã thay đổi vai trò tài khoản #${userId} thành ${u.role}`, 'success');
+        renderUsersTable(usersList);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Đơn Hàng - TechStore Admin</title>
+  <link rel="stylesheet" href="/assets/css/admin.css">
+  <style>
+    /* Invoice Print Styles */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printable-invoice-modal, #printable-invoice-modal * {
+        visibility: visible;
+      }
+      #printable-invoice-modal {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white;
+        padding: 40px;
+        margin: 0;
+        border: none;
+        box-shadow: none;
+        z-index: 99999;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sidebar-brand">
+        TechStore <span>ADMIN</span>
+      </div>
+
+      <div class="sidebar-menu">
+        <div class="menu-label">Tổng Quan</div>
+        <a href="/admin/index.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Dashboard
+        </a>
+
+        <div class="menu-label">Quản Lý Bán Hàng</div>
+        <a href="/admin/products.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+          Sản phẩm
+        </a>
+        <a href="/admin/orders.html" class="sidebar-link active">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+          Đơn hàng & VietQR
+        </a>
+        <a href="/admin/coupons.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+          Mã giảm giá
+        </a>
+
+        <div class="menu-label">Hệ Thống</div>
+        <a href="/admin/users.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          Người dùng
+        </a>
+        <a href="/pages/index.html" class="sidebar-link" style="color: #38bdf8;">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+          Xem Website Khách
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <button class="btn-sidebar-toggle" onclick="toggleSidebar()">☰</button>
+          <div style="font-weight: 700; font-size: 16px;">Quản Lý Đơn Hàng & Xác Nhận VietQR</div>
+        </div>
+      </header>
+
+      <main class="admin-content-area">
+        <!-- Filter Toolbar -->
+        <div class="filter-toolbar">
+          <div class="search-box" style="border: 1px solid var(--color-gray-border); max-width: 320px;">
+            <input type="text" id="order-search-input" class="search-input" placeholder="Tìm kiếm mã đơn, tên khách, SĐT...">
+          </div>
+
+          <select id="order-status-filter" class="form-select" style="max-width: 220px;">
+            <option value="all">Tất cả trạng thái</option>
+            <option value="pending">Chờ xử lý</option>
+            <option value="confirmed">Đã thanh toán / Xác nhận</option>
+            <option value="shipping">Đang giao hàng</option>
+            <option value="completed">Đã hoàn tất</option>
+            <option value="cancelled">Đã hủy</option>
+          </select>
+
+          <button class="btn btn-outline btn-sm" onclick="loadOrders()">Làm mới</button>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="admin-card">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Mã đơn</th>
+                  <th>Khách hàng</th>
+                  <th>Số điện thoại</th>
+                  <th>Ngày tạo</th>
+                  <th>Tổng tiền</th>
+                  <th>Phương thức</th>
+                  <th>Trạng thái đơn</th>
+                  <th>Thanh toán</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="orders-tbody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: View & Update Order Status -->
+  <div class="modal-backdrop" id="order-detail-modal">
+    <div class="modal-dialog" style="max-width: 700px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="order-modal-title">Chi Tiết Đơn Hàng</h3>
+        <button class="modal-close" onclick="closeOrderModal()">✕</button>
+      </div>
+
+      <div class="modal-body" id="order-modal-body">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeOrderModal()">Đóng</button>
+        <button class="btn btn-secondary" onclick="printInvoiceFromModal()">🖨️ In Hóa Đơn</button>
+        <button class="btn btn-primary" onclick="saveOrderStatusChanges()">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Printable Invoice Element (Visible during print) -->
+  <div id="printable-invoice-modal" style="display: none;">
+    <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 16px; margin-bottom: 24px;">
+      <h1 style="font-size: 26px; font-weight: 900; margin: 0; color: #d70018;">HỆ THỐNG TECHSTORE VIETNAM</h1>
+      <p style="margin: 4px 0; font-size: 13px;">Địa chỉ: 227 Nguyễn Văn Cừ, Quận 5, TP.HCM • Hotline: 1800.6018</p>
+      <h2 style="font-size: 20px; font-weight: 800; margin-top: 16px;">HÓA ĐƠN BÁN LẺ & GIAO HÀNG</h2>
+      <div style="font-size: 14px;" id="inv-order-code">Mã đơn: #TS-1001</div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 14px;">
+      <div>
+        <strong>Khách hàng:</strong> <span id="inv-cust-name"></span><br>
+        <strong>Số điện thoại:</strong> <span id="inv-cust-phone"></span><br>
+        <strong>Địa chỉ nhận:</strong> <span id="inv-cust-address"></span>
+      </div>
+      <div style="text-align: right;">
+        <strong>Ngày lập đơn:</strong> <span id="inv-date"></span><br>
+        <strong>Hình thức:</strong> <span id="inv-payment"></span><br>
+        <strong>Tình trạng:</strong> <span id="inv-status"></span>
+      </div>
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px;">
+      <thead>
+        <tr style="border-top: 1px solid #000; border-bottom: 1px solid #000; background: #f8fafc;">
+          <th style="padding: 8px; text-align: left;">STT</th>
+          <th style="padding: 8px; text-align: left;">Tên sản phẩm</th>
+          <th style="padding: 8px; text-align: center;">SL</th>
+          <th style="padding: 8px; text-align: right;">Đơn giá</th>
+          <th style="padding: 8px; text-align: right;">Thành tiền</th>
+        </tr>
+      </thead>
+      <tbody id="inv-items-tbody"></tbody>
+    </table>
+
+    <div style="text-align: right; font-size: 16px; border-top: 1px solid #000; padding-top: 12px; margin-bottom: 30px;">
+      <div>Tổng cộng thanh toán: <strong id="inv-total" style="font-size: 20px; color: #d70018;"></strong></div>
+    </div>
+
+    <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 40px;">
+      <div>
+        <strong>Người mua hàng</strong><br>
+        <span style="font-size: 12px; color: #64748b;">(Ký và ghi rõ họ tên)</span>
+      </div>
+      <div>
+        <strong>Người lập phiếu (TechStore)</strong><br>
+        <span style="font-size: 12px; color: #64748b;">(Đã ký điện tử)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/assets/js/api.js"></script>
+  <script>
+    let ordersList = [];
+    let selectedOrder = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!api.isAdmin()) {
+        showToast('Vui lòng đăng nhập quyền Admin!', 'danger');
+        setTimeout(() => window.location.href = '/pages/login.html', 800);
+        return;
+      }
+
+      loadOrders();
+
+      document.getElementById('order-search-input').addEventListener('input', debounce(filterOrders, 300));
+      document.getElementById('order-status-filter').addEventListener('change', filterOrders);
+    });
+
+    function toggleSidebar() {
+      document.getElementById('admin-sidebar').classList.toggle('open');
+    }
+
+    async function loadOrders() {
+      const res = await api.orders.getAll();
+      ordersList = res.data || [];
+      renderOrdersTable(ordersList);
+    }
+
+    function renderOrdersTable(items) {
+      const tbody = document.getElementById('orders-tbody');
+      if (items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #94a3b8; padding: 30px;">Không tìm thấy đơn hàng nào</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = items.map(o => {
+        let statusBadge = '<span class="status-pill status-pending">Chờ xử lý</span>';
+        if (o.status === 'confirmed') statusBadge = '<span class="status-pill status-paid">Đã xác nhận</span>';
+        if (o.status === 'shipping') statusBadge = '<span class="status-pill status-shipping">Đang giao</span>';
+        if (o.status === 'completed') statusBadge = '<span class="status-pill status-completed">Hoàn tất</span>';
+        if (o.status === 'cancelled') statusBadge = '<span class="status-pill status-cancelled">Đã hủy</span>';
+
+        let payBadge = o.payment_status === 'paid'
+          ? '<span class="status-pill status-completed">✓ Đã TT</span>'
+          : '<span class="status-pill status-pending">Chờ TT</span>';
+
+        return `
+          <tr>
+            <td><strong>#${o.order_code || o.id}</strong></td>
+            <td><strong>${o.customer_name}</strong></td>
+            <td>${o.customer_phone || '-'}</td>
+            <td>${new Date(o.created_at).toLocaleDateString('vi-VN')}</td>
+            <td style="font-weight: 800; color: var(--color-primary);">${formatVND(o.total_amount)}</td>
+            <td>${o.payment_method === 'vietqr' ? '🏦 VietQR' : '💵 COD'}</td>
+            <td>${statusBadge}</td>
+            <td>${payBadge}</td>
+            <td>
+              <div style="display: flex; gap: 6px;">
+                <button class="btn btn-outline btn-sm" onclick="openOrderDetail(${o.id})">👁️ Chi tiết</button>
+                ${o.payment_status !== 'paid' ? `
+                  <button class="btn btn-success btn-sm" onclick="quickConfirmPayment(${o.id})" title="Xác nhận đã nhận chuyển khoản">✓ Duyệt TT</button>
+                ` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterOrders() {
+      const query = document.getElementById('order-search-input').value.toLowerCase().trim();
+      const status = document.getElementById('order-status-filter').value;
+
+      const filtered = ordersList.filter(o => {
+        if (query && !String(o.order_code || o.id).toLowerCase().includes(query) && !o.customer_name.toLowerCase().includes(query) && !(o.customer_phone || '').includes(query)) {
+          return false;
+        }
+        if (status !== 'all' && o.status !== status) return false;
+        return true;
+      });
+      renderOrdersTable(filtered);
+    }
+
+    function openOrderDetail(orderId) {
+      selectedOrder = ordersList.find(o => o.id === orderId);
+      if (!selectedOrder) return;
+
+      document.getElementById('order-modal-title').textContent = `Đơn Hàng #${selectedOrder.order_code || selectedOrder.id}`;
+      
+      const body = document.getElementById('order-modal-body');
+      body.innerHTML = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; font-size: 14px;">
+          <div style="background: #f8fafc; padding: 12px; border-radius: 8px;">
+            <div style="font-weight: 700; margin-bottom: 6px;">Thông tin khách hàng:</div>
+            <div>Họ tên: <strong>${selectedOrder.customer_name}</strong></div>
+            <div>SĐT: ${selectedOrder.customer_phone || '-'}</div>
+            <div>Địa chỉ: ${selectedOrder.shipping_address || '-'}</div>
+          </div>
+          <div style="background: #f8fafc; padding: 12px; border-radius: 8px;">
+            <div style="font-weight: 700; margin-bottom: 6px;">Thanh toán & Trạng thái:</div>
+            <div class="form-group" style="margin-bottom: 8px;">
+              <label class="form-label" style="font-size: 12px;">Đổi trạng thái đơn:</label>
+              <select id="modal-status-select" class="form-select form-select-sm">
+                <option value="pending" ${selectedOrder.status === 'pending' ? 'selected' : ''}>Chờ xử lý</option>
+                <option value="confirmed" ${selectedOrder.status === 'confirmed' ? 'selected' : ''}>Đã xác nhận</option>
+                <option value="shipping" ${selectedOrder.status === 'shipping' ? 'selected' : ''}>Đang giao hàng</option>
+                <option value="completed" ${selectedOrder.status === 'completed' ? 'selected' : ''}>Hoàn tất</option>
+                <option value="cancelled" ${selectedOrder.status === 'cancelled' ? 'selected' : ''}>Hủy đơn</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="font-size: 12px;">Thanh toán:</label>
+              <select id="modal-payment-select" class="form-select form-select-sm">
+                <option value="pending" ${selectedOrder.payment_status === 'pending' ? 'selected' : ''}>Chưa thanh toán</option>
+                <option value="paid" ${selectedOrder.payment_status === 'paid' ? 'selected' : ''}>Đã thanh toán (VietQR/Thủ công)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-weight: 700; margin-bottom: 8px;">Danh sách sản phẩm (${(selectedOrder.items || []).length}):</div>
+        <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-bottom: 16px;">
+          <table class="admin-table" style="margin: 0;">
+            <thead>
+              <tr>
+                <th>Sản phẩm</th>
+                <th style="text-align: center;">SL</th>
+                <th style="text-align: right;">Đơn giá</th>
+                <th style="text-align: right;">Thành tiền</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${(selectedOrder.items || []).map(i => `
+                <tr>
+                  <td>${i.name}</td>
+                  <td style="text-align: center;">${i.quantity}</td>
+                  <td style="text-align: right;">${formatVND(i.price)}</td>
+                  <td style="text-align: right; font-weight: 700;">${formatVND(i.price * i.quantity)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <div style="text-align: right; font-size: 16px; font-weight: 900; color: var(--color-primary);">
+          Tổng tiền thanh toán: ${formatVND(selectedOrder.total_amount)}
+        </div>
+      `;
+
+      document.getElementById('order-detail-modal').classList.add('active');
+    }
+
+    function closeOrderModal() {
+      document.getElementById('order-detail-modal').classList.remove('active');
+    }
+
+    async function saveOrderStatusChanges() {
+      if (!selectedOrder) return;
+      const newStatus = document.getElementById('modal-status-select').value;
+      const newPayment = document.getElementById('modal-payment-select').value;
+
+      await api.orders.updateStatus(selectedOrder.id, newStatus, newPayment);
+      showToast('Đã cập nhật trạng thái đơn hàng!', 'success');
+      closeOrderModal();
+      loadOrders();
+    }
+
+    async function quickConfirmPayment(orderId) {
+      if (confirm(`Xác nhận đã nhận tiền chuyển khoản cho đơn #${orderId}?`)) {
+        await api.orders.updateStatus(orderId, 'confirmed', 'paid');
+        showToast(`Đã xác nhận thanh toán đơn #${orderId}!`, 'success');
+        loadOrders();
+      }
+    }
+
+    function printInvoiceFromModal() {
+      if (!selectedOrder) return;
+
+      document.getElementById('inv-order-code').textContent = `Mã đơn hàng: #${selectedOrder.order_code || selectedOrder.id}`;
+      document.getElementById('inv-cust-name').textContent = selectedOrder.customer_name;
+      document.getElementById('inv-cust-phone').textContent = selectedOrder.customer_phone || '-';
+      document.getElementById('inv-cust-address').textContent = selectedOrder.shipping_address || '-';
+      document.getElementById('inv-date').textContent = new Date(selectedOrder.created_at).toLocaleDateString('vi-VN');
+      document.getElementById('inv-payment').textContent = selectedOrder.payment_method === 'vietqr' ? 'Chuyển khoản VietQR' : 'COD';
+      document.getElementById('inv-status').textContent = selectedOrder.payment_status === 'paid' ? 'Đã thanh toán' : 'Chờ thanh toán';
+      document.getElementById('inv-total').textContent = formatVND(selectedOrder.total_amount);
+
+      const tbody = document.getElementById('inv-items-tbody');
+      tbody.innerHTML = (selectedOrder.items || []).map((item, idx) => `
+        <tr style="border-bottom: 1px solid #e2e8f0;">
+          <td style="padding: 8px;">${idx + 1}</td>
+          <td style="padding: 8px;">${item.name}</td>
+          <td style="padding: 8px; text-align: center;">${item.quantity}</td>
+          <td style="padding: 8px; text-align: right;">${formatVND(item.price)}</td>
+          <td style="padding: 8px; text-align: right; font-weight: bold;">${formatVND(item.price * item.quantity)}</td>
+        </tr>
+      `).join('');
+
+      const printEl = document.getElementById('printable-invoice-modal');
+      printEl.style.display = 'block';
+      window.print();
+      printEl.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

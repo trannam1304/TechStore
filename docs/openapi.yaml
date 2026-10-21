@@ -1,0 +1,342 @@
+openapi: 3.0.3
+info:
+  title: TechStore RESTful API Specification
+  description: API hợp đồng chính thức cho dự án thương mại điện tử TechStore (Topic 1: RESTful API).
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Local Development Server
+
+paths:
+  /auth/register:
+    post:
+      summary: Đăng ký tài khoản khách hàng mới
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name: { type: string, example: "Nguyễn Tuấn Kiệt" }
+                email: { type: string, format: email, example: "tuankiet@techstore.vn" }
+                phone: { type: string, example: "0987654321" }
+                password: { type: string, format: password, example: "Secret123" }
+      responses:
+        '201':
+          description: Đăng ký thành công
+        '422':
+          description: Dữ liệu không hợp lệ
+
+  /auth/login:
+    post:
+      summary: Đăng nhập hệ thống (trả Access Token và Refresh Token)
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, example: "admin@techstore.local" }
+                password: { type: string, example: "Admin@123" }
+      responses:
+        '200':
+          description: Đăng nhập thành công, trả token JWT
+        '401':
+          description: Sai thông tin đăng nhập
+
+  /auth/refresh:
+    post:
+      summary: Cấp lại access token mới khi access token cũ hết hạn
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refresh_token]
+              properties:
+                refresh_token: { type: string }
+      responses:
+        '200':
+          description: Cấp token mới thành công
+
+  /auth/logout:
+    post:
+      summary: Đăng xuất và thu hồi Refresh Token
+      tags: [Auth]
+      security:
+        - BearerAuth: []
+      responses:
+        '204':
+          description: Đăng xuất thành công
+
+  /auth/me:
+    get:
+      summary: Lấy thông tin tài khoản hiện tại
+      tags: [Auth]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Trả thông tin người dùng
+
+  /products:
+    get:
+      summary: Danh sách sản phẩm kèm lọc, tìm kiếm, sắp xếp và phân trang
+      tags: [Products]
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20 }
+        - name: search
+          in: query
+          schema: { type: string }
+        - name: category_id
+          in: query
+          schema: { type: integer }
+        - name: brand_id
+          in: query
+          schema: { type: integer }
+        - name: sort
+          in: query
+          schema: { type: string, enum: [price_asc, price_desc, rating, latest] }
+      responses:
+        '200':
+          description: Danh sách sản phẩm thành công
+    post:
+      summary: Thêm mới sản phẩm (Admin)
+      tags: [Products]
+      security:
+        - BearerAuth: []
+      responses:
+        '201':
+          description: Thêm sản phẩm thành công
+
+  /products/{id}:
+    get:
+      summary: Chi tiết sản phẩm theo ID
+      tags: [Products]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Thông tin sản phẩm chi tiết
+    put:
+      summary: Cập nhật toàn bộ thông tin sản phẩm (Admin)
+      tags: [Products]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Cập nhật thành công
+    delete:
+      summary: Xóa (soft delete) sản phẩm (Admin)
+      tags: [Products]
+      security:
+        - BearerAuth: []
+      responses:
+        '204':
+          description: Đã xóa sản phẩm
+
+  /categories:
+    get:
+      summary: Lấy danh sách danh mục sản phẩm
+      tags: [Categories]
+      responses:
+        '200':
+          description: Danh sách danh mục
+
+  /brands:
+    get:
+      summary: Lấy danh sách thương hiệu
+      tags: [Brands]
+      responses:
+        '200':
+          description: Danh sách hãng
+
+  /cart:
+    get:
+      summary: Xem giỏ hàng của khách hàng
+      tags: [Cart]
+      responses:
+        '200':
+          description: Chi tiết giỏ hàng
+
+  /cart/items:
+    post:
+      summary: Thêm sản phẩm vào giỏ hàng
+      tags: [Cart]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [product_id, quantity]
+              properties:
+                product_id: { type: integer }
+                quantity: { type: integer, default: 1 }
+                variant: { type: string }
+      responses:
+        '201':
+          description: Đã thêm vào giỏ hàng
+
+  /coupons/validate:
+    post:
+      summary: Kiểm tra mã giảm giá hợp lệ
+      tags: [Coupons]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code, total]
+              properties:
+                code: { type: string, example: "TECH10" }
+                total: { type: number, example: 34990000 }
+      responses:
+        '200':
+          description: Trả thông tin chiết khấu hợp lệ
+
+  /orders:
+    post:
+      summary: Tạo mới đơn hàng từ giỏ hàng
+      tags: [Orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [customer_name, customer_phone, shipping_address, payment_method, items]
+      responses:
+        '201':
+          description: Đặt hàng thành công
+    get:
+      summary: Lịch sử đơn hàng của khách hàng
+      tags: [Orders]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Danh sách đơn hàng
+
+  /orders/{id}:
+    get:
+      summary: Chi tiết đơn hàng theo ID
+      tags: [Orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Thông tin chi tiết đơn hàng
+
+  /orders/{id}/cancel:
+    post:
+      summary: Khách hàng hủy đơn khi đơn còn ở trạng thái chờ xử lý
+      tags: [Orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Đã hủy đơn hàng
+
+  /payments/qr:
+    post:
+      summary: Sinh mã QR chuẩn VietQR cho đơn hàng
+      tags: [Payments]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [order_id, amount]
+              properties:
+                order_id: { type: integer }
+                amount: { type: number }
+                order_code: { type: string }
+      responses:
+        '201':
+          description: Trả URL ảnh VietQR và thông tin ngân hàng
+
+  /payments/{orderId}/status:
+    get:
+      summary: Polling kiểm tra trạng thái thanh toán đơn hàng
+      tags: [Payments]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Trả trạng thái is_paid: true/false
+
+  /products/{id}/recommendations:
+    get:
+      summary: Lấy gợi ý sản phẩm tương tự và thường mua cùng nhau (Co-occurrence)
+      tags: [Recommendations]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Danh sách sản phẩm tương tự & mua cùng
+
+  /recommendations/me:
+    get:
+      summary: Gợi ý sản phẩm cá nhân hóa theo lịch sử xem
+      tags: [Recommendations]
+      responses:
+        '200':
+          description: Danh sách sản phẩm gợi ý
+
+  /admin/stats:
+    get:
+      summary: Thống kê tổng quan cho Dashboard Admin
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Doanh thu, số đơn, biểu đồ 7 ngày
+
+  /admin/users:
+    get:
+      summary: Danh sách người dùng hệ thống (Admin)
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Danh sách người dùng
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
