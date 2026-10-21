@@ -470,7 +470,7 @@
     document.addEventListener('DOMContentLoaded', async () => {
       // 1. Fetch Products
       const res = await api.products.getAll();
-      allProducts = res.data || [];
+      allProducts = Array.isArray(res.data) ? res.data : (res.data?.items || []);
 
       // 2. Render Flash Sale (First 5 products)
       renderProductGrid('flash-sale-grid', allProducts.slice(0, 5));

@@ -138,19 +138,21 @@
       `).join('');
     }
 
-    function toggleUserStatus(userId) {
+    async function toggleUserStatus(userId) {
       const u = usersList.find(x => x.id === userId);
       if (u) {
         u.status = u.status === 'active' ? 'locked' : 'active';
+        await api.admin.updateUser(userId, { status: u.status });
         showToast(`Đã đổi trạng thái tài khoản #${userId}`, 'info');
         renderUsersTable(usersList);
       }
     }
 
-    function toggleUserRole(userId) {
+    async function toggleUserRole(userId) {
       const u = usersList.find(x => x.id === userId);
       if (u) {
         u.role = u.role === 'admin' ? 'customer' : 'admin';
+        await api.admin.updateUser(userId, { role: u.role });
         showToast(`Đã thay đổi vai trò tài khoản #${userId} thành ${u.role}`, 'success');
         renderUsersTable(usersList);
       }

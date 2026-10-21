@@ -381,12 +381,18 @@
     }
 
     async function loadWishlist() {
-      const res = await api.products.getAll();
-      const sampleWishlist = (res.data || []).slice(0, 3);
+      const res = await api.wishlist.get();
+      const wishlistItems = res.data || [];
       const container = document.getElementById('wishlist-grid');
 
-      container.innerHTML = sampleWishlist.map(p => `
+      if (wishlistItems.length === 0) {
+        container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 40px 0;">Danh sách yêu thích trống. Hãy nhấn ❤️ ở các sản phẩm bạn thích!</div>';
+        return;
+      }
+
+      container.innerHTML = wishlistItems.map(p => `
         <div class="product-card">
+          <button class="btn-wishlist active" onclick="removeFromWishlist(${p.id})" title="Bỏ yêu thích" style="color: #d70018;">❤️</button>
           <a href="/pages/product-detail.html?id=${p.id}" class="product-thumb-wrap">
             <img src="${p.image}" class="product-thumb" alt="${p.name}">
           </a>
@@ -401,6 +407,12 @@
           </button>
         </div>
       `).join('');
+    }
+
+    async function removeFromWishlist(productId) {
+      await api.wishlist.remove(productId);
+      showToast('Đã xóa khỏi danh sách yêu thích', 'info');
+      loadWishlist();
     }
 
     function handleUpdateProfile(e) {

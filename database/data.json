@@ -1,0 +1,476 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "name": "Hữu Nam (Tech Lead)",
+            "email": "admin@techstore.local",
+            "password_hash": "$2y$10$Ybdv3nmywSWPJHfZ3ctjw.WnqsMxlJDYIeFTNTlWsCA3msHJAtPdu",
+            "role": "admin",
+            "phone": "0901234567",
+            "address": "227 Nguyễn Văn Cừ, Quận 5, TP.HCM",
+            "status": "active",
+            "created_at": "2026-01-01 08:00:00"
+        },
+        {
+            "id": 2,
+            "name": "Tuấn Kiệt",
+            "email": "user@techstore.local",
+            "password_hash": "$2y$10$\/dkVsYj6pdq.uOBODUyrjO4bDu8ojB1sQ82KXU2RH5ttHB0HUD56q",
+            "role": "customer",
+            "phone": "0987654321",
+            "address": "123 Cách Mạng Tháng 8, Quận 10, TP.HCM",
+            "status": "active",
+            "created_at": "2026-02-15 09:30:00"
+        },
+        {
+            "id": 3,
+            "name": "Thành Trung",
+            "email": "trung@techstore.local",
+            "password_hash": "$2y$10$iX30CqZAu2KOMjcnNgVOPu7yE4nGuqCHcEb4PYKFF\/0kz5pqbigdK",
+            "role": "admin",
+            "phone": "0912345678",
+            "address": "456 Hai Bà Trưng, Quận 1, TP.HCM",
+            "status": "active",
+            "created_at": "2026-03-01 10:00:00"
+        }
+    ],
+    "categories": [
+        {
+            "id": 1,
+            "name": "Điện thoại",
+            "icon": "📱",
+            "slug": "dien-thoai",
+            "product_count": 28
+        },
+        {
+            "id": 2,
+            "name": "Laptop",
+            "icon": "💻",
+            "slug": "laptop",
+            "product_count": 20
+        },
+        {
+            "id": 3,
+            "name": "Tablet",
+            "icon": "📋",
+            "slug": "tablet",
+            "product_count": 14
+        },
+        {
+            "id": 4,
+            "name": "Âm thanh",
+            "icon": "🎧",
+            "slug": "am-thanh",
+            "product_count": 16
+        },
+        {
+            "id": 5,
+            "name": "Smartwatch",
+            "icon": "⌚",
+            "slug": "smartwatch",
+            "product_count": 12
+        },
+        {
+            "id": 6,
+            "name": "Phụ kiện",
+            "icon": "🔌",
+            "slug": "phu-kien",
+            "product_count": 35
+        }
+    ],
+    "brands": [
+        {
+            "id": 1,
+            "name": "Apple",
+            "logo": ""
+        },
+        {
+            "id": 2,
+            "name": "Samsung",
+            "logo": "Samsung"
+        },
+        {
+            "id": 3,
+            "name": "Xiaomi",
+            "logo": "Xiaomi"
+        },
+        {
+            "id": 4,
+            "name": "ASUS",
+            "logo": "ASUS"
+        },
+        {
+            "id": 5,
+            "name": "Sony",
+            "logo": "Sony"
+        },
+        {
+            "id": 6,
+            "name": "Anker",
+            "logo": "Anker"
+        },
+        {
+            "id": 7,
+            "name": "Dell",
+            "logo": "Dell"
+        }
+    ],
+    "products": [
+        {
+            "id": 1,
+            "name": "iPhone 16 Pro Max 256GB",
+            "category_id": 1,
+            "category_name": "Điện thoại",
+            "brand_id": 1,
+            "brand_name": "Apple",
+            "price": 34990000,
+            "original_price": 37990000,
+            "stock": 25,
+            "rating": 4.9,
+            "review_count": 142,
+            "image": "https:\/\/images.unsplash.com\/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80",
+            "images": [
+                "https:\/\/images.unsplash.com\/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
+                "https:\/\/images.unsplash.com\/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80"
+            ],
+            "ram": "8GB",
+            "rom": "256GB",
+            "chipset": "Apple A18 Pro 3nm",
+            "screen": "6.9 inch Super Retina XDR OLED 120Hz",
+            "battery": "4685 mAh, Sạc nhanh 30W",
+            "camera": "Chính 48MP + Góc rộng 48MP + Tele 5x 12MP",
+            "description": "iPhone 16 Pro Max thiết kế Titan sa mạc đẳng cấp, chip A18 Pro mạnh mẽ và nút Camera Control hoàn toàn mới.",
+            "featured": true,
+            "created_at": "2026-09-20"
+        },
+        {
+            "id": 2,
+            "name": "Samsung Galaxy S24 Ultra 5G 12GB\/256GB",
+            "category_id": 1,
+            "category_name": "Điện thoại",
+            "brand_id": 2,
+            "brand_name": "Samsung",
+            "price": 29990000,
+            "original_price": 33990000,
+            "stock": 18,
+            "rating": 4.8,
+            "review_count": 98,
+            "image": "https:\/\/images.unsplash.com\/photo-1610945265064-0e34e5519bbf?w=600&auto=format&fit=crop&q=80",
+            "images": [
+                "https:\/\/images.unsplash.com\/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop&q=80"
+            ],
+            "ram": "12GB",
+            "rom": "256GB",
+            "chipset": "Snapdragon 8 Gen 3 for Galaxy",
+            "screen": "6.8 inch Dynamic AMOLED 2X 120Hz",
+            "battery": "5000 mAh, Sạc siêu nhanh 45W",
+            "camera": "200MP + 50MP + 12MP + 10MP (Zoom 100x)",
+            "description": "Quyền năng Galaxy AI đỉnh cao, bút S-Pen tích hợp và khung Titan cao cấp siêu bền.",
+            "featured": true,
+            "created_at": "2026-02-10"
+        },
+        {
+            "id": 3,
+            "name": "MacBook Pro 14 M3 Pro 18GB\/512GB Space Black",
+            "category_id": 2,
+            "category_name": "Laptop",
+            "brand_id": 1,
+            "brand_name": "Apple",
+            "price": 49990000,
+            "original_price": 52990000,
+            "stock": 12,
+            "rating": 5,
+            "review_count": 64,
+            "image": "https:\/\/images.unsplash.com\/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80",
+            "images": [
+                "https:\/\/images.unsplash.com\/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80"
+            ],
+            "ram": "18GB",
+            "rom": "512GB SSD",
+            "chipset": "Apple M3 Pro (11-core CPU, 14-core GPU)",
+            "screen": "14.2 inch Liquid Retina XDR 120Hz ProMotion",
+            "battery": "70Wh, Thời lượng pin 18 giờ",
+            "camera": "1080p FaceTime HD",
+            "description": "Hiệu năng đồ họa chuyên nghiệp, màu Đen Không Gian chống bám vân tay đỉnh cao.",
+            "featured": true,
+            "created_at": "2026-01-15"
+        },
+        {
+            "id": 4,
+            "name": "Laptop ASUS ROG Zephyrus G16 OLED RTX 4070",
+            "category_id": 2,
+            "category_name": "Laptop",
+            "brand_id": 4,
+            "brand_name": "ASUS",
+            "price": 59990000,
+            "original_price": 64990000,
+            "stock": 8,
+            "rating": 4.9,
+            "review_count": 31,
+            "image": "https:\/\/images.unsplash.com\/photo-1603302576837-37561b2e2302?w=600&auto=format&fit=crop&q=80",
+            "images": [
+                "https:\/\/images.unsplash.com\/photo-1603302576837-37561b2e2302?w=800&auto=format&fit=crop&q=80"
+            ],
+            "ram": "32GB LPDDR5X",
+            "rom": "1TB PCIe 4.0 SSD",
+            "chipset": "Intel Core Ultra 9 185H",
+            "screen": "16 inch 2.5K OLED 240Hz 0.2ms ROG Nebula",
+            "battery": "90Wh, Sạc nhanh Type-C 100W",
+            "camera": "FHD IR Camera hỗ trợ Windows Hello",
+            "description": "Laptop Gaming mỏng nhẹ hàng đầu thế giới với màn hình OLED 240Hz tuyệt đẹp và card đồ họa RTX 4070.",
+            "featured": true,
+            "created_at": "2026-03-22"
+        },
+        {
+            "id": 5,
+            "name": "iPad Air 6 M2 11 inch 128GB Wi-Fi",
+            "category_id": 3,
+            "category_name": "Tablet",
+            "brand_id": 1,
+            "brand_name": "Apple",
+            "price": 16490000,
+            "original_price": 17990000,
+            "stock": 20,
+            "rating": 4.7,
+            "review_count": 54,
+            "image": "https:\/\/images.unsplash.com\/photo-1544244015-0df4b3ffc6b0?w=600&auto=format&fit=crop&q=80",
+            "images": [
+                "https:\/\/images.unsplash.com\/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop&q=80"
+            ],
+            "ram": "8GB",
+            "rom": "128GB",
+            "chipset": "Apple M2 8-core CPU",
+            "screen": "11 inch Liquid Retina IPS 500 nits",
+            "battery": "28.93 Wh, lướt web 10 giờ",
+            "camera": "12MP Wide trước & sau",
+            "description": "Sức mạnh chip Apple M2 biến iPad Air 6 thành cỗ máy làm việc, vẽ đồ họa và giải trí linh hoạt hoàn hảo.",
+            "featured": false,
+            "created_at": "2026-06-18"
+        },
+        {
+            "id": 6,
+            "name": "Tai nghe Sony WH-1000XM5 Chống Ồn",
+            "category_id": 4,
+            "category_name": "Âm thanh",
+            "brand_id": 5,
+            "brand_name": "Sony",
+            "price": 7490000,
+            "original_price": 8990000,
+            "stock": 35,
+            "rating": 4.9,
+            "review_count": 180,
+            "image": "https:\/\/images.unsplash.com\/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80",
+            "images": [
+                "https:\/\/images.unsplash.com\/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80"
+            ],
+            "ram": "-",
+            "rom": "-",
+            "chipset": "Sony V1 + QN1 Processor",
+            "screen": "-",
+            "battery": "30 giờ (bật ANC), Sạc nhanh 3 phút được 3 giờ",
+            "camera": "-",
+            "description": "Tai nghe chống ồn số 1 thị trường với 8 micro kép và 2 bộ vi xử lý riêng biệt mang lại âm thanh chuẩn Hi-Res Audio.",
+            "featured": true,
+            "created_at": "2026-05-10"
+        },
+        {
+            "id": 7,
+            "name": "Apple Watch Ultra 2 GPS + Cellular 49mm",
+            "category_id": 5,
+            "category_name": "Smartwatch",
+            "brand_id": 1,
+            "brand_name": "Apple",
+            "price": 20990000,
+            "original_price": 22990000,
+            "stock": 14,
+            "rating": 4.9,
+            "review_count": 42,
+            "image": "https:\/\/images.unsplash.com\/photo-1508685096489-7aacd43bd3b1?w=600&auto=format&fit=crop&q=80",
+            "images": [
+                "https:\/\/images.unsplash.com\/photo-1508685096489-7aacd43bd3b1?w=800&auto=format&fit=crop&q=80"
+            ],
+            "ram": "-",
+            "rom": "64GB",
+            "chipset": "Apple S9 SiP",
+            "screen": "49mm Retina LTPO OLED 3000 nits",
+            "battery": "Pin 36 giờ, 72 giờ chế độ nguồn điện thấp",
+            "camera": "-",
+            "description": "Khung Titan siêu bền bỉ chuẩn quân đội, GPS băng tần kép chính xác, chống nước 100m dành cho vận động viên thể thao khắc nghiệt.",
+            "featured": false,
+            "created_at": "2026-08-01"
+        },
+        {
+            "id": 8,
+            "name": "Củ sạc nhanh Anker 65W GaNPrime 3 cổng",
+            "category_id": 6,
+            "category_name": "Phụ kiện",
+            "brand_id": 6,
+            "brand_name": "Anker",
+            "price": 890000,
+            "original_price": 1200000,
+            "stock": 50,
+            "rating": 4.8,
+            "review_count": 215,
+            "image": "https:\/\/images.unsplash.com\/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
+            "images": [
+                "https:\/\/images.unsplash.com\/photo-1583863788434-e58a36330cf0?w=800&auto=format&fit=crop&q=80"
+            ],
+            "ram": "-",
+            "rom": "-",
+            "chipset": "GaNPrime Technology",
+            "screen": "-",
+            "battery": "-",
+            "camera": "-",
+            "description": "Công nghệ GaNPrime tối ưu hóa dòng sạc an toàn, sạc cùng lúc 3 thiết bị MacBook, iPhone, iPad với công suất tối đa 65W.",
+            "featured": false,
+            "created_at": "2026-04-12"
+        }
+    ],
+    "coupons": [
+        {
+            "id": 1,
+            "code": "TECH10",
+            "discount_type": "percent",
+            "value": 10,
+            "min_order": 1000000,
+            "max_discount": 500000,
+            "description": "Giảm 10% tối đa 500k cho đơn từ 1 triệu"
+        },
+        {
+            "id": 2,
+            "code": "VIETQR50",
+            "discount_type": "amount",
+            "value": 50000,
+            "min_order": 500000,
+            "max_discount": 50000,
+            "description": "Giảm 50.000đ khi thanh toán VietQR"
+        },
+        {
+            "id": 3,
+            "code": "GIAM100K",
+            "discount_type": "amount",
+            "value": 100000,
+            "min_order": 2000000,
+            "max_discount": 100000,
+            "description": "Giảm ngay 100k cho đơn từ 2 triệu"
+        }
+    ],
+    "cart": {
+        "items": [
+            {
+                "id": 1,
+                "product_id": 1,
+                "name": "iPhone 16 Pro Max 256GB",
+                "price": 34990000,
+                "quantity": 1,
+                "variant": "256GB - Titan Sa Mạc",
+                "image": "https:\/\/images.unsplash.com\/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80"
+            }
+        ],
+        "total": 34990000
+    },
+    "orders": [
+        {
+            "id": 1001,
+            "order_code": "TS-749201",
+            "customer_name": "Tuấn Kiệt",
+            "customer_phone": "0987654321",
+            "customer_email": "user@techstore.local",
+            "shipping_address": "227 Nguyễn Văn Cừ, P4, Quận 5, TP.HCM",
+            "payment_method": "vietqr",
+            "payment_status": "paid",
+            "status": "completed",
+            "total_amount": 34990000,
+            "discount_amount": 500000,
+            "created_at": "2026-10-19 09:30:00",
+            "items": [
+                {
+                    "id": 1,
+                    "product_id": 1,
+                    "name": "iPhone 16 Pro Max 256GB",
+                    "quantity": 1,
+                    "price": 34990000,
+                    "variant": "256GB - Titan"
+                }
+            ]
+        },
+        {
+            "id": 1002,
+            "order_code": "TS-839102",
+            "customer_name": "Nguyễn Văn Minh",
+            "customer_phone": "0912345678",
+            "customer_email": "minh@gmail.com",
+            "shipping_address": "15 Lê Duẩn, Bến Nghé, Quận 1, TP.HCM",
+            "payment_method": "vietqr",
+            "payment_status": "pending",
+            "status": "pending",
+            "total_amount": 7490000,
+            "discount_amount": 50000,
+            "created_at": "2026-10-21 08:15:00",
+            "items": [
+                {
+                    "id": 6,
+                    "product_id": 6,
+                    "name": "Tai nghe Sony WH-1000XM5 Chống Ồn",
+                    "quantity": 1,
+                    "price": 7490000,
+                    "variant": "Đen"
+                }
+            ]
+        }
+    ],
+    "reviews": [
+        {
+            "id": 1,
+            "product_id": 1,
+            "user_name": "Nguyễn Văn Nam",
+            "rating": 5,
+            "comment": "Hàng chuẩn chính hãng CellphoneS, giao nhanh trong 2h tại TP.HCM, đóng gói cẩn thận 10\/10!",
+            "created_at": "2026-10-18"
+        },
+        {
+            "id": 2,
+            "product_id": 1,
+            "user_name": "Trần Thị Mai",
+            "rating": 5,
+            "comment": "Máy dùng rất mượt mà, camera nét đỉnh chóp. Nhân viên tư vấn nhiệt tình.",
+            "created_at": "2026-10-15"
+        },
+        {
+            "id": 3,
+            "product_id": 2,
+            "user_name": "Lê Hoàng Minh",
+            "rating": 4,
+            "comment": "Sản phẩm tốt trong tầm giá, quét VietQR thanh toán 5s là xong luôn.",
+            "created_at": "2026-10-12"
+        }
+    ],
+    "wishlist": [
+        {
+            "id": 1,
+            "user_id": 2,
+            "product_id": 1
+        },
+        {
+            "id": 2,
+            "user_id": 2,
+            "product_id": 6
+        }
+    ],
+    "audit_logs": [
+        {
+            "id": 1,
+            "user_name": "admin@techstore.local",
+            "action": "UPDATE_ORDER_STATUS",
+            "description": "Cập nhật đơn hàng TS-749201 sang completed",
+            "created_at": "2026-10-19 10:00:00"
+        },
+        {
+            "id": 2,
+            "user_name": "admin@techstore.local",
+            "action": "CREATE_PRODUCT",
+            "description": "Thêm sản phẩm mới iPhone 16 Pro Max",
+            "created_at": "2026-09-20 14:20:00"
+        }
+    ]
+}

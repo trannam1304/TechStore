@@ -253,7 +253,7 @@
 
     async function loadProducts() {
       const res = await api.products.getAll();
-      productsList = res.data || [];
+      productsList = Array.isArray(res.data) ? res.data : (res.data?.items || []);
       renderProductsTable(productsList);
     }
 
