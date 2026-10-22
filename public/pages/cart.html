@@ -263,8 +263,19 @@
   <script>
     let appliedCoupon = null;
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Đồng bộ từ server nếu local rỗng
+      let localCart = api.getCart();
+      if (!localCart.items || localCart.items.length === 0) {
+        try {
+          const res = await api.cart.get();
+          if (res && res.success && res.data && Array.isArray(res.data.items) && res.data.items.length > 0) {
+            api.saveCart(res.data);
+          }
+        } catch (e) {}
+      }
       renderCart();
+      api.updateHeaderCartBadge();
       RecommendComponent.renderForYou('cart-recommendations-container', 'Có thể bạn cũng thích');
 
       document.getElementById('btn-apply-coupon').addEventListener('click', applyCoupon);
