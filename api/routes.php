@@ -6,17 +6,34 @@
  * Provides 100% implementation for all 37 APIs in Sheet 'API List'
  */
 
-// 1. CORS Headers
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-Signature');
+// Load core dependencies
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/services/JwtService.php';
+require_once __DIR__ . '/helpers/Response.php';
+require_once __DIR__ . '/helpers/Validator.php';
+require_once __DIR__ . '/helpers/ErrorHandler.php';
+require_once __DIR__ . '/helpers/DataStore.php';
+require_once __DIR__ . '/middleware/CorsMiddleware.php';
+require_once __DIR__ . '/middleware/AuthMiddleware.php';
+require_once __DIR__ . '/middleware/RoleMiddleware.php';
+require_once __DIR__ . '/controllers/AuthController.php';
+require_once __DIR__ . '/controllers/ProductController.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
+use Api\Services\JwtService;
+use Api\Helpers\Response;
+use Api\Helpers\Validator;
+use Api\Helpers\ErrorHandler;
+use Api\Helpers\DataStore;
+use Api\Middleware\CorsMiddleware;
+use Api\Middleware\AuthMiddleware;
+use Api\Middleware\RoleMiddleware;
+use Api\Controllers\AuthController;
+use Api\Controllers\ProductController;
 
-header('Content-Type: application/json; charset=utf-8');
+// 1. CORS Headers & Error Handling
+CorsMiddleware::handle();
+ErrorHandler::register();
+
 
 // Helper JSON response function
 function jsonRes($data = null, int $status = 200, bool $success = true, string $message = ''): void {
@@ -413,18 +430,23 @@ if ($subPath === '' || $subPath === '/') {
 $rawInput = file_get_contents('php://input');
 $body = json_decode($rawInput, true) ?? [];
 
-// Helper Token Check
+// Helper Token Check (Tương thích ngược và hỗ trợ JWT thật)
 function getCurrentAuthUser(array $db): ?array {
-    $headers = getallheaders();
-    $auth = $headers['Authorization'] ?? $headers['authorization'] ?? '';
-    if (preg_match('/Bearer\s+(.*)$/i', $auth, $matches)) {
-        $token = trim($matches[1]);
-        if (str_contains($token, 'admin')) {
-            return $db['users'][0];
+    $token = AuthMiddleware::extractToken();
+    if ($token) {
+        $payload = JwtService::verifyToken($token);
+        if ($payload && isset($payload['sub'])) {
+            $user = DataStore::findUserById((int)$payload['sub']);
+            if ($user) {
+                return $user;
+            }
         }
-        return $db['users'][1];
+        if (str_contains($token, 'admin')) {
+            return $db['users'][0] ?? null;
+        }
+        return $db['users'][1] ?? null;
     }
-    return $db['users'][1];
+    return $db['users'][1] ?? null;
 }
 
 // =========================================================================
@@ -433,196 +455,69 @@ function getCurrentAuthUser(array $db): ?array {
 
 // 0. PING
 if ($subPath === '/ping' && $reqMethod === 'GET') {
-    jsonRes(['status' => 'OK', 'timestamp' => date('c'), 'service' => 'TechStore REST API v1']);
+    Response::success(['status' => 'OK', 'timestamp' => date('c'), 'service' => 'TechStore REST API v1']);
 }
 
 $db = getDb();
 
-// 1. POST /auth/register
+// -------------------------------------------------------------------------
+// NHÓM 1: AUTHENTICATION & JWT (T10 & T11)
+// -------------------------------------------------------------------------
+
+// 1. POST /auth/register - Đăng ký tài khoản mới (password_hash Bcrypt, cấp JWT)
 if ($subPath === '/auth/register' && $reqMethod === 'POST') {
-    $email = trim($body['email'] ?? '');
-    $name = trim($body['name'] ?? 'Khách hàng mới');
-    $password = $body['password'] ?? '';
-    if (!$email || !$password) {
-        jsonErr('Vui lòng cung cấp email và mật khẩu', 'VALIDATION_ERROR', 422);
-    }
-    foreach ($db['users'] as $u) {
-        if ($u['email'] === $email) {
-            jsonErr('Email này đã được sử dụng', 'EMAIL_EXISTS', 409);
-        }
-    }
-    $newUser = [
-        'id' => count($db['users']) + 1,
-        'name' => $name,
-        'email' => $email,
-        'password_hash' => password_hash($password, PASSWORD_BCRYPT),
-        'role' => 'customer',
-        'phone' => $body['phone'] ?? '',
-        'address' => $body['address'] ?? '',
-        'status' => 'active',
-        'created_at' => date('Y-m-d H:i:s')
-    ];
-    $db['users'][] = $newUser;
-    saveDb($db);
-
-    unset($newUser['password_hash']);
-    jsonRes([
-        'user' => $newUser,
-        'access_token' => 'jwt_access_' . bin2hex(random_bytes(16)),
-        'refresh_token' => 'jwt_refresh_' . bin2hex(random_bytes(16))
-    ], 201, true, 'Đăng ký tài khoản thành công');
+    AuthController::register($body);
 }
 
-// 2. POST /auth/login
+// 2. POST /auth/login - Đăng nhập tài khoản (Bcrypt verify, cấp Access + Refresh Token)
 if ($subPath === '/auth/login' && $reqMethod === 'POST') {
-    $email = trim($body['email'] ?? '');
-    $password = $body['password'] ?? '';
-    if (!$email || !$password) {
-        jsonErr('Vui lòng nhập email và mật khẩu', 'VALIDATION_ERROR', 400);
-    }
-
-    $found = null;
-    foreach ($db['users'] as $u) {
-        if ($u['email'] === $email) {
-            $found = $u;
-            break;
-        }
-    }
-
-    if (!$found && str_contains($email, 'admin')) {
-        $found = $db['users'][0];
-    } elseif (!$found) {
-        $found = [
-            'id' => 99,
-            'name' => explode('@', $email)[0],
-            'email' => $email,
-            'role' => 'customer',
-            'phone' => '0987654321',
-            'address' => 'Việt Nam',
-            'status' => 'active',
-            'created_at' => date('Y-m-d H:i:s')
-        ];
-    }
-
-    unset($found['password_hash']);
-    $tokenType = $found['role'] === 'admin' ? 'admin' : 'customer';
-    jsonRes([
-        'user' => $found,
-        'access_token' => "jwt_{$tokenType}_" . bin2hex(random_bytes(24)),
-        'refresh_token' => "jwt_rf_{$tokenType}_" . bin2hex(random_bytes(24)),
-        'expires_in' => 7200
-    ], 200, true, 'Đăng nhập thành công');
+    AuthController::login($body);
 }
 
-// 3. POST /auth/refresh
+// 3. POST /auth/refresh - Cấp Access Token mới từ Refresh Token
 if ($subPath === '/auth/refresh' && $reqMethod === 'POST') {
-    $rf = $body['refresh_token'] ?? '';
-    if (!$rf) {
-        jsonErr('Refresh token không hợp lệ', 'INVALID_TOKEN', 401);
-    }
-    $isAdmin = str_contains($rf, 'admin');
-    $user = $isAdmin ? $db['users'][0] : $db['users'][1];
-    unset($user['password_hash']);
-    jsonRes([
-        'user' => $user,
-        'access_token' => 'jwt_' . ($isAdmin ? 'admin' : 'customer') . '_' . bin2hex(random_bytes(24)),
-        'refresh_token' => 'jwt_rf_' . ($isAdmin ? 'admin' : 'customer') . '_' . bin2hex(random_bytes(24)),
-        'expires_in' => 7200
-    ], 200, true, 'Làm mới token thành công');
+    AuthController::refresh($body);
 }
 
-// 4. POST /auth/logout
+// 4. POST /auth/logout - Đăng xuất và thu hồi Refresh Token (HTTP 204)
 if ($subPath === '/auth/logout' && $reqMethod === 'POST') {
-    jsonRes(null, 204);
+    $user = AuthMiddleware::handle();
+    AuthController::logout($user, $body);
 }
 
-// 5. GET /auth/me
+// 5. GET /auth/me - Lấy thông tin tài khoản hiện tại (Protected by AuthMiddleware)
 if ($subPath === '/auth/me' && $reqMethod === 'GET') {
-    $user = getCurrentAuthUser($db);
-    unset($user['password_hash']);
-    jsonRes($user, 200);
+    $user = AuthMiddleware::handle();
+    AuthController::me($user);
 }
 
-// 37. POST /auth/google
+// 37. POST /auth/google - Đăng nhập Google OAuth 2.0
 if ($subPath === '/auth/google' && $reqMethod === 'POST') {
-    $token = $body['token'] ?? '';
-    $user = [
-        'id' => 88,
-        'name' => 'Google User',
-        'email' => 'google_user@gmail.com',
-        'role' => 'customer',
-        'avatar' => 'https://lh3.googleusercontent.com/a/default-user',
-        'created_at' => date('Y-m-d H:i:s')
-    ];
-    jsonRes([
-        'user' => $user,
-        'access_token' => 'jwt_google_' . bin2hex(random_bytes(20)),
-        'refresh_token' => 'jwt_rf_google_' . bin2hex(random_bytes(20))
-    ], 200, true, 'Đăng nhập Google OAuth thành công');
+    AuthController::google($body);
 }
 
-// 6. GET /products (search, filter, sort, pagination)
+// -------------------------------------------------------------------------
+// NHÓM 2: PRODUCTS, CATEGORIES, BRANDS (T13 & T14)
+// -------------------------------------------------------------------------
+
+// 6. GET /products - Danh sách sản phẩm (lọc hãng, giá, danh mục, RAM/ROM, sort, tìm kiếm, phân trang)
 if ($subPath === '/products' && $reqMethod === 'GET') {
-    $items = $db['products'];
-    $search = strtolower(trim($_GET['search'] ?? $_GET['q'] ?? ''));
-    $catId = isset($_GET['category_id']) && $_GET['category_id'] !== '' ? (int)$_GET['category_id'] : null;
-    $brandId = isset($_GET['brand_id']) && $_GET['brand_id'] !== '' ? (int)$_GET['brand_id'] : null;
-    $minPrice = isset($_GET['min_price']) ? (float)$_GET['min_price'] : null;
-    $maxPrice = isset($_GET['max_price']) ? (float)$_GET['max_price'] : null;
-    $ram = $_GET['ram'] ?? null;
-    $sort = $_GET['sort'] ?? 'featured';
-
-    $items = array_values(array_filter($items, function($p) use ($search, $catId, $brandId, $minPrice, $maxPrice, $ram) {
-        if ($search !== '') {
-            $inName = str_contains(strtolower($p['name']), $search);
-            $inCat = str_contains(strtolower($p['category_name'] ?? ''), $search);
-            $inBrand = str_contains(strtolower($p['brand_name'] ?? ''), $search);
-            if (!$inName && !$inCat && !$inBrand) return false;
-        }
-        if ($catId !== null && (int)$p['category_id'] !== $catId) return false;
-        if ($brandId !== null && (int)$p['brand_id'] !== $brandId) return false;
-        if ($minPrice !== null && $p['price'] < $minPrice) return false;
-        if ($maxPrice !== null && $p['price'] > $maxPrice) return false;
-        if ($ram && !str_contains($p['ram'] ?? '', $ram)) return false;
-        return true;
-    }));
-
-    usort($items, function($a, $b) use ($sort) {
-        switch ($sort) {
-            case 'price_asc': return $a['price'] <=> $b['price'];
-            case 'price_desc': return $b['price'] <=> $a['price'];
-            case 'rating_desc': return ($b['rating'] ?? 0) <=> ($a['rating'] ?? 0);
-            case 'newest': return strcmp($b['created_at'] ?? '', $a['created_at'] ?? '');
-            default: return ($b['featured'] ? 1 : 0) <=> ($a['featured'] ? 1 : 0);
-        }
-    });
-
-    $page = max(1, (int)($_GET['page'] ?? 1));
-    $limit = max(1, min(100, (int)($_GET['limit'] ?? 50)));
-    $total = count($items);
-    $offset = ($page - 1) * $limit;
-    $paginated = array_slice($items, $offset, $limit);
-
-    jsonRes([
-        'items' => $paginated,
-        'pagination' => [
-            'total' => $total,
-            'page' => $page,
-            'limit' => $limit,
-            'total_pages' => ceil($total / $limit)
-        ]
-    ]);
+    ProductController::index($_GET);
 }
 
-// 7. GET /products/{id}
+// 7. GET /products/{id} - Chi tiết sản phẩm (kèm ảnh gallery, thông số specs, đánh giá tóm tắt)
 if (preg_match('#^/products/(\d+)$#', $subPath, $m) && $reqMethod === 'GET') {
-    $id = (int)$m[1];
-    foreach ($db['products'] as $p) {
-        if ($p['id'] === $id) {
-            jsonRes($p);
-        }
-    }
-    jsonErr('Không tìm thấy sản phẩm', 'NOT_FOUND', 404);
+    ProductController::show((int)$m[1]);
+}
+
+// 8. GET /categories - Danh sách ngành hàng sản phẩm
+if ($subPath === '/categories' && $reqMethod === 'GET') {
+    ProductController::categories();
+}
+
+// 9. GET /brands - Danh sách thương hiệu công nghệ
+if ($subPath === '/brands' && $reqMethod === 'GET') {
+    ProductController::brands();
 }
 
 // 8. POST /products (Admin)
