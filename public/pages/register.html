@@ -113,6 +113,9 @@
 
       const res = await api.auth.register({ name, email, phone, password });
       if (res.success) {
+        if (res.data && res.data.access_token) {
+          api.setAuthTokens(res.data.access_token, res.data.refresh_token, res.data.user);
+        }
         showToast('Đăng ký tài khoản thành công!', 'success');
         setTimeout(() => {
           window.location.href = '/pages/account.html';

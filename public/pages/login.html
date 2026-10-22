@@ -126,6 +126,9 @@
 
       const res = await api.auth.login(email, password);
       if (res.success) {
+        if (res.data && res.data.access_token) {
+          api.setAuthTokens(res.data.access_token, res.data.refresh_token, res.data.user);
+        }
         showToast('Đăng nhập thành công!', 'success');
         setTimeout(() => {
           if (api.isAdmin()) {
