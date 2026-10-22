@@ -3605,8 +3605,18 @@
             "quantity": 1,
             "variant": "Đen GaN 65W"
         },
-        "items": [],
-        "total": 0
+        "items": [
+            {
+                "id": 1792640768,
+                "product_id": 2,
+                "name": "iPhone 16 128GB",
+                "price": 21990000,
+                "quantity": 1,
+                "variant": "",
+                "image": "https:\/\/images.unsplash.com\/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80"
+            }
+        ],
+        "total": 21990000
     },
     "product_similarity": [
         {
@@ -4468,6 +4478,14 @@
             "expires_at": "2026-10-29 04:39:38",
             "revoked": 1,
             "created_at": "2026-10-22 05:39:38"
+        },
+        {
+            "id": 33,
+            "user_id": 12,
+            "token_hash": "958a5d66c3523443158b8536efe8844d1c162edd8802a52e88c0a5ff02e1edd5",
+            "expires_at": "2026-10-29 04:45:27",
+            "revoked": 0,
+            "created_at": "2026-10-22 05:45:27"
         }
     ],
     "audit_logs": [
