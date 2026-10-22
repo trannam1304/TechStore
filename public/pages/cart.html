@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giỏ Hàng - TechStore</title>
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <style>
+    .cart-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--space-8);
+      margin-top: var(--space-6);
+    }
+    @media (max-width: 900px) {
+      .cart-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Cart Items Table / List */
+    .cart-items-card {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-gray-border);
+      padding: var(--space-6);
+      box-shadow: var(--shadow-sm);
+    }
+    .cart-item-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) 0;
+      border-bottom: 1px solid var(--color-gray-border);
+    }
+    .cart-item-row:last-child {
+      border-bottom: none;
+    }
+    .cart-item-img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      background: #f8fafc;
+      border-radius: var(--radius-md);
+      padding: 4px;
+    }
+    .cart-item-info {
+      flex: 1;
+    }
+    .cart-item-name {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-dark);
+      margin-bottom: 4px;
+    }
+    .cart-item-variant {
+      font-size: var(--font-size-xs);
+      color: var(--color-gray);
+      margin-bottom: 6px;
+    }
+    .cart-item-price {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-black);
+      color: var(--color-primary);
+    }
+    .cart-item-remove {
+      color: var(--color-gray-light);
+      cursor: pointer;
+      font-size: 18px;
+      transition: color var(--transition-fast);
+    }
+    .cart-item-remove:hover {
+      color: var(--color-danger);
+    }
+
+    /* Summary Card */
+    .summary-card {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-gray-border);
+      padding: var(--space-6);
+      box-shadow: var(--shadow-sm);
+      height: fit-content;
+      position: sticky;
+      top: 90px;
+    }
+    .summary-title {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-bold);
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-gray-border);
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--space-3);
+      font-size: var(--font-size-sm);
+      color: var(--color-gray-dark);
+    }
+    .summary-total-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--color-gray-border);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-black);
+      color: var(--color-dark);
+    }
+    .summary-total-price {
+      font-size: var(--font-size-xl);
+      color: var(--color-primary);
+    }
+
+    /* Coupon Box */
+    .coupon-box {
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px dashed var(--color-gray-border);
+    }
+    .coupon-input-group {
+      display: flex;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="container">
+      <div>TechStore - Giỏ hàng trực tuyến an toàn & nhanh chóng</div>
+      <div class="topbar-links">
+        <a href="/pages/account.html">Tra cứu đơn hàng</a>
+        <a href="tel:18006018">Hotline: 1800.6018</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header-main">
+    <div class="container header-container">
+      <a href="/pages/index.html" class="logo">TechStore <span class="logo-badge">REST</span></a>
+
+      <div class="header-search">
+        <form id="global-search-form" class="search-box">
+          <input type="text" id="global-search-input" class="search-input" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
+          <button type="submit" class="search-btn" aria-label="Tìm kiếm">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </button>
+        </form>
+        <div id="search-suggestions" class="search-suggestions"></div>
+      </div>
+
+      <div class="header-actions">
+        <a href="/pages/account.html#wishlist" class="header-action-btn">
+          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+          <span>Yêu thích</span>
+        </a>
+
+        <a href="/pages/cart.html" class="header-action-btn">
+          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          <span>Giỏ hàng</span>
+          <span class="badge-pill cart-badge" style="display: none;">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumbs -->
+  <div style="background: white; border-bottom: 1px solid var(--color-gray-border); padding: 10px 0;">
+    <div class="container" style="font-size: 13px; color: var(--color-gray);">
+      <a href="/pages/index.html">Trang chủ</a> &gt; <span style="color: var(--color-dark); font-weight: 600;">Giỏ hàng của bạn</span>
+    </div>
+  </div>
+
+  <!-- Cart Content -->
+  <main class="container">
+    <div id="cart-content-wrapper">
+      <div class="cart-layout">
+        <!-- Left: Cart Items -->
+        <div class="cart-items-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--color-gray-border);">
+            <h2 style="font-size: 18px; font-weight: 800; margin: 0;">Giỏ hàng (<span id="cart-items-count">0</span> sản phẩm)</h2>
+            <button onclick="clearAllCart()" style="font-size: 13px; color: var(--color-danger); text-decoration: underline;">Xóa tất cả</button>
+          </div>
+
+          <div id="cart-items-list">
+            <!-- Items rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Right: Order Summary & Coupon -->
+        <div class="summary-card">
+          <h3 class="summary-title">Tóm tắt đơn hàng</h3>
+          
+          <div class="summary-row">
+            <span>Tạm tính:</span>
+            <span id="summary-subtotal" style="font-weight: 600; color: var(--color-dark);">0₫</span>
+          </div>
+
+          <div class="summary-row" id="summary-discount-row" style="display: none; color: var(--color-success);">
+            <span>Mã giảm giá (<span id="summary-coupon-code"></span>):</span>
+            <span id="summary-discount">-0₫</span>
+          </div>
+
+          <div class="summary-row">
+            <span>Phí vận chuyển:</span>
+            <span style="color: var(--color-success); font-weight: 600;">Miễn phí toàn quốc</span>
+          </div>
+
+          <div class="summary-total-row">
+            <span>Tổng thanh toán:</span>
+            <span class="summary-total-price" id="summary-total">0₫</span>
+          </div>
+
+          <!-- Coupon Area -->
+          <div class="coupon-box">
+            <label class="form-label" style="font-size: 13px; font-weight: 600;">Mã giảm giá / Voucher:</label>
+            <div class="coupon-input-group">
+              <input type="text" id="coupon-code-input" class="form-control" placeholder="Nhập mã (TECH10, VIETQR50...)" style="text-transform: uppercase;">
+              <button class="btn btn-outline-primary btn-sm" id="btn-apply-coupon">Áp dụng</button>
+            </div>
+            <div id="coupon-feedback" style="font-size: 12px; margin-top: 6px;"></div>
+          </div>
+
+          <!-- Checkout Button -->
+          <button class="btn btn-primary btn-block btn-lg" style="margin-top: 24px; font-weight: 800;" id="btn-to-checkout">
+            ⚡ TIẾN HÀNH ĐẶT HÀNG
+          </button>
+          
+          <div style="text-align: center; margin-top: 12px;">
+            <a href="/pages/products.html" style="font-size: 13px; color: var(--color-primary);">&lt; Tiếp tục mua sắm</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="cart-empty-state" style="display: none; text-align: center; padding: 80px 20px; background: white; border-radius: 16px; border: 1px solid #e2e8f0; margin-top: 24px;">
+      <div style="font-size: 64px; margin-bottom: 16px;">🛒</div>
+      <h3 style="font-size: 20px; font-weight: 800; color: #1e293b; margin-bottom: 8px;">Giỏ hàng của bạn đang trống</h3>
+      <p style="font-size: 14px; color: #64748b; margin-bottom: 24px;">Hãy khám phá các thiết bị công nghệ hấp dẫn tại TechStore và lấp đầy giỏ hàng nhé!</p>
+      <a href="/pages/products.html" class="btn btn-primary btn-lg">Khám phá sản phẩm ngay</a>
+    </div>
+
+    <!-- Recommendations (recommend.js) -->
+    <div id="cart-recommendations-container" style="margin-top: 48px;"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-bottom">
+      © 2026 TechStore Vietnam. Hệ thống tiêu thụ REST API chuẩn theo đề tài (Tuấn Kiệt phụ trách Front-end).
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/recommend.js"></script>
+  <script>
+    let appliedCoupon = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCart();
+      RecommendComponent.renderForYou('cart-recommendations-container', 'Có thể bạn cũng thích');
+
+      document.getElementById('btn-apply-coupon').addEventListener('click', applyCoupon);
+      document.getElementById('btn-to-checkout').addEventListener('click', () => {
+        const cart = api.getCart();
+        if (!cart.items || cart.items.length === 0) {
+          showToast('Giỏ hàng đang trống!', 'warning');
+          return;
+        }
+        if (appliedCoupon) {
+          sessionStorage.setItem('applied_coupon', JSON.stringify(appliedCoupon));
+        }
+        window.location.href = '/pages/checkout.html';
+      });
+    });
+
+    function renderCart() {
+      const cart = api.getCart();
+      const items = cart.items || [];
+      const wrapper = document.getElementById('cart-content-wrapper');
+      const emptyState = document.getElementById('cart-empty-state');
+      const countEl = document.getElementById('cart-items-count');
+
+      countEl.textContent = items.reduce((sum, i) => sum + i.quantity, 0);
+
+      if (items.length === 0) {
+        wrapper.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      wrapper.style.display = 'block';
+      emptyState.style.display = 'none';
+
+      // Render Item rows
+      const listContainer = document.getElementById('cart-items-list');
+      listContainer.innerHTML = items.map(item => `
+        <div class="cart-item-row">
+          <img src="${item.image}" class="cart-item-img" alt="${item.name}">
+          <div class="cart-item-info">
+            <a href="/pages/product-detail.html?id=${item.product_id}" class="cart-item-name">${item.name}</a>
+            <div class="cart-item-variant">Phân loại: ${item.variant || 'Mặc định'}</div>
+            <div class="cart-item-price">${formatVND(item.price)}</div>
+          </div>
+          <div class="qty-stepper">
+            <button class="qty-btn" onclick="updateItemQuantity(${item.id}, ${item.quantity - 1})">-</button>
+            <input type="text" class="qty-input" value="${item.quantity}" readonly>
+            <button class="qty-btn" onclick="updateItemQuantity(${item.id}, ${item.quantity + 1})">+</button>
+          </div>
+          <div style="font-size: 14px; font-weight: 800; min-width: 110px; text-align: right; color: var(--color-dark);">
+            ${formatVND(item.price * item.quantity)}
+          </div>
+          <button class="cart-item-remove" onclick="removeCartItem(${item.id})" title="Xóa khỏi giỏ">✕</button>
+        </div>
+      `).join('');
+
+      // Update Summary Realtime
+      updateSummary(cart.total);
+    }
+
+    function updateSummary(subtotal) {
+      document.getElementById('summary-subtotal').textContent = formatVND(subtotal);
+
+      let discount = 0;
+      if (appliedCoupon) {
+        discount = appliedCoupon.discount_amount;
+        document.getElementById('summary-discount-row').style.display = 'flex';
+        document.getElementById('summary-coupon-code').textContent = appliedCoupon.code;
+        document.getElementById('summary-discount').textContent = `-${formatVND(discount)}`;
+      } else {
+        document.getElementById('summary-discount-row').style.display = 'none';
+      }
+
+      const finalTotal = Math.max(0, subtotal - discount);
+      document.getElementById('summary-total').textContent = formatVND(finalTotal);
+    }
+
+    async function updateItemQuantity(itemId, newQty) {
+      if (newQty <= 0) {
+        removeCartItem(itemId);
+        return;
+      }
+      await api.cart.updateItem(itemId, newQty);
+      renderCart();
+    }
+
+    async function removeCartItem(itemId) {
+      await api.cart.removeItem(itemId);
+      showToast('Đã xóa sản phẩm khỏi giỏ hàng', 'info');
+      renderCart();
+    }
+
+    async function clearAllCart() {
+      if (confirm('Bạn có chắc chắn muốn xóa toàn bộ sản phẩm trong giỏ hàng?')) {
+        await api.cart.clear();
+        showToast('Đã xóa toàn bộ giỏ hàng', 'info');
+        renderCart();
+      }
+    }
+
+    async function applyCoupon() {
+      const codeInput = document.getElementById('coupon-code-input');
+      const code = codeInput.value.trim().toUpperCase();
+      const feedbackEl = document.getElementById('coupon-feedback');
+
+      if (!code) {
+        feedbackEl.style.color = '#ef4444';
+        feedbackEl.textContent = 'Vui lòng nhập mã giảm giá';
+        return;
+      }
+
+      const cart = api.getCart();
+      const res = await api.coupons.validate(code, cart.total);
+
+      if (res.success) {
+        appliedCoupon = res.data;
+        feedbackEl.style.color = '#10b981';
+        feedbackEl.textContent = `✓ ${res.message}: Giảm ${formatVND(appliedCoupon.discount_amount)}`;
+        updateSummary(cart.total);
+      } else {
+        appliedCoupon = null;
+        feedbackEl.style.color = '#ef4444';
+        feedbackEl.textContent = `✕ ${res.message}`;
+        updateSummary(cart.total);
+      }
+    }
+  </script>
+</body>
+</html>

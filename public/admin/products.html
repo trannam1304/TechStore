@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Sản Phẩm - TechStore Admin</title>
+  <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sidebar-brand">
+        TechStore <span>ADMIN</span>
+      </div>
+
+      <div class="sidebar-menu">
+        <div class="menu-label">Tổng Quan</div>
+        <a href="/admin/index.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          Dashboard
+        </a>
+
+        <div class="menu-label">Quản Lý Bán Hàng</div>
+        <a href="/admin/products.html" class="sidebar-link active">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+          Sản phẩm
+        </a>
+        <a href="/admin/orders.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+          Đơn hàng & VietQR
+        </a>
+        <a href="/admin/coupons.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+          Mã giảm giá
+        </a>
+
+        <div class="menu-label">Hệ Thống</div>
+        <a href="/admin/users.html" class="sidebar-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          Người dùng
+        </a>
+        <a href="/pages/index.html" class="sidebar-link" style="color: #38bdf8;">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+          Xem Website Khách
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <button class="btn-sidebar-toggle" onclick="toggleSidebar()">☰</button>
+          <div style="font-weight: 700; font-size: 16px;">Quản Lý Sản Phẩm</div>
+        </div>
+        <div class="topbar-right">
+          <button class="btn btn-primary btn-sm" onclick="openAddModal()">
+            + Thêm sản phẩm mới
+          </button>
+        </div>
+      </header>
+
+      <main class="admin-content-area">
+        <!-- Filter Toolbar -->
+        <div class="filter-toolbar">
+          <div class="search-box" style="border: 1px solid var(--color-gray-border); max-width: 300px;">
+            <input type="text" id="admin-search-input" class="search-input" placeholder="Tìm kiếm tên sản phẩm...">
+          </div>
+          
+          <select id="admin-cat-filter" class="form-select" style="max-width: 200px;">
+            <option value="all">Tất cả danh mục</option>
+          </select>
+
+          <select id="admin-brand-filter" class="form-select" style="max-width: 200px;">
+            <option value="all">Tất cả hãng</option>
+          </select>
+
+          <button class="btn btn-outline btn-sm" onclick="loadProducts()">Làm mới</button>
+        </div>
+
+        <!-- Products Table -->
+        <div class="admin-card">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">ID</th>
+                  <th style="width: 70px;">Ảnh</th>
+                  <th>Tên sản phẩm</th>
+                  <th>Danh mục</th>
+                  <th>Hãng</th>
+                  <th>Giá bán</th>
+                  <th>Tồn kho</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="products-tbody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Add / Edit Product -->
+  <div class="modal-backdrop" id="product-modal">
+    <div class="modal-dialog" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Thêm Sản Phẩm Mới</h3>
+        <button class="modal-close" onclick="closeProductModal()">✕</button>
+      </div>
+
+      <form id="product-form">
+        <div class="modal-body">
+          <input type="hidden" id="prod-id">
+
+          <div class="form-group">
+            <label class="form-label">Tên sản phẩm *</label>
+            <input type="text" id="prod-name" class="form-control" required placeholder="iPhone 16 Pro Max 256GB">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Danh mục *</label>
+              <select id="prod-category" class="form-select" required></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Thương hiệu *</label>
+              <select id="prod-brand" class="form-select" required></select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Giá bán (VNĐ) *</label>
+              <input type="number" id="prod-price" class="form-control" required min="10000" step="10000" placeholder="34990000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Giá gốc niêm yết (VNĐ)</label>
+              <input type="number" id="prod-orig-price" class="form-control" placeholder="37990000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tồn kho *</label>
+              <input type="number" id="prod-stock" class="form-control" required min="0" value="10">
+            </div>
+          </div>
+
+          <!-- Specs -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">RAM</label>
+              <input type="text" id="prod-ram" class="form-control" placeholder="8GB">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bộ nhớ trong (ROM)</label>
+              <input type="text" id="prod-rom" class="form-control" placeholder="256GB">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Chipset</label>
+              <input type="text" id="prod-chipset" class="form-control" placeholder="Apple A18 Pro">
+            </div>
+          </div>
+
+          <!-- Image URL & File Upload with Live Preview -->
+          <div class="form-group">
+            <label class="form-label">Ảnh sản phẩm (URL hoặc tải lên) *</label>
+            <input type="url" id="prod-image-url" class="form-control" placeholder="https://..." oninput="previewImage(this.value)">
+            <div style="margin-top: 8px;">
+              <input type="file" id="prod-image-file" accept="image/*" onchange="handleFileUpload(event)">
+            </div>
+            
+            <div style="margin-top: 10px; display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 12px; color: var(--color-gray);">Xem trước ảnh:</span>
+              <img id="img-preview" src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=200&auto=format&fit=crop&q=80" style="width: 60px; height: 60px; object-fit: contain; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px;" alt="Preview">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Mô tả sản phẩm</label>
+            <textarea id="prod-desc" class="form-control" rows="3" placeholder="Nhập mô tả tóm tắt..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeProductModal()">Hủy</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-prod">Lưu sản phẩm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/assets/js/api.js"></script>
+  <script>
+    let productsList = [];
+    let categoriesList = [];
+    let brandsList = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!api.isAdmin()) {
+        showToast('Vui lòng đăng nhập quyền Admin!', 'danger');
+        setTimeout(() => window.location.href = '/pages/login.html', 800);
+        return;
+      }
+
+      // Fetch categories & brands for dropdowns
+      const [cRes, bRes] = await Promise.all([
+        api.categories.getAll(),
+        api.brands.getAll()
+      ]);
+      categoriesList = cRes.data || [];
+      brandsList = bRes.data || [];
+      populateDropdowns();
+
+      loadProducts();
+
+      // Check if URL has ?action=new
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('action') === 'new') {
+        openAddModal();
+      }
+
+      // Filter events
+      document.getElementById('admin-search-input').addEventListener('input', debounce(filterTable, 300));
+      document.getElementById('admin-cat-filter').addEventListener('change', filterTable);
+      document.getElementById('admin-brand-filter').addEventListener('change', filterTable);
+      document.getElementById('product-form').addEventListener('submit', handleSaveProduct);
+    });
+
+    function toggleSidebar() {
+      document.getElementById('admin-sidebar').classList.toggle('open');
+    }
+
+    function populateDropdowns() {
+      const catSelect = document.getElementById('prod-category');
+      const catFilter = document.getElementById('admin-cat-filter');
+      catSelect.innerHTML = categoriesList.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      categoriesList.forEach(c => {
+        catFilter.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+      });
+
+      const brandSelect = document.getElementById('prod-brand');
+      const brandFilter = document.getElementById('admin-brand-filter');
+      brandSelect.innerHTML = brandsList.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
+      brandsList.forEach(b => {
+        brandFilter.innerHTML += `<option value="${b.id}">${b.name}</option>`;
+      });
+    }
+
+    async function loadProducts() {
+      const res = await api.products.getAll();
+      productsList = Array.isArray(res.data) ? res.data : (res.data?.items || []);
+      renderProductsTable(productsList);
+    }
+
+    function renderProductsTable(items) {
+      const tbody = document.getElementById('products-tbody');
+      if (items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #94a3b8; padding: 30px;">Không có sản phẩm nào</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = items.map(p => `
+        <tr>
+          <td><strong>#${p.id}</strong></td>
+          <td><img src="${p.image}" style="width: 44px; height: 44px; object-fit: contain; border-radius: 4px; background: #f8fafc; padding: 2px;" alt="${p.name}"></td>
+          <td>
+            <div style="font-weight: 700; color: #1e293b;">${p.name}</div>
+            <div style="font-size: 11px; color: #64748b;">${p.ram || ''} ${p.rom ? '• ' + p.rom : ''}</div>
+          </td>
+          <td>${p.category_name || 'Công nghệ'}</td>
+          <td><strong>${p.brand_name || 'TechStore'}</strong></td>
+          <td style="font-weight: 700; color: var(--color-primary);">${formatVND(p.price)}</td>
+          <td>
+            <span class="status-pill ${p.stock < 10 ? 'status-pending' : 'status-completed'}">
+              ${p.stock} cái
+            </span>
+          </td>
+          <td>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn btn-outline btn-sm" onclick="openEditModal(${p.id})">✏️ Sửa</button>
+              <button class="btn btn-outline btn-sm" onclick="deleteProduct(${p.id})" style="color: var(--color-danger);">🗑️ Xóa</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterTable() {
+      const search = document.getElementById('admin-search-input').value.toLowerCase().trim();
+      const cat = document.getElementById('admin-cat-filter').value;
+      const brand = document.getElementById('admin-brand-filter').value;
+
+      const filtered = productsList.filter(p => {
+        if (search && !p.name.toLowerCase().includes(search)) return false;
+        if (cat !== 'all' && p.category_id != cat) return false;
+        if (brand !== 'all' && p.brand_id != brand) return false;
+        return true;
+      });
+      renderProductsTable(filtered);
+    }
+
+    function openAddModal() {
+      document.getElementById('modal-title').textContent = 'Thêm Sản Phẩm Mới';
+      document.getElementById('product-form').reset();
+      document.getElementById('prod-id').value = '';
+      document.getElementById('img-preview').src = 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=200&auto=format&fit=crop&q=80';
+      document.getElementById('product-modal').classList.add('active');
+    }
+
+    function openEditModal(id) {
+      const p = productsList.find(item => item.id === id);
+      if (!p) return;
+
+      document.getElementById('modal-title').textContent = 'Chỉnh Sửa Sản Phẩm #' + p.id;
+      document.getElementById('prod-id').value = p.id;
+      document.getElementById('prod-name').value = p.name;
+      document.getElementById('prod-category').value = p.category_id;
+      document.getElementById('prod-brand').value = p.brand_id;
+      document.getElementById('prod-price').value = p.price;
+      document.getElementById('prod-orig-price').value = p.original_price || p.price;
+      document.getElementById('prod-stock').value = p.stock;
+      document.getElementById('prod-ram').value = p.ram || '';
+      document.getElementById('prod-rom').value = p.rom || '';
+      document.getElementById('prod-chipset').value = p.chipset || '';
+      document.getElementById('prod-image-url').value = p.image;
+      document.getElementById('prod-desc').value = p.description || '';
+      document.getElementById('img-preview').src = p.image;
+
+      document.getElementById('product-modal').classList.add('active');
+    }
+
+    function closeProductModal() {
+      document.getElementById('product-modal').classList.remove('active');
+    }
+
+    function previewImage(url) {
+      if (url) document.getElementById('img-preview').src = url;
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById('img-preview').src = e.target.result;
+          document.getElementById('prod-image-url').value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    async function handleSaveProduct(e) {
+      e.preventDefault();
+      const id = document.getElementById('prod-id').value;
+      const data = {
+        name: document.getElementById('prod-name').value.trim(),
+        category_id: parseInt(document.getElementById('prod-category').value, 10),
+        brand_id: parseInt(document.getElementById('prod-brand').value, 10),
+        price: parseInt(document.getElementById('prod-price').value, 10),
+        original_price: parseInt(document.getElementById('prod-orig-price').value, 10) || parseInt(document.getElementById('prod-price').value, 10),
+        stock: parseInt(document.getElementById('prod-stock').value, 10),
+        ram: document.getElementById('prod-ram').value.trim(),
+        rom: document.getElementById('prod-rom').value.trim(),
+        chipset: document.getElementById('prod-chipset').value.trim(),
+        image: document.getElementById('prod-image-url').value || document.getElementById('img-preview').src,
+        description: document.getElementById('prod-desc').value.trim()
+      };
+
+      if (id) {
+        // Edit PUT /products/{id}
+        await api.products.update(parseInt(id, 10), data);
+        showToast('Cập nhật sản phẩm thành công!', 'success');
+      } else {
+        // Create POST /products
+        await api.products.create(data);
+        showToast('Thêm mới sản phẩm thành công!', 'success');
+      }
+
+      closeProductModal();
+      loadProducts();
+    }
+
+    async function deleteProduct(id) {
+      if (confirm(`Bạn có chắc chắn muốn xóa sản phẩm #${id} không?`)) {
+        await api.products.delete(id);
+        showToast(`Đã xóa sản phẩm #${id}`, 'info');
+        loadProducts();
+      }
+    }
+  </script>
+</body>
+</html>

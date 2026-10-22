@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tài Khoản Của Tôi - TechStore</title>
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <style>
+    .account-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: var(--space-8);
+      margin-top: var(--space-6);
+    }
+    @media (max-width: 900px) {
+      .account-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Account Sidebar */
+    .account-nav-card {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-gray-border);
+      padding: var(--space-4);
+      height: fit-content;
+      box-shadow: var(--shadow-sm);
+    }
+    .account-user-brief {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding-bottom: var(--space-4);
+      margin-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-gray-border);
+    }
+    .user-avatar-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+    }
+    .account-nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+    .account-nav-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-gray-dark);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .account-nav-item:hover, .account-nav-item.active {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      font-weight: var(--font-weight-bold);
+    }
+
+    /* Account Content Pane */
+    .account-pane {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-gray-border);
+      padding: var(--space-6);
+      box-shadow: var(--shadow-sm);
+    }
+    .pane-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-gray-border);
+    }
+
+    /* Order Card Item */
+    .order-history-card {
+      border: 1px solid var(--color-gray-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      margin-bottom: var(--space-4);
+      transition: box-shadow var(--transition-fast);
+    }
+    .order-history-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .order-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      font-size: var(--font-size-sm);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="container">
+      <div>TechStore - Quản lý tài khoản & lịch sử đơn hàng</div>
+      <div class="topbar-links">
+        <a href="tel:18006018">Hotline: 1800.6018</a>
+        <a href="/admin/index.html" id="topbar-admin-link" style="color: var(--color-primary); font-weight: 600; display: none;">Trang Quản Trị</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header-main">
+    <div class="container header-container">
+      <a href="/pages/index.html" class="logo">TechStore <span class="logo-badge">REST</span></a>
+
+      <div class="header-search">
+        <form id="global-search-form" class="search-box">
+          <input type="text" id="global-search-input" class="search-input" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
+          <button type="submit" class="search-btn" aria-label="Tìm kiếm">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </button>
+        </form>
+        <div id="search-suggestions" class="search-suggestions"></div>
+      </div>
+
+      <div class="header-actions">
+        <a href="/pages/cart.html" class="header-action-btn">
+          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          <span>Giỏ hàng</span>
+          <span class="badge-pill cart-badge" style="display: none;">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <div class="account-layout">
+      <!-- Left Sidebar Nav -->
+      <aside class="account-nav-card">
+        <div class="account-user-brief">
+          <div class="user-avatar-circle" id="user-avatar-letter">K</div>
+          <div>
+            <div style="font-weight: 800; font-size: 15px;" id="account-name-brief">Đang tải...</div>
+            <div style="font-size: 12px; color: var(--color-primary); font-weight: 600;" id="account-role-brief">Khách hàng</div>
+          </div>
+        </div>
+
+        <nav class="account-nav-list">
+          <div class="account-nav-item active" onclick="switchAccountTab('profile', this)">
+            👤 Thông tin tài khoản
+          </div>
+          <div class="account-nav-item" id="nav-tab-orders" onclick="switchAccountTab('orders', this)">
+            📦 Lịch sử đơn hàng
+          </div>
+          <div class="account-nav-item" id="nav-tab-wishlist" onclick="switchAccountTab('wishlist', this)">
+            ❤️ Sản phẩm yêu thích
+          </div>
+          <div class="account-nav-item" onclick="switchAccountTab('password', this)">
+            🔒 Đổi mật khẩu
+          </div>
+          <div class="account-nav-item" style="color: var(--color-danger); margin-top: 12px; border-top: 1px solid #f1f5f9;" onclick="handleLogout()">
+            🚪 Đăng xuất
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Right Tab Panes -->
+      <section>
+        <!-- Tab 1: Profile -->
+        <div id="tab-profile" class="account-pane">
+          <h3 class="pane-title">Thông tin hồ sơ cá nhân</h3>
+          <form id="profile-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Họ và tên</label>
+                <input type="text" id="prof-name" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Số điện thoại</label>
+                <input type="tel" id="prof-phone" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Địa chỉ Email</label>
+              <input type="email" id="prof-email" class="form-control" readonly style="background: #f8fafc; cursor: not-allowed;">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Địa chỉ giao hàng mặc định</label>
+              <input type="text" id="prof-address" class="form-control" placeholder="227 Nguyễn Văn Cừ, Quận 5, TP.HCM">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+          </form>
+        </div>
+
+        <!-- Tab 2: Orders History -->
+        <div id="tab-orders" class="account-pane" style="display: none;">
+          <h3 class="pane-title">Đơn hàng của tôi</h3>
+          <div id="orders-list-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Tab 3: Wishlist -->
+        <div id="tab-wishlist" class="account-pane" style="display: none;">
+          <h3 class="pane-title">Danh sách sản phẩm yêu thích</h3>
+          <div class="product-grid" id="wishlist-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Tab 4: Password -->
+        <div id="tab-password" class="account-pane" style="display: none;">
+          <h3 class="pane-title">Đổi mật khẩu tài khoản</h3>
+          <form id="password-form" style="max-width: 400px;">
+            <div class="form-group">
+              <label class="form-label">Mật khẩu hiện tại</label>
+              <input type="password" class="form-control" required placeholder="••••••••">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mật khẩu mới</label>
+              <input type="password" class="form-control" required minlength="6" placeholder="Tối thiểu 6 ký tự">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nhập lại mật khẩu mới</label>
+              <input type="password" class="form-control" required minlength="6" placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn btn-primary">Cập nhật mật khẩu</button>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="/assets/js/api.js"></script>
+  <script>
+    let currentUser = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Auth Guard
+      if (!api.isLoggedIn()) {
+        showToast('Vui lòng đăng nhập để xem thông tin tài khoản', 'warning');
+        setTimeout(() => window.location.href = '/pages/login.html', 500);
+        return;
+      }
+
+      currentUser = api.getCurrentUser();
+      renderUserProfile(currentUser);
+
+      // Show admin link if admin
+      if (api.isAdmin()) {
+        const adm = document.getElementById('topbar-admin-link');
+        if (adm) adm.style.display = 'inline';
+      }
+
+      // Check URL hash for tab navigation (#orders, #wishlist)
+      if (window.location.hash === '#orders') {
+        const t = document.getElementById('nav-tab-orders');
+        if (t) switchAccountTab('orders', t);
+      } else if (window.location.hash === '#wishlist') {
+        const t = document.getElementById('nav-tab-wishlist');
+        if (t) switchAccountTab('wishlist', t);
+      }
+
+      loadOrders();
+      loadWishlist();
+
+      // Form handlers
+      document.getElementById('profile-form').addEventListener('submit', handleUpdateProfile);
+      document.getElementById('password-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        showToast('Đổi mật khẩu thành công!', 'success');
+        document.getElementById('password-form').reset();
+      });
+    });
+
+    function renderUserProfile(u) {
+      if (!u) return;
+      document.getElementById('account-name-brief').textContent = u.name || 'Khách hàng';
+      document.getElementById('user-avatar-letter').textContent = (u.name || 'K').charAt(0).toUpperCase();
+      document.getElementById('account-role-brief').textContent = u.role === 'admin' ? 'Quản trị viên' : 'Khách hàng thân thiết';
+
+      document.getElementById('prof-name').value = u.name || '';
+      document.getElementById('prof-phone').value = u.phone || '';
+      document.getElementById('prof-email').value = u.email || '';
+      document.getElementById('prof-address').value = u.address || '';
+    }
+
+    function switchAccountTab(tabName, navItem) {
+      document.querySelectorAll('.account-nav-item').forEach(el => el.classList.remove('active'));
+      navItem.classList.add('active');
+
+      document.getElementById('tab-profile').style.display = tabName === 'profile' ? 'block' : 'none';
+      document.getElementById('tab-orders').style.display = tabName === 'orders' ? 'block' : 'none';
+      document.getElementById('tab-wishlist').style.display = tabName === 'wishlist' ? 'block' : 'none';
+      document.getElementById('tab-password').style.display = tabName === 'password' ? 'block' : 'none';
+    }
+
+    async function loadOrders() {
+      const res = await api.orders.getAll();
+      const orders = res.data || [];
+      const container = document.getElementById('orders-list-container');
+
+      if (orders.length === 0) {
+        container.innerHTML = '<div style="text-align: center; color: #64748b; padding: 40px 0;">Bạn chưa có đơn hàng nào.</div>';
+        return;
+      }
+
+      container.innerHTML = orders.map(ord => {
+        let statusBadge = '<span class="status-pill status-pending">Chờ xử lý</span>';
+        if (ord.status === 'confirmed' || ord.payment_status === 'paid') statusBadge = '<span class="status-pill status-paid">Đã thanh toán / Đã xác nhận</span>';
+        if (ord.status === 'shipping') statusBadge = '<span class="status-pill status-shipping">Đang giao hàng</span>';
+        if (ord.status === 'completed') statusBadge = '<span class="status-pill status-completed">Giao thành công</span>';
+        if (ord.status === 'cancelled') statusBadge = '<span class="status-pill status-cancelled">Đã hủy</span>';
+
+        return `
+          <div class="order-history-card">
+            <div class="order-card-header">
+              <div>
+                <strong>Mã đơn: #${ord.order_code || ord.id}</strong>
+                <span style="color: #64748b; margin-left: 8px;">Ngày: ${new Date(ord.created_at).toLocaleDateString('vi-VN')}</span>
+              </div>
+              <div>${statusBadge}</div>
+            </div>
+
+            <div style="font-size: 13px; color: #475569; margin-bottom: 8px;">
+              📍 Giao đến: ${ord.shipping_address || 'Địa chỉ của bạn'}
+            </div>
+
+            <div style="font-size: 13px; margin-bottom: 8px;">
+              Hình thức: <strong>${ord.payment_method === 'vietqr' ? '🏦 Chuyển khoản VietQR' : '💵 Tiền mặt COD'}</strong>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #e2e8f0; padding-top: 10px; margin-top: 10px;">
+              <div style="font-size: 15px; font-weight: 800; color: var(--color-primary);">
+                Tổng tiền: ${formatVND(ord.total_amount)}
+              </div>
+
+              <div style="display: flex; gap: 8px;">
+                ${ord.payment_method === 'vietqr' && ord.payment_status !== 'paid' && ord.status !== 'cancelled' ? `
+                  <a href="/pages/payment-qr.html?orderId=${ord.id}" class="btn btn-primary btn-sm">
+                    🏦 Thanh toán QR ngay
+                  </a>
+                ` : ''}
+
+                ${ord.status === 'pending' ? `
+                  <button class="btn btn-outline btn-sm" onclick="cancelOrder(${ord.id})" style="color: var(--color-danger);">
+                    Hủy đơn
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function cancelOrder(orderId) {
+      if (confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')) {
+        const res = await api.orders.cancel(orderId);
+        showToast(res.message || 'Đã hủy đơn hàng', 'info');
+        loadOrders();
+      }
+    }
+
+    async function loadWishlist() {
+      const res = await api.wishlist.get();
+      const wishlistItems = res.data || [];
+      const container = document.getElementById('wishlist-grid');
+
+      if (wishlistItems.length === 0) {
+        container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 40px 0;">Danh sách yêu thích trống. Hãy nhấn ❤️ ở các sản phẩm bạn thích!</div>';
+        return;
+      }
+
+      container.innerHTML = wishlistItems.map(p => `
+        <div class="product-card">
+          <button class="btn-wishlist active" onclick="removeFromWishlist(${p.id})" title="Bỏ yêu thích" style="color: #d70018;">❤️</button>
+          <a href="/pages/product-detail.html?id=${p.id}" class="product-thumb-wrap">
+            <img src="${p.image}" class="product-thumb" alt="${p.name}">
+          </a>
+          <a href="/pages/product-detail.html?id=${p.id}">
+            <h4 class="product-title">${p.name}</h4>
+          </a>
+          <div class="product-price-row">
+            <span class="price-current">${formatVND(p.price)}</span>
+          </div>
+          <button class="btn btn-primary btn-sm btn-block" onclick="quickAddToCart(${p.id})">
+            🛒 Thêm giỏ
+          </button>
+        </div>
+      `).join('');
+    }
+
+    async function removeFromWishlist(productId) {
+      await api.wishlist.remove(productId);
+      showToast('Đã xóa khỏi danh sách yêu thích', 'info');
+      loadWishlist();
+    }
+
+    function handleUpdateProfile(e) {
+      e.preventDefault();
+      currentUser.name = document.getElementById('prof-name').value.trim();
+      currentUser.phone = document.getElementById('prof-phone').value.trim();
+      currentUser.address = document.getElementById('prof-address').value.trim();
+      localStorage.setItem('techstore_user', JSON.stringify(currentUser));
+      renderUserProfile(currentUser);
+      showToast('Cập nhật thông tin thành công!', 'success');
+    }
+
+    function handleLogout() {
+      api.auth.logout();
+      showToast('Đã đăng xuất', 'info');
+      setTimeout(() => window.location.href = '/pages/login.html', 500);
+    }
+  </script>
+</body>
+</html>
