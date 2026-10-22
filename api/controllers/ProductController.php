@@ -9,12 +9,14 @@
 
 namespace Api\Controllers;
 
+require_once __DIR__ . '/BaseController.php';
+
 use Api\Helpers\Response;
 use Api\Helpers\DataStore;
 use PDO;
 use Exception;
 
-class ProductController {
+class ProductController extends BaseController {
     /**
      * T13: GET /api/v1/products
      * Danh sách sản phẩm với bộ lọc đa tiêu chí, tìm kiếm, sắp xếp và phân trang
@@ -280,5 +282,77 @@ class ProductController {
 
         $data = DataStore::getJsonData();
         Response::success($data['brands'] ?? [], 200);
+    }
+
+    /**
+     * POST /api/v1/products (Admin)
+     * Thêm sản phẩm mới
+     */
+    public static function create(array $body): void {
+        $db = self::getDb();
+        $newId = count($db['products']) ? max(array_column($db['products'], 'id')) + 1 : 1;
+        $newProduct = [
+            'id' => $newId,
+            'name' => $body['name'] ?? 'Sản phẩm mới',
+            'category_id' => (int)($body['category_id'] ?? 1),
+            'category_name' => $body['category_name'] ?? 'Điện thoại',
+            'brand_id' => (int)($body['brand_id'] ?? 1),
+            'brand_name' => $body['brand_name'] ?? 'Apple',
+            'price' => (int)($body['price'] ?? 1000000),
+            'original_price' => (int)($body['original_price'] ?? $body['price'] ?? 1200000),
+            'stock' => (int)($body['stock'] ?? 10),
+            'rating' => 5.0,
+            'review_count' => 0,
+            'image' => $body['image'] ?? 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80',
+            'images' => $body['images'] ?? [$body['image'] ?? 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80'],
+            'ram' => $body['ram'] ?? '8GB',
+            'rom' => $body['rom'] ?? '128GB',
+            'chipset' => $body['chipset'] ?? '',
+            'screen' => $body['screen'] ?? '',
+            'battery' => $body['battery'] ?? '',
+            'camera' => $body['camera'] ?? '',
+            'description' => $body['description'] ?? '',
+            'featured' => !empty($body['featured']),
+            'created_at' => date('Y-m-d')
+        ];
+        $db['products'][] = $newProduct;
+        self::saveDb($db);
+        Response::success($newProduct, 201, 'Tạo sản phẩm thành công');
+    }
+
+    /**
+     * PUT/PATCH /api/v1/products/{id} (Admin)
+     * Cập nhật sản phẩm
+     */
+    public static function update(int $id, array $body): void {
+        $db = self::getDb();
+        $idx = -1;
+        foreach ($db['products'] as $i => $p) {
+            if ($p['id'] === $id) {
+                $idx = $i;
+                break;
+            }
+        }
+        if ($idx === -1) {
+            Response::error('Không tìm thấy sản phẩm', 'NOT_FOUND', 404);
+        }
+        foreach ($body as $k => $v) {
+            if ($k !== 'id') {
+                $db['products'][$idx][$k] = $v;
+            }
+        }
+        self::saveDb($db);
+        Response::success($db['products'][$idx], 200, 'Cập nhật sản phẩm thành công');
+    }
+
+    /**
+     * DELETE /api/v1/products/{id} (Admin)
+     * Xóa sản phẩm
+     */
+    public static function destroy(int $id): void {
+        $db = self::getDb();
+        $db['products'] = array_values(array_filter($db['products'], fn($p) => $p['id'] !== $id));
+        self::saveDb($db);
+        Response::success(null, 204);
     }
 }

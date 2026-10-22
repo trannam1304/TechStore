@@ -4486,6 +4486,14 @@
             "expires_at": "2026-10-29 04:45:27",
             "revoked": 0,
             "created_at": "2026-10-22 05:45:27"
+        },
+        {
+            "id": 34,
+            "user_id": 12,
+            "token_hash": "4132f2f7f912bc38d2914ac831a2575f71b6965be00d93664ae47310c43021de",
+            "expires_at": "2026-10-29 05:46:58",
+            "revoked": 0,
+            "created_at": "2026-10-22 06:46:58"
         }
     ],
     "audit_logs": [

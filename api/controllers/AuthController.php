@@ -7,12 +7,14 @@
 
 namespace Api\Controllers;
 
+require_once __DIR__ . '/BaseController.php';
+
 use Api\Services\JwtService;
 use Api\Helpers\Response;
 use Api\Helpers\Validator;
 use Api\Helpers\DataStore;
 
-class AuthController {
+class AuthController extends BaseController {
     /**
      * POST /api/v1/auth/register
      * Đăng ký tài khoản khách hàng mới
