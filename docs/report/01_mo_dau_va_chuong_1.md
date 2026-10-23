@@ -135,36 +135,84 @@ Hệ thống TechStore được phân rã thành các nhóm chức năng chính 
 
 ## 1.4. Mô hình Use Case Tổng Thể (Use Case Specification)
 
+> [!NOTE]
+> Toàn bộ đặc tả chi tiết 34 yêu cầu chức năng (FR-01 đến FR-34), tiêu chí nghiệm thu (Acceptance Criteria), đặc tả kịch bản Use Case và Ma trận truy vết kiểm thử (RTM) được trình bày đầy đủ tại tài liệu chuẩn học thuật: [docs/SRS.md](../SRS.md).
+
+### 1.4.1. Sơ đồ Use Case phân hệ Khách hàng (Customer & Guest)
+```mermaid
+flowchart TD
+    subgraph CustomerBoundary [Phân hệ Khách hàng TechStore]
+        UC01([UC-01: Đăng ký & Đăng nhập JWT])
+        UC02([UC-02: Duyệt & Lọc sản phẩm đa tiêu chí])
+        UC03([UC-03: Tìm kiếm live search debounce])
+        UC04([UC-04: Xem chi tiết cấu hình & Gallery])
+        UC05([UC-05: Quản lý giỏ hàng & Tính tiền])
+        UC06([UC-06: Áp dụng mã giảm giá Coupon])
+        UC07([UC-07: Đặt hàng Checkout])
+        UC08([UC-08: Thanh toán VietQR & Polling])
+        UC09([UC-09: Quản lý hồ sơ & Lịch sử đơn])
+        UC10([UC-10: Hủy đơn hàng chờ duyệt])
+        UC11([UC-11: Đánh giá sản phẩm đã mua])
+        UC12([UC-12: Quản lý danh sách Wishlist])
+        UC13([UC-13: Xem gợi ý Combo & Tương tự])
+
+        UC07 -.->|<<include>>| UC05
+        UC07 -.->|<<extend>>| UC06
+        UC07 -.->|<<include>>| UC08
+        UC09 -.->|<<extend>>| UC10
+        UC04 -.->|<<include>>| UC13
+    end
+
+    GuestActor((Khách vãng lai)) --> UC01
+    GuestActor --> UC02
+    GuestActor --> UC03
+    GuestActor --> UC04
+    GuestActor --> UC05
+
+    CustomerActor((Khách hàng)) --> UC01
+    CustomerActor --> UC02
+    CustomerActor --> UC04
+    CustomerActor --> UC05
+    CustomerActor --> UC07
+    CustomerActor --> UC09
+    CustomerActor --> UC11
+    CustomerActor --> UC12
+
+    BankActor((Ngân hàng VietQR)) --> UC08
 ```
-                    HỆ THỐNG TECHSTORE (RESTFUL API)
-+-------------------------------------------------------------------------+
-|                                                                         |
-|   [Khách hàng (Customer)]                                               |
-|      |                                                                  |
-|      +---> (Đăng ký / Đăng nhập / Refresh Token)                        |
-|      +---> (Xem & Tìm kiếm sản phẩm theo bộ lọc)                        |
-|      +---> (Xem chi tiết thông số & Sản phẩm gợi ý)                     |
-|      +---> (Quản lý giỏ hàng & Áp dụng coupon)                          |
-|      +---> (Đặt hàng & Thanh toán VietQR / COD)                         |
-|      +---> (Xem lịch sử đơn & Hủy đơn hàng)                             |
-|      +---> (Gửi đánh giá sao & Bình luận)                               |
-|      +---> (Thêm / Xóa danh sách yêu thích)                             |
-|                                                                         |
-|   [Quản trị viên (Admin)]                                               |
-|      |                                                                  |
-|      +---> (Đăng nhập quản trị - Role Admin)                            |
-|      +---> (Xem thống kê Dashboard & Doanh thu 7 ngày)                  |
-|      +---> (Quản lý CRUD Sản phẩm & Tồn kho)                            |
-|      +---> (Quản lý đơn hàng & Duyệt thanh toán)                        |
-|      +---> (In hóa đơn bán hàng)                                        |
-|      +---> (Quản lý tài khoản người dùng: Khóa/Mở/Đổi quyền)            |
-|      +---> (Quản lý mã giảm giá Coupon)                                 |
-|      +---> (Xem nhật ký kiểm toán Audit Logs)                           |
-|                                                                         |
-+-------------------------------------------------------------------------+
+
+### 1.4.2. Sơ đồ Use Case phân hệ Quản trị (Admin Portal)
+```mermaid
+flowchart TD
+    subgraph AdminBoundary [Phân hệ Quản trị Admin Portal]
+        UC_AD01([UC-AD01: Đăng nhập quản trị role admin])
+        UC_AD02([UC-AD02: Xem Dashboard & Biểu đồ doanh thu])
+        UC_AD03([UC-AD03: Quản lý CRUD Sản phẩm & Tồn kho])
+        UC_AD04([UC-AD04: Quản lý Danh mục & Thương hiệu])
+        UC_AD05([UC-AD05: Quản lý Đơn hàng & Lọc trạng thái])
+        UC_AD06([UC-AD06: Duyệt thanh toán & Đổi trạng thái đơn])
+        UC_AD07([UC-AD07: In hóa đơn bán lẻ])
+        UC_AD08([UC-AD08: Quản lý Users: Khóa / Phân quyền])
+        UC_AD09([UC-AD09: Quản lý Mã giảm giá Coupon])
+        UC_AD10([UC-AD10: Xem Nhật ký kiểm toán Audit Logs])
+
+        UC_AD05 -.->|<<extend>>| UC_AD06
+        UC_AD05 -.->|<<extend>>| UC_AD07
+    end
+
+    AdminActor((Quản trị viên)) --> UC_AD01
+    AdminActor --> UC_AD02
+    AdminActor --> UC_AD03
+    AdminActor --> UC_AD04
+    AdminActor --> UC_AD05
+    AdminActor --> UC_AD08
+    AdminActor --> UC_AD09
+    AdminActor --> UC_AD10
 ```
 
 *Mô tả chi tiết tác nhân:*
 - **Khách vãng lai (Guest):** Có quyền duyệt xem danh mục, tìm kiếm, lọc sản phẩm, xem chi tiết và thêm sản phẩm vào giỏ hàng cục bộ.
 - **Khách hàng đã đăng nhập (Customer):** Có đầy đủ quyền của Khách vãng lai, được phép tiến hành Checkout đặt hàng, thanh toán VietQR, theo dõi lịch sử đơn, hủy đơn chờ duyệt, đánh giá sản phẩm và lưu danh sách yêu thích.
 - **Quản trị viên (Admin):** Có toàn quyền truy cập phân hệ quản trị `/admin/`, kiểm soát toàn bộ vòng đời sản phẩm, duyệt đơn, cấu hình khuyến mãi và giám sát hoạt động hệ thống.
+- **Cổng thanh toán Ngân hàng (BankGateway):** Tác nhân ngoại vi cung cấp chuẩn dữ liệu VietQR NAPAS247 và phát tín hiệu Webhook xác nhận thanh toán tự động.
+

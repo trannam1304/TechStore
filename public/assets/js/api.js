@@ -1048,12 +1048,45 @@ class ApiClient {
   // HIGH LEVEL API METHODS (FULL 37 API CONTRACT)
   // ==========================================
   auth = {
-    login: (email, password) => this.request('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
-    register: (userData) => this.request('/auth/register', { method: 'POST', body: JSON.stringify(userData) }),
+    login: async (email, password) => {
+      const res = await this.request('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+      if (res && res.success && res.data) {
+        const { access_token, refresh_token, user } = res.data;
+        if (access_token || user) {
+          this.setAuthTokens(access_token, refresh_token, user);
+        }
+      }
+      return res;
+    },
+    register: async (userData) => {
+      const res = await this.request('/auth/register', { method: 'POST', body: JSON.stringify(userData) });
+      if (res && res.success && res.data) {
+        const { access_token, refresh_token, user } = res.data;
+        if (access_token || user) {
+          this.setAuthTokens(access_token, refresh_token, user);
+        }
+      }
+      return res;
+    },
     refresh: (refreshToken) => this.request('/auth/refresh', { method: 'POST', body: JSON.stringify({ refresh_token: refreshToken }) }),
-    logout: () => this.request('/auth/logout', { method: 'POST' }),
+    logout: async () => {
+      try {
+        await this.request('/auth/logout', { method: 'POST' });
+      } catch (e) {}
+      this.clearAuth();
+      return { success: true, message: 'Đã đăng xuất' };
+    },
     me: () => this.request('/auth/me', { method: 'GET' }),
-    google: (token) => this.request('/auth/google', { method: 'POST', body: JSON.stringify({ token }) })
+    google: async (token) => {
+      const res = await this.request('/auth/google', { method: 'POST', body: JSON.stringify({ token }) });
+      if (res && res.success && res.data) {
+        const { access_token, refresh_token, user } = res.data;
+        if (access_token || user) {
+          this.setAuthTokens(access_token, refresh_token, user);
+        }
+      }
+      return res;
+    }
   };
 
   products = {
@@ -1083,13 +1116,93 @@ class ApiClient {
   };
 
   cart = {
-    get: () => this.request('/cart', { method: 'GET' }),
-    addItem: (productId, quantity = 1, variant = '') => this.request('/cart/items', { method: 'POST', body: JSON.stringify({ product_id: productId, quantity, variant }) }),
-    updateItem: (itemId, quantity) => this.request(`/cart/items/${itemId}`, { method: 'PUT', body: JSON.stringify({ quantity }) }),
-    removeItem: (itemId) => this.request(`/cart/items/${itemId}`, { method: 'DELETE' }),
-    clear: () => {
+    get: async () => {
+      try {
+        const res = await this.request('/cart', { method: 'GET' });
+        if (res && res.success && res.data) {
+          const items = res.data.items || [];
+          const localCart = this.getCart();
+          if ((!localCart.items || localCart.items.length === 0) && items.length > 0) {
+            this.saveCart(res.data);
+          }
+        }
+        return res;
+      } catch (e) {
+        return { success: true, data: this.getCart() };
+      }
+    },
+    addItem: async (productId, quantity = 1, variant = '') => {
+      productId = parseInt(productId, 10);
+      quantity = Math.max(1, parseInt(quantity, 10) || 1);
+      
+      // 1. Luôn cập nhật localStorage ngay lập tức để Guest và Auth đều lưu tức thì
+      const cart = this.getCart();
+      const products = getStoredProducts();
+      let prod = products.find(p => p.id === productId);
+      if (!prod && window.allProducts) {
+        prod = window.allProducts.find(p => p.id === productId);
+      }
+      if (!prod) {
+        try {
+          const pRes = await this.products.getById(productId);
+          if (pRes && pRes.data) prod = pRes.data;
+        } catch (e) {}
+      }
+
+      if (prod) {
+        const targetVariant = variant || 'Mặc định';
+        const existing = cart.items.find(i => i.product_id === prod.id && (i.variant || 'Mặc định') === targetVariant);
+        if (existing) {
+          existing.quantity += quantity;
+        } else {
+          cart.items.push({
+            id: Date.now() + Math.floor(Math.random() * 100),
+            product_id: prod.id,
+            name: prod.name,
+            price: prod.price,
+            quantity: quantity,
+            variant: targetVariant,
+            image: prod.image
+          });
+        }
+        this.saveCart(cart);
+      }
+
+      // 2. Gửi request lên server backend PHP (nếu backend đang chạy)
+      try {
+        const res = await this.request('/cart/items', { method: 'POST', body: JSON.stringify({ product_id: productId, quantity, variant }) });
+        return res || { success: true, data: cart };
+      } catch (e) {
+        return { success: true, data: cart };
+      }
+    },
+    updateItem: async (itemId, quantity) => {
+      itemId = parseInt(itemId, 10);
+      quantity = Math.max(1, parseInt(quantity, 10) || 1);
+      const cart = this.getCart();
+      const item = cart.items.find(i => i.id === itemId || i.product_id === itemId);
+      if (item) {
+        item.quantity = quantity;
+        this.saveCart(cart);
+      }
+      try {
+        await this.request(`/cart/items/${itemId}`, { method: 'PUT', body: JSON.stringify({ quantity }) });
+      } catch (e) {}
+      return { success: true, data: cart };
+    },
+    removeItem: async (itemId) => {
+      itemId = parseInt(itemId, 10);
+      const cart = this.getCart();
+      cart.items = cart.items.filter(i => i.id !== itemId && i.product_id !== itemId);
+      this.saveCart(cart);
+      try {
+        await this.request(`/cart/items/${itemId}`, { method: 'DELETE' });
+      } catch (e) {}
+      return { success: true, message: 'Đã xóa', data: cart };
+    },
+    clear: async () => {
       this.clearCart();
-      return Promise.resolve({ success: true });
+      return { success: true };
     }
   };
 
@@ -1160,10 +1273,14 @@ const api = new ApiClient();
 // Global Quick Action Functions (available everywhere)
 window.quickAddToCart = async function(productId) {
   try {
+    productId = parseInt(productId, 10);
     await api.cart.addItem(productId, 1);
-    showToast('Đã thêm sản phẩm vào giỏ hàng!', 'success');
+    const cart = api.getCart();
+    const item = (cart.items || []).find(i => i.product_id === productId);
+    const name = item ? item.name : 'Sản phẩm';
+    showToast(`Đã thêm "${name}" vào giỏ hàng!`, 'success');
   } catch (err) {
-    showToast('Không thể thêm vào giỏ', 'danger');
+    showToast('Không thể thêm sản phẩm vào giỏ', 'danger');
   }
 };
 
