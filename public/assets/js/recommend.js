@@ -64,10 +64,10 @@ class RecommendComponent {
       const comboTotal = comboTotalOriginal - comboDiscount;
 
       container.innerHTML = `
-        <div class="bought-together-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-top: 32px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        <div class="bought-together-card" style="background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border: 1.5px solid rgba(255, 255, 255, 0.85); border-radius: var(--radius-xl); padding: 24px; margin-top: 32px; box-shadow: 0 16px 40px -10px rgba(215, 0, 24, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.9); position: relative; overflow: hidden;">
           <div style="font-size: 18px; font-weight: 800; color: #1e293b; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
             <span style="color: #d70018;">🛍️ Thường được mua cùng</span>
-            <span style="font-size: 12px; background: #fee2e2; color: #d70018; padding: 2px 8px; border-radius: 4px; font-weight: 700;">Tiết kiệm combo 8%</span>
+            <span style="font-size: 12px; background: linear-gradient(135deg, #fee2e2, #fce7f3); color: #d70018; padding: 3px 10px; border-radius: var(--radius-full); font-weight: 800; border: 1px solid rgba(215, 0, 24, 0.2);">Tiết kiệm combo 8%</span>
           </div>
 
           <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;">
@@ -90,7 +90,7 @@ class RecommendComponent {
             <div style="font-size: 24px; font-weight: 700; color: #94a3b8;">=</div>
 
             <!-- Combo Summary -->
-            <div style="flex: 1; min-width: 220px; padding-left: 16px; border-left: 1px dashed #e2e8f0;">
+            <div style="flex: 1; min-width: 220px; padding-left: 16px; border-left: 1px dashed rgba(226, 232, 240, 0.8);">
               <div style="font-size: 13px; color: #64748b;">Giá gốc cả bộ: <del>${formatVND(comboTotalOriginal)}</del></div>
               <div style="font-size: 20px; font-weight: 900; color: #d70018; margin: 4px 0;">${formatVND(comboTotal)}</div>
               <div style="font-size: 12px; color: #16a34a; font-weight: 600; margin-bottom: 12px;">Tiết kiệm được ${formatVND(comboDiscount)} khi mua combo!</div>
@@ -125,7 +125,7 @@ class RecommendComponent {
   }
 
   /**
-   * Generic Carousel Renderer
+   * Generic Carousel Renderer with Loop Wrap-around
    */
   static renderCarousel(container, title, products, uniqueId) {
     if (!products || !products.length) return;
@@ -140,9 +140,9 @@ class RecommendComponent {
           </div>
         </div>
 
-        <div id="${uniqueId}-track" style="display: flex; gap: 16px; overflow-x: auto; scroll-behavior: smooth; padding: 4px 2px 16px 2px; scrollbar-width: none;">
+        <div id="${uniqueId}-track" style="display: flex; gap: 16px; overflow-x: auto; scroll-behavior: smooth; padding: 8px 4px 20px 4px; scrollbar-width: none;">
           ${products.map(p => `
-            <div style="flex: 0 0 240px; width: 240px;">
+            <div style="flex: 0 0 250px; width: 250px;">
               <div class="product-card">
                 <div class="product-badges">
                   ${p.original_price > p.price ? `<span class="badge-discount">-${Math.round((1 - p.price/p.original_price)*100)}%</span>` : ''}
@@ -174,17 +174,25 @@ class RecommendComponent {
       </div>
     `;
 
-    // Wire Up Prev / Next Buttons
+    // Wire Up Prev / Next Buttons with Loop Wrap-around
     const track = container.querySelector(`#${uniqueId}-track`);
     const prevBtn = container.querySelector(`#${uniqueId}-prev`);
     const nextBtn = container.querySelector(`#${uniqueId}-next`);
 
     if (track && prevBtn && nextBtn) {
       prevBtn.addEventListener('click', () => {
-        track.scrollBy({ left: -260, behavior: 'smooth' });
+        if (track.scrollLeft <= 10) {
+          track.scrollTo({ left: track.scrollWidth, behavior: 'smooth' });
+        } else {
+          track.scrollBy({ left: -270, behavior: 'smooth' });
+        }
       });
       nextBtn.addEventListener('click', () => {
-        track.scrollBy({ left: 260, behavior: 'smooth' });
+        if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 20) {
+          track.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          track.scrollBy({ left: 270, behavior: 'smooth' });
+        }
       });
     }
   }

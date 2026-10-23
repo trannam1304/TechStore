@@ -9,118 +9,136 @@
     /* Hero Banner Grid */
     .hero-section {
       display: grid;
-      grid-template-columns: 2.2fr 1fr;
+      grid-template-columns: 2.3fr 1fr;
       gap: var(--space-4);
       margin-bottom: var(--space-6);
     }
-    @media (max-width: 900px) {
+    @media (max-width: 960px) {
       .hero-section {
         grid-template-columns: 1fr;
       }
     }
-    .hero-slider {
-      background: linear-gradient(135deg, #1e1b4b, #312e81);
-      border-radius: var(--radius-xl);
-      padding: var(--space-8);
-      color: var(--color-white);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      min-height: 320px;
-      box-shadow: var(--shadow-lg);
-    }
-    .hero-slider::after {
-      content: '';
-      position: absolute;
-      right: -40px;
-      bottom: -40px;
-      width: 260px;
-      height: 260px;
-      background: radial-gradient(circle, rgba(215, 0, 24, 0.4) 0%, transparent 70%);
-      border-radius: 50%;
-    }
+
     .hero-badge {
       display: inline-block;
-      background-color: var(--color-primary);
+      background: linear-gradient(135deg, #d70018, #ff007a);
       color: var(--color-white);
       font-size: var(--font-size-xs);
-      font-weight: var(--font-weight-bold);
-      padding: 4px 12px;
+      font-weight: var(--font-weight-black);
+      padding: 5px 14px;
       border-radius: var(--radius-full);
       margin-bottom: var(--space-3);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
       align-self: flex-start;
+      box-shadow: 0 4px 12px rgba(215, 0, 24, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
+
     .hero-title {
       font-size: var(--font-size-3xl);
       font-weight: var(--font-weight-black);
-      line-height: 1.2;
+      line-height: 1.15;
       margin-bottom: var(--space-2);
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
     }
+
     .hero-subtitle {
       font-size: var(--font-size-base);
-      color: #cbd5e1;
+      color: #e2e8f0;
       margin-bottom: var(--space-6);
-      max-width: 480px;
+      max-width: 520px;
+      line-height: 1.6;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
     }
+
     .hero-side-banners {
       display: flex;
       flex-direction: column;
       gap: var(--space-4);
     }
+
     .side-banner-card {
-      background: var(--color-white);
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
       border-radius: var(--radius-xl);
       padding: var(--space-4);
       display: flex;
       align-items: center;
       gap: var(--space-4);
-      border: 1px solid var(--color-gray-border);
-      box-shadow: var(--shadow-sm);
-      transition: transform var(--transition-fast);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 8px 24px rgba(31, 38, 135, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.9);
+      transition: all var(--transition-normal);
       height: 50%;
+      position: relative;
+      overflow: hidden;
     }
+
+    .side-banner-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(215, 0, 24, 0.05), rgba(121, 40, 202, 0.05));
+      opacity: 0;
+      transition: opacity var(--transition-normal);
+    }
+
     .side-banner-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+      transform: translateY(-4px) scale(1.02);
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 14px 35px -5px rgba(215, 0, 24, 0.18), 0 0 0 1.5px rgba(215, 0, 24, 0.35);
     }
+
+    .side-banner-card:hover::before {
+      opacity: 1;
+    }
+
     .side-banner-img {
-      width: 80px;
-      height: 80px;
+      width: 85px;
+      height: 85px;
       object-fit: contain;
+      transition: transform var(--transition-normal);
+    }
+
+    .side-banner-card:hover .side-banner-img {
+      transform: scale(1.08);
     }
 
     /* Flash Sale Section */
     .flash-sale-box {
-      background: linear-gradient(135deg, #fff1f2, #ffe4e6);
-      border: 1px solid #fecdd3;
       border-radius: var(--radius-xl);
-      padding: var(--space-5);
+      padding: var(--space-6);
       margin-bottom: var(--space-8);
     }
+
     .flash-sale-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: var(--space-3);
-      margin-bottom: var(--space-4);
+      margin-bottom: var(--space-5);
     }
+
     .countdown-timer {
       display: flex;
       align-items: center;
       gap: 6px;
       font-weight: var(--font-weight-bold);
     }
+
     .time-unit {
-      background-color: var(--color-dark);
-      color: var(--color-white);
-      padding: 4px 8px;
+      background: linear-gradient(135deg, #1e1b4b, #312e81);
+      color: #ffd000;
+      padding: 5px 9px;
       border-radius: var(--radius-sm);
       font-size: var(--font-size-sm);
+      font-family: var(--font-mono);
+      font-weight: var(--font-weight-black);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     /* Benefits row */
@@ -136,17 +154,26 @@
       }
     }
     .benefit-item {
-      background: var(--color-white);
-      border: 1px solid var(--color-gray-border);
-      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: var(--radius-xl);
       padding: var(--space-4);
       display: flex;
       align-items: center;
       gap: var(--space-3);
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(255, 255, 255, 0.9);
+      transition: all var(--transition-normal);
+    }
+    .benefit-item:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 12px 30px rgba(215, 0, 24, 0.12), 0 0 0 1.5px rgba(215, 0, 24, 0.25);
     }
     .benefit-icon {
-      font-size: 24px;
+      font-size: 26px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
     }
     .benefit-text h6 {
       font-size: var(--font-size-sm);
@@ -160,30 +187,27 @@
     }
 
     /* Brand Logos */
-    .brand-list {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-4);
-      overflow-x: auto;
-      padding: var(--space-2) 0;
-      scrollbar-width: none;
-    }
     .brand-item {
-      background: var(--color-white);
-      border: 1px solid var(--color-gray-border);
-      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(14px) saturate(180%);
+      -webkit-backdrop-filter: blur(14px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: var(--radius-full);
       padding: var(--space-3) var(--space-6);
       font-weight: var(--font-weight-black);
       font-size: var(--font-size-base);
       color: var(--color-gray-dark);
       white-space: nowrap;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
       transition: all var(--transition-fast);
+      display: inline-block;
     }
     .brand-item:hover {
       border-color: var(--color-primary);
       color: var(--color-primary);
-      transform: translateY(-2px);
+      background: #ffffff;
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 25px rgba(215, 0, 24, 0.2);
     }
   </style>
 </head>
@@ -194,6 +218,7 @@
     <div class="container">
       <div>Chào mừng bạn đến với TechStore – Hệ thống bán lẻ công nghệ hàng đầu</div>
       <div class="topbar-links">
+        <a href="/docs/index.html" style="color: #6366f1; font-weight: 700; background: rgba(99, 102, 241, 0.12); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(99, 102, 241, 0.3);">⚡ API Docs (Swagger)</a>
         <a href="/pages/account.html">Tra cứu đơn hàng</a>
         <a href="tel:18006018">Hotline: 1800.6018 (Miễn phí)</a>
         <a href="/admin/index.html" style="color: var(--color-primary); font-weight: 600;">Trang Quản Trị</a>
@@ -277,16 +302,76 @@
 
   <!-- Main Content -->
   <main class="container">
-    <!-- Hero Banner Slider -->
+    <!-- Hero Banner Slider Auto-Loop with Liquid Aurora Mesh -->
     <section class="hero-section">
-      <div class="hero-slider">
-        <span class="hero-badge">Sản Phẩm Mới Ra Mắt</span>
-        <h1 class="hero-title">iPhone 16 Pro Max</h1>
-        <p class="hero-subtitle">Titan sa mạc quyền năng, chip Apple A18 Pro 3nm vượt trội, Camera Control cảm ứng thông minh.</p>
-        <div style="display: flex; gap: 12px;">
-          <a href="/pages/product-detail.html?id=1" class="btn btn-primary btn-lg">Khám phá ngay</a>
-          <a href="/pages/products.html?category_id=1" class="btn btn-outline btn-lg" style="color: white; border-color: rgba(255,255,255,0.4);">Xem tất cả iPhone</a>
+      <div class="hero-slider-wrap" id="hero-slider-wrap">
+        <!-- Ambient Loang Lổ Mesh inside Hero -->
+        <div class="hero-mesh-aurora">
+          <div class="hero-aurora-blob-1"></div>
+          <div class="hero-aurora-blob-2"></div>
         </div>
+
+        <!-- Slider Track & Slides -->
+        <div class="hero-slides-track">
+          <!-- Slide 1: iPhone 16 Pro Max -->
+          <div class="hero-slide active" data-slide="0">
+            <span class="hero-badge">Sản Phẩm Mới Ra Mắt</span>
+            <h1 class="hero-title">iPhone 16 Pro Max</h1>
+            <p class="hero-subtitle">Titan sa mạc quyền năng, chip Apple A18 Pro 3nm vượt trội, Camera Control cảm ứng thông minh.</p>
+            <div style="display: flex; gap: 12px; position: relative; z-index: 5;">
+              <a href="/pages/product-detail.html?id=1" class="btn btn-primary btn-lg">Khám phá ngay</a>
+              <a href="/pages/products.html?category_id=1" class="btn btn-outline btn-lg" style="color: white; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.12); backdrop-filter: blur(8px);">Xem tất cả iPhone</a>
+            </div>
+          </div>
+
+          <!-- Slide 2: MacBook Pro M3 Max -->
+          <div class="hero-slide" data-slide="1">
+            <span class="hero-badge" style="background: linear-gradient(135deg, #7928ca, #4338ca);">Đỉnh Cao Hiệu Năng</span>
+            <h1 class="hero-title">MacBook Pro M3 Max</h1>
+            <p class="hero-subtitle">Màn hình Liquid Retina XDR 120Hz, 36GB RAM Unified, GPU Ray-tracing xử lý đồ họa siêu tốc.</p>
+            <div style="display: flex; gap: 12px; position: relative; z-index: 5;">
+              <a href="/pages/product-detail.html?id=3" class="btn btn-primary btn-lg">Mua trả góp 0%</a>
+              <a href="/pages/products.html?category_id=2" class="btn btn-outline btn-lg" style="color: white; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.12); backdrop-filter: blur(8px);">Xem MacBook</a>
+            </div>
+          </div>
+
+          <!-- Slide 3: Galaxy S24 Ultra -->
+          <div class="hero-slide" data-slide="2">
+            <span class="hero-badge" style="background: linear-gradient(135deg, #0070f3, #00dfd8);">Kỷ Nguyên AI Di Động</span>
+            <h1 class="hero-title">Galaxy S24 Ultra</h1>
+            <p class="hero-subtitle">Quyền năng Galaxy AI dịch thuật trực tiếp, Camera 200MP zoom quang học 100x, khung Titan siêu bền.</p>
+            <div style="display: flex; gap: 12px; position: relative; z-index: 5;">
+              <a href="/pages/product-detail.html?id=2" class="btn btn-primary btn-lg">Nhận voucher 4 Triệu</a>
+              <a href="/pages/products.html?category_id=1" class="btn btn-outline btn-lg" style="color: white; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.12); backdrop-filter: blur(8px);">Galaxy Series</a>
+            </div>
+          </div>
+
+          <!-- Slide 4: Sony WH-1000XM5 -->
+          <div class="hero-slide" data-slide="3">
+            <span class="hero-badge" style="background: linear-gradient(135deg, #f59e0b, #ff8c00);">Âm Thanh Không Gian</span>
+            <h1 class="hero-title">Sony WH-1000XM5</h1>
+            <p class="hero-subtitle">Chống ồn chủ động kép Auto NC thế hệ mới, chuẩn Hi-Res Audio không dây đỉnh cao, pin 30 giờ.</p>
+            <div style="display: flex; gap: 12px; position: relative; z-index: 5;">
+              <a href="/pages/products.html?category_id=4" class="btn btn-primary btn-lg">Trải nghiệm âm thanh</a>
+              <a href="/pages/products.html?category_id=4" class="btn btn-outline btn-lg" style="color: white; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.12); backdrop-filter: blur(8px);">Tai nghe cao cấp</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loop Navigation Controls -->
+        <button class="hero-nav-arrow hero-nav-prev" onclick="prevHeroSlide()" aria-label="Slide trước">❮</button>
+        <button class="hero-nav-arrow hero-nav-next" onclick="nextHeroSlide()" aria-label="Slide kế tiếp">❯</button>
+
+        <!-- Loop Indicator Dots -->
+        <div class="hero-loop-dots">
+          <div class="hero-dot active" onclick="goHeroSlide(0)"></div>
+          <div class="hero-dot" onclick="goHeroSlide(1)"></div>
+          <div class="hero-dot" onclick="goHeroSlide(2)"></div>
+          <div class="hero-dot" onclick="goHeroSlide(3)"></div>
+        </div>
+
+        <!-- Auto-loop Progress Bar -->
+        <div class="hero-progress-line" id="hero-progress-bar"></div>
       </div>
 
       <div class="hero-side-banners">
@@ -312,7 +397,7 @@
       </div>
     </section>
 
-    <!-- Benefits Row -->
+    <!-- Benefits Row (Frosted Glass) -->
     <section class="benefits-row">
       <div class="benefit-item">
         <span class="benefit-icon">🛡️</span>
@@ -344,15 +429,15 @@
       </div>
     </section>
 
-    <!-- Flash Sale Section -->
-    <section class="flash-sale-box">
+    <!-- Flash Sale Section (Loang Lổ Glassmorphism) -->
+    <section class="flash-sale-box flash-sale-loang-lo">
       <div class="flash-sale-header">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <h2 style="font-size: 20px; font-weight: 900; color: var(--color-primary); margin: 0; display: flex; align-items: center; gap: 6px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <h2 style="font-size: 22px; font-weight: 900; background: linear-gradient(135deg, #d70018, #ff007a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; display: flex; align-items: center; gap: 8px;">
             ⚡ FLASH SALE GIÁ SỐC
           </h2>
           <div class="countdown-timer">
-            <span>Kết thúc sau:</span>
+            <span style="font-size: 13px; color: var(--color-gray-dark);">Kết thúc sau:</span>
             <span class="time-unit" id="timer-hours">03</span> :
             <span class="time-unit" id="timer-mins">45</span> :
             <span class="time-unit" id="timer-secs">20</span>
@@ -387,19 +472,35 @@
     <!-- Personalized Recommendations Carousel (recommend.js) -->
     <div id="for-you-carousel-container"></div>
 
-    <!-- Brand Showcase -->
+    <!-- Brand Showcase (Infinite Marquee Loop) -->
     <section style="margin-top: var(--space-8);">
       <div class="section-header">
         <h3 class="section-title">Thương Hiệu Hàng Đầu</h3>
       </div>
-      <div class="brand-list" id="brand-list-container">
-        <a href="/pages/products.html?brand_id=1" class="brand-item"> Apple Authorized</a>
-        <a href="/pages/products.html?brand_id=2" class="brand-item">Samsung Galaxy</a>
-        <a href="/pages/products.html?brand_id=3" class="brand-item">Xiaomi Smart</a>
-        <a href="/pages/products.html?brand_id=4" class="brand-item">ASUS ROG</a>
-        <a href="/pages/products.html?brand_id=5" class="brand-item">Sony Hi-Res</a>
-        <a href="/pages/products.html?brand_id=6" class="brand-item">Anker GaN</a>
-        <a href="/pages/products.html?brand_id=7" class="brand-item">Dell Technologies</a>
+      <div class="marquee-loop-container">
+        <div class="marquee-track">
+          <a href="/pages/products.html?brand_id=1" class="brand-item"> Apple Authorized</a>
+          <a href="/pages/products.html?brand_id=2" class="brand-item">Samsung Galaxy</a>
+          <a href="/pages/products.html?brand_id=3" class="brand-item">Xiaomi Smart Life</a>
+          <a href="/pages/products.html?brand_id=4" class="brand-item">ASUS ROG Gaming</a>
+          <a href="/pages/products.html?brand_id=5" class="brand-item">Sony Hi-Res Studio</a>
+          <a href="/pages/products.html?brand_id=6" class="brand-item">Anker GaN Fast</a>
+          <a href="/pages/products.html?brand_id=7" class="brand-item">Dell Technologies</a>
+          <a href="/pages/products.html" class="brand-item">Marshall Major</a>
+          <a href="/pages/products.html" class="brand-item">Logitech Master</a>
+          <a href="/pages/products.html" class="brand-item">JBL Pro Audio</a>
+          <!-- Duplicate for continuous 60fps infinite loop -->
+          <a href="/pages/products.html?brand_id=1" class="brand-item"> Apple Authorized</a>
+          <a href="/pages/products.html?brand_id=2" class="brand-item">Samsung Galaxy</a>
+          <a href="/pages/products.html?brand_id=3" class="brand-item">Xiaomi Smart Life</a>
+          <a href="/pages/products.html?brand_id=4" class="brand-item">ASUS ROG Gaming</a>
+          <a href="/pages/products.html?brand_id=5" class="brand-item">Sony Hi-Res Studio</a>
+          <a href="/pages/products.html?brand_id=6" class="brand-item">Anker GaN Fast</a>
+          <a href="/pages/products.html?brand_id=7" class="brand-item">Dell Technologies</a>
+          <a href="/pages/products.html" class="brand-item">Marshall Major</a>
+          <a href="/pages/products.html" class="brand-item">Logitech Master</a>
+          <a href="/pages/products.html" class="brand-item">JBL Pro Audio</a>
+        </div>
       </div>
     </section>
   </main>
@@ -483,7 +584,89 @@
 
       // 5. Start Countdown
       startCountdown();
+
+      // 6. Start Hero Loop Slider
+      initHeroSlider();
     });
+
+    // ===================================================
+    // HERO AUTO-LOOP SLIDER CONTROLLER
+    // ===================================================
+    let currentHeroIndex = 0;
+    const HERO_SLIDE_DURATION = 4500; // 4.5s per loop
+    let heroInterval = null;
+    let heroProgressInterval = null;
+    let heroProgressStartTime = Date.now();
+
+    function initHeroSlider() {
+      const sliderWrap = document.getElementById('hero-slider-wrap');
+      if (!sliderWrap) return;
+
+      sliderWrap.addEventListener('mouseenter', () => {
+        if (heroInterval) clearInterval(heroInterval);
+        if (heroProgressInterval) clearInterval(heroProgressInterval);
+      });
+
+      sliderWrap.addEventListener('mouseleave', () => {
+        startHeroLoop();
+      });
+
+      startHeroLoop();
+    }
+
+    function showHeroSlide(index) {
+      const heroSlides = document.querySelectorAll('.hero-slide');
+      const heroDots = document.querySelectorAll('.hero-dot');
+      if (!heroSlides.length) return;
+
+      currentHeroIndex = (index + heroSlides.length) % heroSlides.length;
+
+      heroSlides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === currentHeroIndex);
+      });
+
+      heroDots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentHeroIndex);
+      });
+
+      resetHeroProgress();
+    }
+
+    function nextHeroSlide() {
+      showHeroSlide(currentHeroIndex + 1);
+    }
+
+    function prevHeroSlide() {
+      showHeroSlide(currentHeroIndex - 1);
+    }
+
+    function goHeroSlide(index) {
+      showHeroSlide(index);
+    }
+
+    function resetHeroProgress() {
+      heroProgressStartTime = Date.now();
+      const heroProgressBar = document.getElementById('hero-progress-bar');
+      if (heroProgressBar) heroProgressBar.style.width = '0%';
+    }
+
+    function startHeroLoop() {
+      if (heroInterval) clearInterval(heroInterval);
+      if (heroProgressInterval) clearInterval(heroProgressInterval);
+
+      resetHeroProgress();
+
+      heroProgressInterval = setInterval(() => {
+        const elapsed = Date.now() - heroProgressStartTime;
+        const pct = Math.min(100, (elapsed / HERO_SLIDE_DURATION) * 100);
+        const heroProgressBar = document.getElementById('hero-progress-bar');
+        if (heroProgressBar) heroProgressBar.style.width = pct + '%';
+      }, 50);
+
+      heroInterval = setInterval(() => {
+        nextHeroSlide();
+      }, HERO_SLIDE_DURATION);
+    }
 
     function renderProductGrid(elementId, items) {
       const container = document.getElementById(elementId);

@@ -13,6 +13,23 @@ if ($uri === '/' || $uri === '/index.php') {
     exit;
 }
 
+// Redirect /docs to documentation portal
+if ($uri === '/docs' || $uri === '/docs/') {
+    header('Location: /docs/index.html');
+    exit;
+}
+
+// Serve OpenAPI YAML spec directly
+if ($uri === '/docs/openapi.yaml') {
+    $yamlPath = __DIR__ . '/../docs/openapi.yaml';
+    if (file_exists($yamlPath)) {
+        header('Content-Type: text/yaml; charset=utf-8');
+        header('Access-Control-Allow-Origin: *');
+        readfile($yamlPath);
+        exit;
+    }
+}
+
 // Route API requests to API router
 if (str_starts_with($uri, '/api/')) {
     $routesFile = __DIR__ . '/../api/routes.php';
