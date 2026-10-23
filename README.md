@@ -151,8 +151,14 @@ Tài khoản demo (seed): `admin@techstore.local / Admin@123`, `user@techstore.l
 | Back-end & Thuật toán | (Thành Trung | Sản phẩm, tìm kiếm, gợi ý, admin API, CSDL |
 | Front-end & Tài liệu | (Tuấn Kiệt) | UI khách + admin, tiêu thụ API, essay, Postman |
 
-## 10. Tài liệu liên quan
-- [Quy trình Git](GIT_WORKFLOW.md)
-- Bảng phân công: `TechStore_PhanCong_8Ngay.xlsx`
-- Essay REST: `docs/essay_rest.docx`
-- Postman collection: `docs/postman_collection.json`
+## 10. Tài liệu dự án
+
+- **Đặc tả Yêu cầu Phần mềm (SRS - IEEE 830):** [docs/SRS.md](docs/SRS.md) *(34 Yêu cầu chức năng FR, Sơ đồ Use Case Mermaid, Tiêu chí nghiệm thu & Ma trận truy vết kiểm thử RTM)*
+- **Thiết kế Cơ sở dữ liệu (ERD):** [docs/ERD.md](docs/ERD.md) & [docs/erd.png](docs/erd.png) *(18 bảng chuẩn hóa)*
+- **Thiết kế Kiến trúc hệ thống:** [docs/design/architecture.md](docs/design/architecture.md)
+- **Hợp đồng API (OpenAPI 3.0):** [docs/openapi.yaml](docs/openapi.yaml)
+- **Quy trình làm việc Git:** [docs/GIT_WORKFLOW.md](docs/GIT_WORKFLOW.md)
+- **Kế hoạch & Phân công công việc:** `TechStore_PhanCong_4Ngay.xlsx`
+- **Bộ kiểm thử API Postman:** [tests/postman_collection.json](tests/postman_collection.json) & [tests/postman_environment.json](tests/postman_environment.json)
+- **Báo cáo đồ án:** [docs/report/](docs/report/)
+
