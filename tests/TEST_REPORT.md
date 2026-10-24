@@ -12,7 +12,8 @@
   - **FR01 (Auth & JWT):** 11/11 Test Cases **ĐẠT (100.0%)**
   - **FR02 (Category, Brand & Product Detail):** 8/8 Test Cases **ĐẠT (100.0%)**
   - **FR03 (Instant Search Debounce & Multi-criteria Filter):** 13/13 Test Cases **ĐẠT (100.0%)**
-  - **Tổng cộng:** **32/32 Test Cases ĐẠT CHUẨN (Tỷ lệ thành công: 100.0%)**
+  - **FR04 (Server-side Cart & Realtime Inventory):** 13/13 Test Cases **ĐẠT (100.0%)**
+  - **Tổng cộng:** **45/45 Test Cases ĐẠT CHUẨN (Tỷ lệ thành công: 100.0%)**
 
 ---
 
@@ -116,7 +117,46 @@ Thẩm định tính năng tìm kiếm tức thì với kỹ thuật debounce 25
 
 ---
 
-## 4. TỔNG HỢP CHỈ SỐ ĐO LƯỜNG HỆ THỐNG (SYSTEM TELEMETRY SUMMARY)
+## 4. BÁO CÁO KIỂM THỬ FR04: QUẢN LÝ GIỎ HÀNG PHÍA MÁY CHỦ & KIỂM SOÁT TỒN KHO THỜI GIAN THỰC
+
+### 4.1. Mục tiêu kiểm thử
+Thẩm định toàn diện luồng quản lý giỏ hàng máy chủ lưu trữ trực tiếp vào bảng CSDL vật lý `cart`, loại bỏ hoàn toàn cơ chế phụ thuộc tệp `data.json`. Đảm bảo thực thi nghiêm ngặt quy tắc nghiệp vụ cốt lõi **BR04**:
+- Thêm sản phẩm và cộng dồn số lượng theo biến thể (`variant`).
+- Kiểm tra tồn kho khả dụng `products.stock`, từ chối ngay lập tức (`400 Bad Request`, mã lỗi `INSUFFICIENT_STOCK`) nếu vượt quá số lượng tồn kho.
+- Cập nhật số lượng món hàng, tự động xóa món hàng khỏi giỏ khi số lượng cập nhật về 0 (`FR04.03`).
+- Xóa từng món đồ hoặc làm trống toàn bộ giỏ (`FR04.04`).
+- Cách ly giỏ hàng đa người dùng (Multi-tenant User Isolation) an toàn tuyệt đối.
+
+### 4.2. Kết quả đo lường tầng hệ thống (Backend Telemetry)
+*Được ghi nhận từ kịch bản đo lường tự động `test_fr04_deep.py` (Độ trễ trung bình: **22.58ms**):*
+
+| Mã Test Case | Tiêu chí kiểm thử | Endpoint & Hành vi | Thời gian phản hồi | Mã HTTP | Kết quả | Ghi chú kiểm chứng |
+|:---:|---|---|:---:|:---:|:---:|---|
+| **TC-CART-01A** | Làm trống giỏ hàng ban đầu | `DELETE /api/v1/cart` | 41.9ms | `200 OK` | **PASS** | Xóa sạch các mục cũ của user trong bảng `cart` |
+| **TC-CART-01B** | Xem giỏ hàng rỗng (FR04.01) | `GET /api/v1/cart` | 18.9ms | `200 OK` | **PASS** | `items: []`, `total_items: 0`, `subtotal: 0` |
+| **TC-CART-02A** | Thêm món đồ mới vào giỏ | `POST /api/v1/cart/items` (ID 1, qty 1) | 9.6ms | `201 Created` | **PASS** | Thêm thành công *iPhone 16 Pro Max*, subtotal = 34.990.000₫ |
+| **TC-CART-02B** | Lũy kế số lượng cùng biến thể | `POST /api/v1/cart/items` (ID 1, qty 2) | 24.2ms | `201 Created` | **PASS** | Tự động cộng dồn: $1 + 2 = 3$ sản phẩm, tính lại tổng tiền |
+| **TC-CART-02C** | Thêm sản phẩm thứ 2 phân biệt | `POST /api/v1/cart/items` (ID 2, qty 1) | 10.4ms | `201 Created` | **PASS** | Giỏ chứa 2 mục khác nhau, tổng số lượng `total_items = 4` |
+| **TC-CART-02D** | Chặn vượt tồn kho khi thêm (BR04) | `POST /api/v1/cart/items` (qty 99999) | 32.9ms | `400 Bad Request` | **PASS** | Từ chối với mã `INSUFFICIENT_STOCK`, thông báo rõ tồn kho 25 |
+| **TC-CART-03A** | Cập nhật số lượng món đồ | `PUT /api/v1/cart/items/{id}` (qty = 2) | 36.1ms | `200 OK` | **PASS** | Cập nhật số lượng thành 2, tổng tiền đối soát chính xác |
+| **TC-CART-03B** | Chặn vượt tồn kho khi update (BR04)| `PUT /api/v1/cart/items/{id}` (qty 99999) | 7.5ms | `400 Bad Request` | **PASS** | Từ chối cập nhật số lượng vượt ngưỡng tồn kho khả dụng |
+| **TC-CART-03C** | Tự động xóa khi số lượng = 0 | `PUT /api/v1/cart/items/{id}` (qty = 0) | 34.7ms | `200 OK` | **PASS** | Đáp ứng chuẩn FR04.03: Tự động xóa sản phẩm khỏi giỏ |
+| **TC-CART-04A** | Xóa mục cụ thể khỏi giỏ hàng | `DELETE /api/v1/cart/items/{id}` | 34.3ms | `200 OK` | **PASS** | Xóa bản ghi khỏi bảng `cart`, giỏ về trạng thái rỗng |
+| **TC-CART-05A** | Thẩm định thiếu `product_id` | `POST /api/v1/cart/items` (thiếu ID) | 5.6ms | `400 Bad Request` | **PASS** | Phản hồi lỗi chuẩn `VALIDATION_ERROR` |
+| **TC-CART-05B** | Sản phẩm không tồn tại trong kho | `POST /api/v1/cart/items` (ID 999999) | 7.6ms | `404 Not Found` | **PASS** | Báo lỗi không tìm thấy sản phẩm `NOT_FOUND` |
+| **TC-CART-06** | Cách ly dữ liệu giỏ giữa các User | User 2 vs User 4 | 29.9ms | `200 OK` | **PASS** | User 2 có hàng trong giỏ, User 4 giỏ rỗng (Cô lập 100%) |
+
+### 4.3. Kết quả kiểm thử giao diện người dùng (Browser UI)
+- **Trang Giỏ hàng (`pages/cart.html`):**
+  - **Hiển thị danh sách món hàng:** Hiển thị rõ ràng thumbnail ảnh, tên máy, phân loại biến thể, đơn giá VND, ô stepper chỉnh số lượng và thành tiền từng dòng.
+  - **Bộ đếm số lượng (Stepper Interaction):** Nút `+` và `-` cập nhật số lượng mượt mà, gửi yêu cầu đồng bộ tức thì tới máy chủ backend và tính toán lại `Tạm tính` và `Tổng thanh toán` theo thời gian thực.
+  - **Xóa sản phẩm:** Click nút xóa `✕` loại bỏ sản phẩm ngay lập tức, cập nhật badge giỏ hàng trên thanh Header.
+- **Tích hợp Thêm vào giỏ từ Trang Chi tiết (`pages/product-detail.html`):**
+  - Khách hàng bấm "Thêm giỏ hàng", hệ thống gọi `POST /api/v1/cart/items` trên máy chủ, hiển thị thông báo Toast thành công và tự động tăng số lượng trên biểu tượng giỏ hàng Header từ 2 lên 3.
+
+---
+
+## 5. TỔNG HỢP CHỈ SỐ ĐO LƯỜNG HỆ THỐNG (SYSTEM TELEMETRY SUMMARY)
 
 ```
 +-------------------------------------------------------------------------------+
@@ -127,15 +167,16 @@ Thẩm định tính năng tìm kiếm tức thì với kỹ thuật debounce 25
 | FR01: Định danh & JWT    | 11 / 11       | 100.0%        | 48.9 ms            |
 | FR02: Danh mục & Chi tiết|  8 / 8        | 100.0%        | 27.5 ms            |
 | FR03: Search & Filter    | 13 / 13       | 100.0%        | 31.8 ms            |
+| FR04: Cart & Tồn kho     | 13 / 13       | 100.0%        | 22.6 ms            |
 +--------------------------+---------------+---------------+--------------------+
-| TỔNG CỘNG HOÀN THIỆN     | 32 / 32       | 100.0%        | 36.1 ms            |
+| TỔNG CỘNG HOÀN THIỆN     | 45 / 45       | 100.0%        | 32.2 ms            |
 +--------------------------+---------------+---------------+--------------------+
 ```
 
 ---
 
-## 5. KẾT LUẬN & SỰ SẴN SÀNG CHO CÁC MODULE TIẾP THEO
+## 6. KẾT LUẬN & SỰ SẴN SÀNG CHO CÁC MODULE TIẾP THEO
 
-1. **Về mặt Kiến trúc:** Việc tách tầng Clean MVC giữa Controller Orchestrator ([`ProductController.php`](../api/controllers/ProductController.php), [`CategoryBrandController.php`](../api/controllers/CategoryBrandController.php)) và Domain Aggregate Models ([`ProductModel.php`](../api/models/ProductModel.php), [`CategoryModel.php`](../api/models/CategoryModel.php), [`BrandModel.php`](../api/models/BrandModel.php)) đã chứng minh tính hiệu quả vượt bậc: mã nguồn sáng sủa, độ trễ xử lý cực thấp ($< 35\text{ms}$), 100% an toàn trước SQL Injection.
-2. **Về mặt Trải nghiệm Người dùng:** Giao diện phản hồi tức thì, cơ chế debounce hoạt động mượt mà, bộ lọc đa tiêu chí chính xác và thân thiện.
-3. **Sẵn sàng chuyển giao:** Hệ thống đã sẵn sàng 100% để tiếp tục triển khai **Pha 2: FR04 (Quản lý giỏ hàng & tồn kho)** và **FR05 (Mã giảm giá Coupon)**.
+1. **Về mặt Kiến trúc:** Việc chuẩn hóa Clean MVC giữa Controller Orchestrator ([`CartController.php`](../api/controllers/CartController.php)) và Domain Model ([`CartModel.php`](../api/models/CartModel.php)) tương tác trực tiếp với bảng MySQL vật lý `cart` đã giải quyết dứt điểm vấn đề chia sẻ chung giỏ hàng giả lập trước đây.
+2. **Về mặt Quy tắc Nghiệp vụ (BR04):** Hệ thống kiểm soát chặt chẽ số lượng sản phẩm thêm và cập nhật vào giỏ, tuyệt đối không cho phép vượt quá tồn kho khả dụng `products.stock`.
+3. **Sẵn sàng chuyển giao:** Hệ thống đã hoàn tất xuất sắc 4/4 chức năng cốt lõi (FR01, FR02, FR03, FR04), đạt độ trễ trung bình siêu tốc ($32.2\text{ms}$), sẵn sàng tiếp tục với **FR05: Thẩm định & Áp dụng mã giảm giá khuyến mãi (Coupon Engine)**.

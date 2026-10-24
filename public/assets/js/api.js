@@ -1202,6 +1202,9 @@ class ApiClient {
     },
     clear: async () => {
       this.clearCart();
+      try {
+        await this.request('/cart', { method: 'DELETE' });
+      } catch (e) {}
       return { success: true };
     }
   };

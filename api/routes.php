@@ -209,6 +209,10 @@ if (preg_match('#^/cart/items/(\d+)$#', $subPath, $m) && $reqMethod === 'DELETE'
     CartController::removeItem((int)$m[1]);
 }
 
+if ($subPath === '/cart' && $reqMethod === 'DELETE') {
+    CartController::clearCart();
+}
+
 // -------------------------------------------------------------------------
 // 5. COUPONS (CouponController)
 // -------------------------------------------------------------------------
