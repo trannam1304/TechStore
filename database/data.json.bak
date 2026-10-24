@@ -2107,6 +2107,41 @@
                 }
             ],
             "created_at": "2026-10-22 04:04:08"
+        },
+        {
+            "id": 1032,
+            "order_code": "TS-378168",
+            "customer_name": "Trần Hữu Nam",
+            "customer_phone": "0321321321",
+            "customer_email": "tranhuunam13042006@gmail.com",
+            "shipping_address": "225 nguyễn văn cừ, quận 5, Hồ Chí Minh",
+            "payment_method": "vietqr",
+            "payment_status": "pending",
+            "status": "pending",
+            "total_amount": 36970000,
+            "discount_amount": 0,
+            "note": "qư",
+            "items": [
+                {
+                    "id": 1792640768,
+                    "product_id": 2,
+                    "name": "iPhone 16 128GB",
+                    "price": 21990000,
+                    "quantity": 1,
+                    "variant": "",
+                    "image": "https:\/\/images.unsplash.com\/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80"
+                },
+                {
+                    "id": 1792829076022,
+                    "product_id": 6,
+                    "name": "Tai nghe Sony WH-1000XM5 Chống Ồn",
+                    "price": 7490000,
+                    "quantity": 2,
+                    "variant": "256GB - Titan Tự Nhiên",
+                    "image": "https:\/\/images.unsplash.com\/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80"
+                }
+            ],
+            "created_at": "2026-10-24 10:04:52"
         }
     ],
     "order_items": [
@@ -3605,18 +3640,8 @@
             "quantity": 1,
             "variant": "Đen GaN 65W"
         },
-        "items": [
-            {
-                "id": 1792640768,
-                "product_id": 2,
-                "name": "iPhone 16 128GB",
-                "price": 21990000,
-                "quantity": 1,
-                "variant": "",
-                "image": "https:\/\/images.unsplash.com\/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80"
-            }
-        ],
-        "total": 21990000
+        "items": [],
+        "total": 0
     },
     "product_similarity": [
         {
@@ -4492,8 +4517,64 @@
             "user_id": 12,
             "token_hash": "4132f2f7f912bc38d2914ac831a2575f71b6965be00d93664ae47310c43021de",
             "expires_at": "2026-10-29 05:46:58",
-            "revoked": 0,
+            "revoked": 1,
             "created_at": "2026-10-22 06:46:58"
+        },
+        {
+            "id": 35,
+            "user_id": 2,
+            "token_hash": "886de5a180cbaf7a709207e71230d0600306e00d794835b5cc192e8b0b20d2b3",
+            "expires_at": "2026-10-29 07:21:33",
+            "revoked": 1,
+            "created_at": "2026-10-22 08:21:33"
+        },
+        {
+            "id": 36,
+            "user_id": 2,
+            "token_hash": "a4da2ba353548ebad21f5ac9c770b1775d78ad6668f2c6943047dffed6137c9d",
+            "expires_at": "2026-10-31 08:41:00",
+            "revoked": 1,
+            "created_at": "2026-10-24 09:41:00"
+        },
+        {
+            "id": 37,
+            "user_id": 2,
+            "token_hash": "533ea841f78aa2a6a75e731102ff44380ec785343b67aaf370ee9b98d27d69d1",
+            "expires_at": "2026-10-31 08:46:31",
+            "revoked": 1,
+            "created_at": "2026-10-24 09:46:31"
+        },
+        {
+            "id": 38,
+            "user_id": 2,
+            "token_hash": "46b1e52aca4907740af8572b6ac2e1960ac7e5e8d4603ab952458c86181111f4",
+            "expires_at": "2026-10-31 08:48:34",
+            "revoked": 1,
+            "created_at": "2026-10-24 09:48:34"
+        },
+        {
+            "id": 39,
+            "user_id": 2,
+            "token_hash": "c1caa55a117a64be4aceba8fbc2046e60d79d79f4ccf1e65eb2436d01217bcab",
+            "expires_at": "2026-10-31 08:49:59",
+            "revoked": 1,
+            "created_at": "2026-10-24 09:49:59"
+        },
+        {
+            "id": 40,
+            "user_id": 2,
+            "token_hash": "101dbdbef67e3d8186fb8575170c962c1d3fc189a8cae648c5a0b484cbb2c5fe",
+            "expires_at": "2026-10-31 09:02:09",
+            "revoked": 1,
+            "created_at": "2026-10-24 10:02:09"
+        },
+        {
+            "id": 41,
+            "user_id": 12,
+            "token_hash": "21fce445ee5db5e814129a73ae35bfcfcf5732e6af8c8d41780def55e818d386",
+            "expires_at": "2026-10-31 09:05:31",
+            "revoked": 0,
+            "created_at": "2026-10-24 10:05:31"
         }
     ],
     "audit_logs": [

@@ -31,3 +31,7 @@ desktop.ini
 # Test & Coverage reports
 coverage/
 .phpunit.result.cache
+
+# External / unrelated project folders
+PROJECT-Mid-final/
+

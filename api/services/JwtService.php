@@ -46,7 +46,7 @@ class JwtService {
      * @param int $expiresIn Thời gian sống tính bằng giây (Mặc định 3600s = 1 giờ)
      * @return string Chuỗi JWT Token chuẩn header.payload.signature
      */
-    public static function generateToken(array $payload, int $expiresIn = 3600): string {
+    public static function generateToken(array $payload, int $expiresIn = 900): string {
         $header = [
             'typ' => 'JWT',
             'alg' => 'HS256'
@@ -76,7 +76,7 @@ class JwtService {
             'role'  => $user['role'] ?? 'customer',
             'type'  => 'access'
         ];
-        $expiry = (int)(getenv('JWT_ACCESS_EXPIRY') ?: 3600);
+        $expiry = (int)(getenv('JWT_ACCESS_EXPIRY') ?: 900);
         return self::generateToken($payload, $expiry);
     }
 
