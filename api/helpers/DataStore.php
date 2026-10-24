@@ -179,8 +179,8 @@ class DataStore {
         self::saveJsonData($data);
     }
 
-    /**
-     * Thu há»“i refresh token khi Ä‘Äƒng xuáº¥t
+        /**
+     * Thu h?i m?t refresh token (dùng khi logout ho?c rotation)
      */
     public static function revokeRefreshToken(string $token): void {
         $tokenHash = hash('sha256', $token);
@@ -208,29 +208,68 @@ class DataStore {
     }
 
     /**
-     * Kiá»ƒm tra refresh token cÃ³ há»£p lá»‡ trong DB khÃ´ng
+     * Tìm b?n ghi refresh token trong CSDL
      */
-    public static function isRefreshTokenValid(string $token): bool {
+    public static function findRefreshTokenRecord(string $token): ?array {
         $tokenHash = hash('sha256', $token);
 
         $pdo = self::getPdo();
         if ($pdo) {
             try {
-                $stmt = $pdo->prepare("SELECT id FROM refresh_tokens WHERE token_hash = ? AND revoked = 0 AND expires_at > NOW() LIMIT 1");
+                $stmt = $pdo->prepare("SELECT * FROM refresh_tokens WHERE token_hash = ? ORDER BY id DESC LIMIT 1");
                 $stmt->execute([$tokenHash]);
-                return (bool)$stmt->fetch();
+                $res = $stmt->fetch(PDO::FETCH_ASSOC);
+                return $res ?: null;
             } catch (Exception $e) {
                 // fallback json
             }
         }
 
         $data = self::getJsonData();
-        $now = date('Y-m-d H:i:s');
-        foreach ($data['refresh_tokens'] ?? [] as $rf) {
-            if ($rf['token_hash'] === $tokenHash && (int)$rf['revoked'] === 0 && $rf['expires_at'] > $now) {
-                return true;
+        $tokens = array_reverse($data['refresh_tokens'] ?? []);
+        foreach ($tokens as $rf) {
+            if ($rf['token_hash'] === $tokenHash) {
+                return $rf;
             }
         }
-        return false;
+        return null;
+    }
+
+    /**
+     * Vô hi?u hóa toàn b? refresh token c?a m?t user (Token Reuse Detection / Khóa toàn b? phiên)
+     */
+    public static function revokeAllUserRefreshTokens(int $userId): void {
+        $pdo = self::getPdo();
+        if ($pdo) {
+            try {
+                $stmt = $pdo->prepare("UPDATE refresh_tokens SET revoked = 1 WHERE user_id = ?");
+                $stmt->execute([$userId]);
+                return;
+            } catch (Exception $e) {
+                // fallback json
+            }
+        }
+
+        $data = self::getJsonData();
+        if (isset($data['refresh_tokens'])) {
+            foreach ($data['refresh_tokens'] as &$rf) {
+                if ((int)$rf['user_id'] === $userId) {
+                    $rf['revoked'] = 1;
+                }
+            }
+            self::saveJsonData($data);
+        }
+    }
+
+    /**
+     * Ki?m tra refresh token có h?p l? trong DB không
+     */
+    public static function isRefreshTokenValid(string $token): bool {
+        $record = self::findRefreshTokenRecord($token);
+        if (!$record) {
+            return false;
+        }
+        $now = date('Y-m-d H:i:s');
+        return (int)$record['revoked'] === 0 && $record['expires_at'] > $now;
     }
 }

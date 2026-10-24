@@ -144,14 +144,20 @@ if (preg_match('#^/products/(\d+)$#', $subPath, $m) && $reqMethod === 'GET') {
 }
 
 if ($subPath === '/products' && $reqMethod === 'POST') {
+    $authUser = AuthMiddleware::handle();
+    RoleMiddleware::requireAdmin($authUser);
     ProductController::create($body);
 }
 
 if (preg_match('#^/products/(\d+)$#', $subPath, $m) && ($reqMethod === 'PUT' || $reqMethod === 'PATCH')) {
+    $authUser = AuthMiddleware::handle();
+    RoleMiddleware::requireAdmin($authUser);
     ProductController::update((int)$m[1], $body);
 }
 
 if (preg_match('#^/products/(\d+)$#', $subPath, $m) && $reqMethod === 'DELETE') {
+    $authUser = AuthMiddleware::handle();
+    RoleMiddleware::requireAdmin($authUser);
     ProductController::destroy((int)$m[1]);
 }
 
@@ -163,14 +169,20 @@ if ($subPath === '/categories' && $reqMethod === 'GET') {
 }
 
 if ($subPath === '/categories' && $reqMethod === 'POST') {
+    $authUser = AuthMiddleware::handle();
+    RoleMiddleware::requireAdmin($authUser);
     CategoryBrandController::createCategory($body);
 }
 
 if (preg_match('#^/categories/(\d+)$#', $subPath, $m) && $reqMethod === 'PUT') {
+    $authUser = AuthMiddleware::handle();
+    RoleMiddleware::requireAdmin($authUser);
     CategoryBrandController::updateCategory((int)$m[1], $body);
 }
 
 if (preg_match('#^/categories/(\d+)$#', $subPath, $m) && $reqMethod === 'DELETE') {
+    $authUser = AuthMiddleware::handle();
+    RoleMiddleware::requireAdmin($authUser);
     CategoryBrandController::deleteCategory((int)$m[1]);
 }
 
@@ -179,14 +191,20 @@ if ($subPath === '/brands' && $reqMethod === 'GET') {
 }
 
 if ($subPath === '/brands' && $reqMethod === 'POST') {
+    $authUser = AuthMiddleware::handle();
+    RoleMiddleware::requireAdmin($authUser);
     CategoryBrandController::createBrand($body);
 }
 
 if (preg_match('#^/brands/(\d+)$#', $subPath, $m) && $reqMethod === 'PUT') {
+    $authUser = AuthMiddleware::handle();
+    RoleMiddleware::requireAdmin($authUser);
     CategoryBrandController::updateBrand((int)$m[1], $body);
 }
 
 if (preg_match('#^/brands/(\d+)$#', $subPath, $m) && $reqMethod === 'DELETE') {
+    $authUser = AuthMiddleware::handle();
+    RoleMiddleware::requireAdmin($authUser);
     CategoryBrandController::deleteBrand((int)$m[1]);
 }
 
@@ -240,6 +258,8 @@ if (preg_match('#^/orders/(\d+)/cancel$#', $subPath, $m) && $reqMethod === 'POST
 }
 
 if (preg_match('#^/orders/(\d+)/status$#', $subPath, $m) && $reqMethod === 'PATCH') {
+    $authUser = AuthMiddleware::handle();
+    RoleMiddleware::requireAdmin($authUser);
     OrderController::updateStatus((int)$m[1], $body);
 }
 
@@ -262,18 +282,26 @@ if ($subPath === '/payments/webhook' && $reqMethod === 'POST') {
 // 8. ADMIN DASHBOARD & USERS (AdminController)
 // -------------------------------------------------------------------------
 if ($subPath === '/admin/users' && $reqMethod === 'GET') {
+    $authUser = AuthMiddleware::handle();
+    RoleMiddleware::requireAdmin($authUser);
     AdminController::listUsers();
 }
 
 if (preg_match('#^/admin/users/(\d+)$#', $subPath, $m) && $reqMethod === 'PATCH') {
+    $authUser = AuthMiddleware::handle();
+    RoleMiddleware::requireAdmin($authUser);
     AdminController::patchUser((int)$m[1], $body);
 }
 
 if ($subPath === '/admin/stats' && $reqMethod === 'GET') {
+    $authUser = AuthMiddleware::handle();
+    RoleMiddleware::requireAdmin($authUser);
     AdminController::stats();
 }
 
 if ($subPath === '/admin/audit-logs' && $reqMethod === 'GET') {
+    $authUser = AuthMiddleware::handle();
+    RoleMiddleware::requireAdmin($authUser);
     AdminController::auditLogs();
 }
 
@@ -289,14 +317,17 @@ if (preg_match('#^/products/(\d+)/reviews$#', $subPath, $m) && $reqMethod === 'P
 }
 
 if ($subPath === '/wishlist' && $reqMethod === 'GET') {
+    $authUser = AuthMiddleware::handle();
     ReviewWishlistController::getWishlist();
 }
 
 if ($subPath === '/wishlist' && $reqMethod === 'POST') {
+    $authUser = AuthMiddleware::handle();
     ReviewWishlistController::addToWishlist($body);
 }
 
 if (preg_match('#^/wishlist/(\d+)$#', $subPath, $m) && $reqMethod === 'DELETE') {
+    $authUser = AuthMiddleware::handle();
     ReviewWishlistController::removeFromWishlist((int)$m[1]);
 }
 

@@ -4494,6 +4494,46 @@
             "expires_at": "2026-10-29 05:46:58",
             "revoked": 0,
             "created_at": "2026-10-22 06:46:58"
+        },
+        {
+            "id": 35,
+            "user_id": 2,
+            "token_hash": "886de5a180cbaf7a709207e71230d0600306e00d794835b5cc192e8b0b20d2b3",
+            "expires_at": "2026-10-29 07:21:33",
+            "revoked": 1,
+            "created_at": "2026-10-22 08:21:33"
+        },
+        {
+            "id": 36,
+            "user_id": 2,
+            "token_hash": "a4da2ba353548ebad21f5ac9c770b1775d78ad6668f2c6943047dffed6137c9d",
+            "expires_at": "2026-10-31 08:41:00",
+            "revoked": 1,
+            "created_at": "2026-10-24 09:41:00"
+        },
+        {
+            "id": 37,
+            "user_id": 2,
+            "token_hash": "533ea841f78aa2a6a75e731102ff44380ec785343b67aaf370ee9b98d27d69d1",
+            "expires_at": "2026-10-31 08:46:31",
+            "revoked": 1,
+            "created_at": "2026-10-24 09:46:31"
+        },
+        {
+            "id": 38,
+            "user_id": 2,
+            "token_hash": "46b1e52aca4907740af8572b6ac2e1960ac7e5e8d4603ab952458c86181111f4",
+            "expires_at": "2026-10-31 08:48:34",
+            "revoked": 1,
+            "created_at": "2026-10-24 09:48:34"
+        },
+        {
+            "id": 39,
+            "user_id": 2,
+            "token_hash": "c1caa55a117a64be4aceba8fbc2046e60d79d79f4ccf1e65eb2436d01217bcab",
+            "expires_at": "2026-10-31 08:49:59",
+            "revoked": 1,
+            "created_at": "2026-10-24 09:49:59"
         }
     ],
     "audit_logs": [

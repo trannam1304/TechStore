@@ -55,26 +55,23 @@ abstract class BaseController {
      * Lấy thông tin user hiện tại qua JWT token hoặc fallback
      */
     public static function getCurrentAuthUser(?array $db = null): ?array {
-        if ($db === null) {
-            $db = self::getDb();
-        }
-
         $token = AuthMiddleware::extractToken();
-        if ($token) {
-            $payload = JwtService::verifyToken($token);
-            if ($payload && isset($payload['sub'])) {
-                $user = DataStore::findUserById((int)$payload['sub']);
-                if ($user) {
-                    return $user;
-                }
-            }
-            if (str_contains($token, 'admin')) {
-                return $db['users'][0] ?? null;
-            }
-            return $db['users'][1] ?? null;
+        if (!$token) {
+            return null;
         }
 
-        return $db['users'][1] ?? null;
+        $payload = JwtService::verifyToken($token);
+        if (!$payload || !isset($payload['sub']) || ($payload['type'] ?? '') !== 'access') {
+            return null;
+        }
+
+        $user = DataStore::findUserById((int)$payload['sub']);
+        if (!$user || ($user['status'] ?? 'active') === 'banned') {
+            return null;
+        }
+
+        unset($user['password_hash']);
+        return $user;
     }
 
     /**

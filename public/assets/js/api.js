@@ -436,6 +436,7 @@ class ApiClient {
       const response = await fetch(url, {
         ...options,
         headers,
+        credentials: 'same-origin',
         signal: controller.signal
       });
       clearTimeout(timeoutId);
@@ -469,17 +470,20 @@ class ApiClient {
 
   async refreshToken() {
     const rf = this.getRefreshToken();
-    if (!rf) return false;
     try {
       const res = await fetch(`${this.baseUrl}/auth/refresh`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refresh_token: rf })
+        credentials: 'same-origin',
+        body: JSON.stringify({ refresh_token: rf || '' })
       });
       if (res.ok) {
         const data = await res.json();
-        this.setAuthTokens(data.data.access_token, data.data.refresh_token, data.data.user);
-        return true;
+        const payload = data.data || data;
+        if (payload.access_token) {
+          this.setAuthTokens(payload.access_token, payload.refresh_token || rf, payload.user || this.getCurrentUser());
+          return true;
+        }
       }
     } catch (e) {}
     this.clearAuth();

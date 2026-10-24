@@ -1,53 +1,87 @@
 <?php
 /**
- * TechStore - Auth Controller
- * Topic 1: RESTful API ¬∑ PHP thu·∫ßn
- * Nhi·ªám v·ª• T11: Endpoint register / login / refresh / logout / me; password_hash; refresh token l∆∞u DB
+ * TechStore - Auth Controller (Authentication & Authorization)
+ * Qu?n l˝ dang k˝, dang nh?p (Bcrypt), c?p ph·t & l‡m m?i c?p JWT Access/Refresh Token
+ * Tri?n khai chu?n b?o m?t cao c?p: Refresh Token Rotation (RTR), Token Reuse Detection & HttpOnly Cookie
  */
 
 namespace Api\Controllers;
 
 require_once __DIR__ . '/BaseController.php';
+require_once __DIR__ . '/../helpers/Validator.php';
+require_once __DIR__ . '/../helpers/DataStore.php';
+require_once __DIR__ . '/../helpers/Response.php';
+require_once __DIR__ . '/../services/JwtService.php';
 
-use Api\Services\JwtService;
-use Api\Helpers\Response;
 use Api\Helpers\Validator;
 use Api\Helpers\DataStore;
+use Api\Helpers\Response;
+use Api\Services\JwtService;
 
 class AuthController extends BaseController {
+
+    /**
+     * Thi?t l?p Refresh Token v‡o HttpOnly Cookie an to‡n
+     */
+    public static function setRefreshTokenCookie(string $refreshToken, int $expiresIn): void {
+        $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (isset($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443)
+            || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+
+        setcookie('refresh_token', $refreshToken, [
+            'expires'  => time() + $expiresIn,
+            'path'     => '/',
+            'domain'   => '',
+            'secure'   => $isHttps,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+    }
+
+    /**
+     * XÛa Refresh Token Cookie khi dang xu?t ho?c b? revoke
+     */
+    public static function clearRefreshTokenCookie(): void {
+        setcookie('refresh_token', '', [
+            'expires'  => time() - 3600,
+            'path'     => '/',
+            'domain'   => '',
+            'secure'   => false,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+    }
+
     /**
      * POST /api/v1/auth/register
-     * ƒêƒÉng k√Ω t√†i kho·∫£n kh√°ch h√†ng m·ªõi
+     * –ang k˝ t‡i kho?n ngu?i d˘ng m?i
      */
     public static function register(array $body): void {
         $validator = Validator::make($body, [
             'name'     => 'required|min:2|max:100',
-            'email'    => 'required|email|max:255',
-            'password' => 'required|min:6|max:100'
+            'email'    => 'required|email|max:150',
+            'password' => 'required|min:6|max:64'
         ]);
 
         if ($validator->fails()) {
             Response::error(
                 $validator->getFirstError(),
                 'VALIDATION_ERROR',
-                422,
+                400,
                 $validator->getFlattenedErrors()
             );
         }
 
         $email = trim($body['email']);
-
-        // Ki·ªÉm tra email ƒë√£ t·ªìn t·∫°i hay ch∆∞a
         $existing = DataStore::findUserByEmail($email);
         if ($existing) {
             Response::error(
-                'ƒê·ªãa ch·ªâ email n√†y ƒë√£ ƒë∆∞·ª£c ƒëƒÉng k√Ω trong h·ªá th·ªëng.',
+                '–?a ch? email n‡y d„ du?c s? d?ng. Vui lÚng dang nh?p ho?c d˘ng email kh·c.',
                 'EMAIL_ALREADY_EXISTS',
                 409
             );
         }
 
-        // T·∫°o ng∆∞·ªùi d√πng m·ªõi v·ªõi Bcrypt Password Hash
         $newUser = DataStore::createUser([
             'name'          => trim($body['name']),
             'email'         => $email,
@@ -58,13 +92,16 @@ class AuthController extends BaseController {
             'status'        => 'active'
         ]);
 
-        // T·∫°o c·∫∑p JWT Tokens
+        // T?o c?p JWT Tokens
         $accessToken = JwtService::generateAccessToken($newUser);
         $refreshToken = JwtService::generateRefreshToken($newUser);
 
-        // L∆∞u refresh token v√†o CSDL (b·∫£o m·∫≠t l∆∞u hash)
+        // Luu refresh token v‡o CSDL (b?o m?t luu hash SHA-256)
         $rfExpiry = (int)(getenv('JWT_REFRESH_EXPIRY') ?: 604800);
         DataStore::saveRefreshToken((int)$newUser['id'], $refreshToken, $rfExpiry);
+
+        // –?t cookie HttpOnly
+        self::setRefreshTokenCookie($refreshToken, $rfExpiry);
 
         unset($newUser['password_hash']);
 
@@ -73,13 +110,14 @@ class AuthController extends BaseController {
             'access_token'  => $accessToken,
             'refresh_token' => $refreshToken,
             'token_type'    => 'Bearer',
-            'expires_in'    => (int)(getenv('JWT_ACCESS_EXPIRY') ?: 3600)
-        ], 201, 'ƒêƒÉng k√Ω t√†i kho·∫£n th√†nh c√¥ng');
+            'expires_in'    => (int)(getenv('JWT_ACCESS_EXPIRY') ?: 900)
+        ], 201, '–ang k˝ t‡i kho?n th‡nh cÙng');
     }
 
     /**
      * POST /api/v1/auth/login
-     * ƒêƒÉng nh·∫≠p h·ªá th·ªëng, c·∫•p Access Token & Refresh Token
+     * –ang nh?p h? th?ng, c?p Access Token & Refresh Token
+     * Ch? x·c th?c chu?n Bcrypt - KhÙng cÛ b?t k? backdoor fallback n‡o
      */
     public static function login(array $body): void {
         $validator = Validator::make($body, [
@@ -103,47 +141,45 @@ class AuthController extends BaseController {
 
         if (!$user) {
             Response::error(
-                'T√†i kho·∫£n email ho·∫∑c m·∫≠t kh·∫©u kh√¥ng ch√≠nh x√°c.',
+                'T‡i kho?n email ho?c m?t kh?u khÙng chÌnh x·c.',
                 'INVALID_CREDENTIALS',
                 401
             );
         }
 
-        // Ki·ªÉm tra tr·∫°ng th√°i t√†i kho·∫£n
+        // Ki?m tra tr?ng th·i t‡i kho?n
         if (($user['status'] ?? 'active') === 'banned') {
             Response::error(
-                'T√†i kho·∫£n c·ªßa b·∫°n ƒë√£ b·ªã kh√≥a ho·∫∑c v√¥ hi·ªáu h√≥a. Vui l√≤ng li√™n h·ªá ban qu·∫£n tr·ªã.',
+                'T‡i kho?n c?a b?n d„ b? khÛa ho?c vÙ hi?u hÛa. Vui lÚng liÍn h? ban qu?n tr?.',
                 'ACCOUNT_BANNED',
                 403
             );
         }
 
-        // Ki·ªÉm tra m·∫≠t kh·∫©u Bcrypt
+        // Ki?m tra m?t kh?u chu?n Bcrypt
         $passwordValid = false;
         if (!empty($user['password_hash'])) {
             $passwordValid = password_verify($password, $user['password_hash']);
         }
 
-        // Fallback ki·ªÉm tra m·∫≠t kh·∫©u m·∫´u ph·ªï bi·∫øn n·∫øu hash c≈© kh√¥ng kh·ªõp
-        if (!$passwordValid && ($password === 'Admin@123' || $password === 'User@123' || $password === '123456')) {
-            $passwordValid = true;
-        }
-
         if (!$passwordValid) {
             Response::error(
-                'T√†i kho·∫£n email ho·∫∑c m·∫≠t kh·∫©u kh√¥ng ch√≠nh x√°c.',
+                'T‡i kho?n email ho?c m?t kh?u khÙng chÌnh x·c.',
                 'INVALID_CREDENTIALS',
                 401
             );
         }
 
-        // T·∫°o JWT Access & Refresh Token
+        // T?o JWT Access & Refresh Token
         $accessToken = JwtService::generateAccessToken($user);
         $refreshToken = JwtService::generateRefreshToken($user);
 
-        // L∆∞u refresh token v√†o DB
+        // Luu refresh token v‡o DB
         $rfExpiry = (int)(getenv('JWT_REFRESH_EXPIRY') ?: 604800);
         DataStore::saveRefreshToken((int)$user['id'], $refreshToken, $rfExpiry);
+
+        // –?t cookie HttpOnly
+        self::setRefreshTokenCookie($refreshToken, $rfExpiry);
 
         unset($user['password_hash']);
 
@@ -152,84 +188,124 @@ class AuthController extends BaseController {
             'access_token'  => $accessToken,
             'refresh_token' => $refreshToken,
             'token_type'    => 'Bearer',
-            'expires_in'    => (int)(getenv('JWT_ACCESS_EXPIRY') ?: 3600)
-        ], 200, 'ƒêƒÉng nh·∫≠p th√†nh c√¥ng');
+            'expires_in'    => (int)(getenv('JWT_ACCESS_EXPIRY') ?: 900)
+        ], 200, '–ang nh?p th‡nh cÙng');
     }
 
     /**
      * POST /api/v1/auth/refresh
-     * C·∫•p l·∫°i Access Token m·ªõi qua Refresh Token
+     * C?p l?i c?p Token m?i qua Refresh Token Rotation (RTR)
+     * Ph·t hi?n t·i s? d?ng token (Token Reuse Detection) v‡ vÙ hi?u hÛa n?u cÛ x‚m nh?p
      */
     public static function refresh(array $body): void {
-        $refreshToken = trim($body['refresh_token'] ?? '');
+        $refreshToken = trim($body['refresh_token'] ?? $_COOKIE['refresh_token'] ?? '');
         if (!$refreshToken) {
-            Response::error('Thi·∫øu th√¥ng tin refresh_token', 'VALIDATION_ERROR', 400);
+            Response::error('Thi?u thÙng tin refresh_token', 'VALIDATION_ERROR', 400);
         }
 
-        // 1. Ki·ªÉm tra t√≠nh h·ª£p l·ªá v·ªÅ m·∫∑t m√£ h√≥a v√† h·∫°n s·ª≠ d·ª•ng c·ªßa JWT
+        // 1. Ki?m tra tÌnh h?p l? v? m?t m„ hÛa v‡ h?n s? d?ng c?a JWT
         $payload = JwtService::verifyToken($refreshToken);
         if (!$payload || ($payload['type'] ?? '') !== 'refresh') {
             Response::error(
-                'Refresh token kh√¥ng h·ª£p l·ªá ho·∫∑c ƒë√£ h·∫øt h·∫°n.',
+                'Refresh token khÙng h?p l? ho?c d„ h?t h?n.',
                 'INVALID_REFRESH_TOKEN',
                 401
             );
         }
 
-        // 2. Ki·ªÉm tra tr·∫°ng th√°i thu h·ªìi trong CSDL
-        $isValidInDb = DataStore::isRefreshTokenValid($refreshToken);
-        if (!$isValidInDb) {
+        $userId = (int)($payload['sub'] ?? 0);
+
+        // 2. TÏm b?n ghi token trong CSDL
+        $tokenRecord = DataStore::findRefreshTokenRecord($refreshToken);
+        if (!$tokenRecord) {
             Response::error(
-                'Refresh token ƒë√£ b·ªã thu h·ªìi ho·∫∑c kh√¥ng t·ªìn t·∫°i trong h·ªá th·ªëng.',
-                'REFRESH_TOKEN_REVOKED',
+                'Refresh token khÙng t?n t?i trong h? th?ng.',
+                'REFRESH_TOKEN_NOT_FOUND',
                 401
             );
         }
 
-        // 3. L·∫•y th√¥ng tin ng∆∞·ªùi d√πng t∆∞∆°ng ·ª©ng
-        $userId = (int)($payload['sub'] ?? 0);
-        $user = DataStore::findUserById($userId);
-        if (!$user || ($user['status'] ?? 'active') === 'banned') {
-            Response::error('Ng∆∞·ªùi d√πng kh√¥ng c√≤n t·ªìn t·∫°i ho·∫∑c ƒë√£ b·ªã kh√≥a.', 'USER_INACTIVE', 401);
+        // 3. Ph·t hi?n Token Reuse (Token d„ b? thu h?i tru?c dÛ nhung b? g?i l?i)
+        if ((int)$tokenRecord['revoked'] === 1) {
+            // Nguy co b?o m?t: Refresh token b? d·nh c?p v‡ t·i s? d?ng
+            // Thu h?i to‡n b? refresh tokens c?a user d? b?o v? t‡i kho?n
+            DataStore::revokeAllUserRefreshTokens($userId);
+            self::clearRefreshTokenCookie();
+            Response::error(
+                'C?nh b·o b?o m?t: Ph·t hi?n Refresh Token d„ b? thu h?i tru?c dÛ (Token Reuse). ' .
+                'To‡n b? phiÍn dang nh?p d„ b? vÙ hi?u hÛa vÏ l˝ do an to‡n. Vui lÚng dang nh?p l?i.',
+                'TOKEN_REUSE_DETECTED',
+                401
+            );
         }
 
-        // C·∫•p Access Token m·ªõi
+        // 4. Ki?m tra h?n s?ng c?a token trong DB
+        if (strtotime($tokenRecord['expires_at']) <= time()) {
+            Response::error(
+                'Refresh token d„ h?t h?n s? d?ng. Vui lÚng dang nh?p l?i.',
+                'REFRESH_TOKEN_EXPIRED',
+                401
+            );
+        }
+
+        // 5. L?y thÙng tin ngu?i d˘ng tuong ?ng
+        $user = DataStore::findUserById($userId);
+        if (!$user || ($user['status'] ?? 'active') === 'banned') {
+            Response::error('Ngu?i d˘ng khÙng cÚn t?n t?i ho?c d„ b? khÛa.', 'USER_INACTIVE', 401);
+        }
+
+        // 6. TH?C HI?N REFRESH TOKEN ROTATION:
+        // a) Thu h?i refresh token cu
+        DataStore::revokeRefreshToken($refreshToken);
+
+        // b) Sinh c?p token m?i ho‡n to‡n
         $newAccessToken = JwtService::generateAccessToken($user);
+        $newRefreshToken = JwtService::generateRefreshToken($user);
+
+        // c) Luu refresh token m?i v‡o CSDL
+        $rfExpiry = (int)(getenv('JWT_REFRESH_EXPIRY') ?: 604800);
+        DataStore::saveRefreshToken($userId, $newRefreshToken, $rfExpiry);
+
+        // d) C?p nh?t cookie HttpOnly
+        self::setRefreshTokenCookie($newRefreshToken, $rfExpiry);
 
         unset($user['password_hash']);
 
         Response::success([
-            'access_token' => $newAccessToken,
-            'token_type'   => 'Bearer',
-            'expires_in'   => (int)(getenv('JWT_ACCESS_EXPIRY') ?: 3600),
-            'user'         => $user
-        ], 200, 'L√†m m·ªõi Access Token th√†nh c√¥ng');
+            'access_token'  => $newAccessToken,
+            'refresh_token' => $newRefreshToken,
+            'token_type'    => 'Bearer',
+            'expires_in'    => (int)(getenv('JWT_ACCESS_EXPIRY') ?: 900),
+            'user'          => $user
+        ], 200, 'L‡m m?i Access Token & Refresh Token th‡nh cÙng (Rotation)');
     }
 
     /**
      * POST /api/v1/auth/logout
-     * ƒêƒÉng xu·∫•t v√† thu h·ªìi Refresh Token
+     * –ang xu?t v‡ thu h?i Refresh Token
      */
     public static function logout(array $user, array $body): void {
-        $refreshToken = trim($body['refresh_token'] ?? '');
+        $refreshToken = trim($body['refresh_token'] ?? $_COOKIE['refresh_token'] ?? '');
         if ($refreshToken) {
             DataStore::revokeRefreshToken($refreshToken);
         }
 
-        // Tr·∫£ v·ªÅ HTTP 204 No Content theo chu·∫©n RESTful
+        self::clearRefreshTokenCookie();
+
+        // Tr? v? HTTP 204 No Content theo chu?n RESTful
         Response::success(null, 204);
     }
 
     /**
      * GET /api/v1/auth/me
-     * L·∫•y th√¥ng tin t√†i kho·∫£n hi·ªán t·∫°i
+     * L?y thÙng tin t‡i kho?n hi?n t?i
      */
     public static function me(array $authUser): void {
         $userId = (int)($authUser['sub'] ?? 0);
         $user = DataStore::findUserById($userId);
 
         if (!$user) {
-            Response::error('Kh√¥ng t√¨m th·∫•y t√†i kho·∫£n ng∆∞·ªùi d√πng', 'USER_NOT_FOUND', 404);
+            Response::error('KhÙng tÏm th?y t‡i kho?n ngu?i d˘ng', 'USER_NOT_FOUND', 404);
         }
 
         unset($user['password_hash']);
@@ -238,7 +314,7 @@ class AuthController extends BaseController {
 
     /**
      * POST /api/v1/auth/google
-     * ƒêƒÉng nh·∫≠p demo OAuth 2.0 Google
+     * –ang nh?p demo OAuth 2.0 Google
      */
     public static function google(array $body): void {
         $token = $body['token'] ?? '';
@@ -260,6 +336,10 @@ class AuthController extends BaseController {
         $accessToken = JwtService::generateAccessToken($user);
         $refreshToken = JwtService::generateRefreshToken($user);
 
+        $rfExpiry = (int)(getenv('JWT_REFRESH_EXPIRY') ?: 604800);
+        DataStore::saveRefreshToken((int)$user['id'], $refreshToken, $rfExpiry);
+        self::setRefreshTokenCookie($refreshToken, $rfExpiry);
+
         unset($user['password_hash']);
 
         Response::success([
@@ -267,7 +347,7 @@ class AuthController extends BaseController {
             'access_token'  => $accessToken,
             'refresh_token' => $refreshToken,
             'token_type'    => 'Bearer',
-            'expires_in'    => (int)(getenv('JWT_ACCESS_EXPIRY') ?: 3600)
-        ], 200, 'ƒêƒÉng nh·∫≠p Google OAuth th√†nh c√¥ng');
+            'expires_in'    => (int)(getenv('JWT_ACCESS_EXPIRY') ?: 900)
+        ], 200, '–ang nh?p Google OAuth th‡nh cÙng');
     }
 }
