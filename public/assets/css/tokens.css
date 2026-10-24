@@ -89,12 +89,45 @@
   --shadow-card-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
 
   /* Transitions */
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.25s ease;
-  --transition-slow: 0.4s ease;
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Layout */
   --container-max-width: 1200px;
   --header-height: 72px;
   --sidebar-width: 260px;
+
+  /* ===================================================
+     GLASSMORPHISM DESIGN TOKENS
+     =================================================== */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.45);
+  --glass-bg-elevated: rgba(255, 255, 255, 0.86);
+  --glass-bg-dark: rgba(15, 23, 42, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-border-subtle: rgba(226, 232, 240, 0.65);
+  --glass-border-glow: rgba(215, 0, 24, 0.4);
+  --glass-blur-sm: blur(8px) saturate(160%);
+  --glass-blur: blur(16px) saturate(180%);
+  --glass-blur-lg: blur(28px) saturate(200%);
+  --glass-shadow-sm: 0 4px 16px 0 rgba(31, 38, 135, 0.06), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.75);
+  --glass-shadow-hover: 0 16px 40px -8px rgba(215, 0, 24, 0.18), inset 0 0 0 1.5px rgba(255, 255, 255, 0.9);
+
+  /* ===================================================
+     VIBRANT AURORA GRADIENTS (Hiệu ứng loang lổ)
+     =================================================== */
+  --aurora-crimson: #d70018;
+  --aurora-magenta: #ff007a;
+  --aurora-purple: #7928ca;
+  --aurora-violet: #6366f1;
+  --aurora-cyan: #00dfd8;
+  --aurora-blue: #0070f3;
+  --aurora-amber: #ff8c00;
+
+  --gradient-aurora-glow: linear-gradient(135deg, #d70018, #ff007a 40%, #7928ca 80%, #0070f3 100%);
+  --gradient-aurora-subtle: linear-gradient(135deg, rgba(215, 0, 24, 0.08), rgba(121, 40, 202, 0.08) 50%, rgba(0, 112, 243, 0.08));
+  --gradient-glass-border: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.2) 50%, rgba(215, 0, 24, 0.4));
+  --gradient-text-shimmer: linear-gradient(90deg, #d70018, #ff007a, #7928ca, #0070f3, #d70018);
 }
