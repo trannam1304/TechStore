@@ -1,8 +1,8 @@
 <?php
 /**
  * TechStore - Auth Controller (Authentication & Authorization)
- * Qu?n l� dang k�, dang nh?p (Bcrypt), c?p ph�t & l�m m?i c?p JWT Access/Refresh Token
- * Tri?n khai chu?n b?o m?t cao c?p: Refresh Token Rotation (RTR), Token Reuse Detection & HttpOnly Cookie
+ * Quản lý đăng ký, đăng nhập (Bcrypt), cấp phát & làm mới cặp JWT Access/Refresh Token
+ * Triển khai chuẩn bảo mật cao cấp: Refresh Token Rotation (RTR), Token Reuse Detection & HttpOnly Cookie
  */
 
 namespace Api\Controllers;
@@ -21,7 +21,7 @@ use Api\Services\JwtService;
 class AuthController extends BaseController {
 
     /**
-     * Thi?t l?p Refresh Token v�o HttpOnly Cookie an to�n
+     * Thiết lập Refresh Token vào HttpOnly Cookie an toàn
      */
     public static function setRefreshTokenCookie(string $refreshToken, int $expiresIn): void {
         $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
@@ -39,7 +39,7 @@ class AuthController extends BaseController {
     }
 
     /**
-     * X�a Refresh Token Cookie khi dang xu?t ho?c b? revoke
+     * Xóa Refresh Token Cookie khi đăng xuất hoặc bị revoke
      */
     public static function clearRefreshTokenCookie(): void {
         setcookie('refresh_token', '', [
@@ -54,7 +54,7 @@ class AuthController extends BaseController {
 
     /**
      * POST /api/v1/auth/register
-     * �ang k� t�i kho?n ngu?i d�ng m?i
+     * Đăng ký tài khoản người dùng mới
      */
     public static function register(array $body): void {
         $validator = Validator::make($body, [
@@ -76,7 +76,7 @@ class AuthController extends BaseController {
         $existing = DataStore::findUserByEmail($email);
         if ($existing) {
             Response::error(
-                '�?a ch? email n�y d� du?c s? d?ng. Vui l�ng dang nh?p ho?c d�ng email kh�c.',
+                'Địa chỉ email này đã được sử dụng. Vui lòng đăng nhập hoặc dùng email khác.',
                 'EMAIL_ALREADY_EXISTS',
                 409
             );
@@ -92,15 +92,15 @@ class AuthController extends BaseController {
             'status'        => 'active'
         ]);
 
-        // T?o c?p JWT Tokens
+        // Tạo cặp JWT Tokens
         $accessToken = JwtService::generateAccessToken($newUser);
         $refreshToken = JwtService::generateRefreshToken($newUser);
 
-        // Luu refresh token v�o CSDL (b?o m?t luu hash SHA-256)
+        // Lưu refresh token vào CSDL (bảo mật lưu hash SHA-256)
         $rfExpiry = (int)(getenv('JWT_REFRESH_EXPIRY') ?: 604800);
         DataStore::saveRefreshToken((int)$newUser['id'], $refreshToken, $rfExpiry);
 
-        // �?t cookie HttpOnly
+        // Đặt cookie HttpOnly
         self::setRefreshTokenCookie($refreshToken, $rfExpiry);
 
         unset($newUser['password_hash']);
@@ -111,13 +111,13 @@ class AuthController extends BaseController {
             'refresh_token' => $refreshToken,
             'token_type'    => 'Bearer',
             'expires_in'    => (int)(getenv('JWT_ACCESS_EXPIRY') ?: 900)
-        ], 201, '�ang k� t�i kho?n th�nh c�ng');
+        ], 201, 'Đăng ký tài khoản thành công');
     }
 
     /**
      * POST /api/v1/auth/login
-     * �ang nh?p h? th?ng, c?p Access Token & Refresh Token
-     * Ch? x�c th?c chu?n Bcrypt - Kh�ng c� b?t k? backdoor fallback n�o
+     * Đăng nhập hệ thống, cấp Access Token & Refresh Token
+     * Chỉ xác thực chuẩn Bcrypt - Không có bất kỳ backdoor fallback nào
      */
     public static function login(array $body): void {
         $validator = Validator::make($body, [
@@ -141,22 +141,22 @@ class AuthController extends BaseController {
 
         if (!$user) {
             Response::error(
-                'T�i kho?n email ho?c m?t kh?u kh�ng ch�nh x�c.',
+                'Tài khoản email hoặc mật khẩu không chính xác.',
                 'INVALID_CREDENTIALS',
                 401
             );
         }
 
-        // Ki?m tra tr?ng th�i t�i kho?n
+        // Kiểm tra trạng thái tài khoản
         if (($user['status'] ?? 'active') === 'banned') {
             Response::error(
-                'T�i kho?n c?a b?n d� b? kh�a ho?c v� hi?u h�a. Vui l�ng li�n h? ban qu?n tr?.',
+                'Tài khoản của bạn đã bị khóa hoặc vô hiệu hóa. Vui lòng liên hệ ban quản trị.',
                 'ACCOUNT_BANNED',
                 403
             );
         }
 
-        // Ki?m tra m?t kh?u chu?n Bcrypt
+        // Kiểm tra mật khẩu chuẩn Bcrypt
         $passwordValid = false;
         if (!empty($user['password_hash'])) {
             $passwordValid = password_verify($password, $user['password_hash']);
@@ -164,21 +164,21 @@ class AuthController extends BaseController {
 
         if (!$passwordValid) {
             Response::error(
-                'T�i kho?n email ho?c m?t kh?u kh�ng ch�nh x�c.',
+                'Tài khoản email hoặc mật khẩu không chính xác.',
                 'INVALID_CREDENTIALS',
                 401
             );
         }
 
-        // T?o JWT Access & Refresh Token
+        // Tạo JWT Access & Refresh Token
         $accessToken = JwtService::generateAccessToken($user);
         $refreshToken = JwtService::generateRefreshToken($user);
 
-        // Luu refresh token v�o DB
+        // Lưu refresh token vào DB
         $rfExpiry = (int)(getenv('JWT_REFRESH_EXPIRY') ?: 604800);
         DataStore::saveRefreshToken((int)$user['id'], $refreshToken, $rfExpiry);
 
-        // �?t cookie HttpOnly
+        // Đặt cookie HttpOnly
         self::setRefreshTokenCookie($refreshToken, $rfExpiry);
 
         unset($user['password_hash']);
@@ -189,25 +189,25 @@ class AuthController extends BaseController {
             'refresh_token' => $refreshToken,
             'token_type'    => 'Bearer',
             'expires_in'    => (int)(getenv('JWT_ACCESS_EXPIRY') ?: 900)
-        ], 200, '�ang nh?p th�nh c�ng');
+        ], 200, 'Đăng nhập thành công');
     }
 
     /**
      * POST /api/v1/auth/refresh
-     * C?p l?i c?p Token m?i qua Refresh Token Rotation (RTR)
-     * Ph�t hi?n t�i s? d?ng token (Token Reuse Detection) v� v� hi?u h�a n?u c� x�m nh?p
+     * Cấp lại cặp Token mới qua Refresh Token Rotation (RTR)
+     * Phát hiện tái sử dụng token (Token Reuse Detection) và vô hiệu hóa nếu có xâm nhập
      */
     public static function refresh(array $body): void {
         $refreshToken = trim($body['refresh_token'] ?? $_COOKIE['refresh_token'] ?? '');
         if (!$refreshToken) {
-            Response::error('Thi?u th�ng tin refresh_token', 'VALIDATION_ERROR', 400);
+            Response::error('Thiếu thông tin refresh_token', 'VALIDATION_ERROR', 400);
         }
 
-        // 1. Ki?m tra t�nh h?p l? v? m?t m� h�a v� h?n s? d?ng c?a JWT
+        // 1. Kiểm tra tính hợp lệ về mặt mã hóa và hạn sử dụng của JWT
         $payload = JwtService::verifyToken($refreshToken);
         if (!$payload || ($payload['type'] ?? '') !== 'refresh') {
             Response::error(
-                'Refresh token kh�ng h?p l? ho?c d� h?t h?n.',
+                'Refresh token không hợp lệ hoặc đã hết hạn.',
                 'INVALID_REFRESH_TOKEN',
                 401
             );
@@ -215,58 +215,58 @@ class AuthController extends BaseController {
 
         $userId = (int)($payload['sub'] ?? 0);
 
-        // 2. T�m b?n ghi token trong CSDL
+        // 2. Tìm bản ghi token trong CSDL
         $tokenRecord = DataStore::findRefreshTokenRecord($refreshToken);
         if (!$tokenRecord) {
             Response::error(
-                'Refresh token kh�ng t?n t?i trong h? th?ng.',
+                'Refresh token không tồn tại trong hệ thống.',
                 'REFRESH_TOKEN_NOT_FOUND',
                 401
             );
         }
 
-        // 3. Ph�t hi?n Token Reuse (Token d� b? thu h?i tru?c d� nhung b? g?i l?i)
+        // 3. Phát hiện Token Reuse (Token đã bị thu hồi trước đó nhưng bị gửi lại)
         if ((int)$tokenRecord['revoked'] === 1) {
-            // Nguy co b?o m?t: Refresh token b? d�nh c?p v� t�i s? d?ng
-            // Thu h?i to�n b? refresh tokens c?a user d? b?o v? t�i kho?n
+            // Nguy cơ bảo mật: Refresh token bị đánh cắp và tái sử dụng
+            // Thu hồi toàn bộ refresh tokens của user để bảo vệ tài khoản
             DataStore::revokeAllUserRefreshTokens($userId);
             self::clearRefreshTokenCookie();
             Response::error(
-                'C?nh b�o b?o m?t: Ph�t hi?n Refresh Token d� b? thu h?i tru?c d� (Token Reuse). ' .
-                'To�n b? phi�n dang nh?p d� b? v� hi?u h�a v� l� do an to�n. Vui l�ng dang nh?p l?i.',
+                'Cảnh báo bảo mật: Phát hiện Refresh Token đã bị thu hồi trước đó (Token Reuse). ' .
+                'Toàn bộ phiên đăng nhập đã bị vô hiệu hóa vì lý do an toàn. Vui lòng đăng nhập lại.',
                 'TOKEN_REUSE_DETECTED',
                 401
             );
         }
 
-        // 4. Ki?m tra h?n s?ng c?a token trong DB
+        // 4. Kiểm tra hạn sống của token trong DB
         if (strtotime($tokenRecord['expires_at']) <= time()) {
             Response::error(
-                'Refresh token d� h?t h?n s? d?ng. Vui l�ng dang nh?p l?i.',
+                'Refresh token đã hết hạn sử dụng. Vui lòng đăng nhập lại.',
                 'REFRESH_TOKEN_EXPIRED',
                 401
             );
         }
 
-        // 5. L?y th�ng tin ngu?i d�ng tuong ?ng
+        // 5. Lấy thông tin người dùng tương ứng
         $user = DataStore::findUserById($userId);
         if (!$user || ($user['status'] ?? 'active') === 'banned') {
-            Response::error('Ngu?i d�ng kh�ng c�n t?n t?i ho?c d� b? kh�a.', 'USER_INACTIVE', 401);
+            Response::error('Người dùng không còn tồn tại hoặc đã bị khóa.', 'USER_INACTIVE', 401);
         }
 
-        // 6. TH?C HI?N REFRESH TOKEN ROTATION:
-        // a) Thu h?i refresh token cu
+        // 6. THỰC HIỆN REFRESH TOKEN ROTATION:
+        // a) Thu hồi refresh token cũ
         DataStore::revokeRefreshToken($refreshToken);
 
-        // b) Sinh c?p token m?i ho�n to�n
+        // b) Sinh cặp token mới hoàn toàn
         $newAccessToken = JwtService::generateAccessToken($user);
         $newRefreshToken = JwtService::generateRefreshToken($user);
 
-        // c) Luu refresh token m?i v�o CSDL
+        // c) Lưu refresh token mới vào CSDL
         $rfExpiry = (int)(getenv('JWT_REFRESH_EXPIRY') ?: 604800);
         DataStore::saveRefreshToken($userId, $newRefreshToken, $rfExpiry);
 
-        // d) C?p nh?t cookie HttpOnly
+        // d) Cập nhật cookie HttpOnly
         self::setRefreshTokenCookie($newRefreshToken, $rfExpiry);
 
         unset($user['password_hash']);
@@ -277,12 +277,12 @@ class AuthController extends BaseController {
             'token_type'    => 'Bearer',
             'expires_in'    => (int)(getenv('JWT_ACCESS_EXPIRY') ?: 900),
             'user'          => $user
-        ], 200, 'L�m m?i Access Token & Refresh Token th�nh c�ng (Rotation)');
+        ], 200, 'Làm mới Access Token & Refresh Token thành công (Rotation)');
     }
 
     /**
      * POST /api/v1/auth/logout
-     * �ang xu?t v� thu h?i Refresh Token
+     * Đăng xuất và thu hồi Refresh Token
      */
     public static function logout(array $user, array $body): void {
         $refreshToken = trim($body['refresh_token'] ?? $_COOKIE['refresh_token'] ?? '');
@@ -292,20 +292,20 @@ class AuthController extends BaseController {
 
         self::clearRefreshTokenCookie();
 
-        // Tr? v? HTTP 204 No Content theo chu?n RESTful
+        // Trả về HTTP 204 No Content theo chuẩn RESTful
         Response::success(null, 204);
     }
 
     /**
      * GET /api/v1/auth/me
-     * L?y th�ng tin t�i kho?n hi?n t?i
+     * Lấy thông tin tài khoản hiện tại
      */
     public static function me(array $authUser): void {
         $userId = (int)($authUser['sub'] ?? 0);
         $user = DataStore::findUserById($userId);
 
         if (!$user) {
-            Response::error('Kh�ng t�m th?y t�i kho?n ngu?i d�ng', 'USER_NOT_FOUND', 404);
+            Response::error('Không tìm thấy tài khoản người dùng', 'USER_NOT_FOUND', 404);
         }
 
         unset($user['password_hash']);
@@ -314,7 +314,7 @@ class AuthController extends BaseController {
 
     /**
      * POST /api/v1/auth/google
-     * �ang nh?p demo OAuth 2.0 Google
+     * Đăng nhập demo OAuth 2.0 Google
      */
     public static function google(array $body): void {
         $token = $body['token'] ?? '';
@@ -348,6 +348,6 @@ class AuthController extends BaseController {
             'refresh_token' => $refreshToken,
             'token_type'    => 'Bearer',
             'expires_in'    => (int)(getenv('JWT_ACCESS_EXPIRY') ?: 900)
-        ], 200, '�ang nh?p Google OAuth th�nh c�ng');
+        ], 200, 'Đăng nhập Google OAuth thành công');
     }
 }

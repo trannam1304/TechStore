@@ -62,13 +62,6 @@ function jsonErr(string $message, string $code = 'ERROR', int $status = 400): vo
     BaseController::jsonErr($message, $code, $status);
 }
 
-function getDb(): array {
-    return BaseController::getDb();
-}
-
-function saveDb(array $data): void {
-    BaseController::saveDb($data);
-}
 
 function getCurrentAuthUser(?array $db = null): ?array {
     return BaseController::getCurrentAuthUser($db);
@@ -225,6 +218,10 @@ if (preg_match('#^/cart/items/(\d+)$#', $subPath, $m) && $reqMethod === 'PUT') {
 
 if (preg_match('#^/cart/items/(\d+)$#', $subPath, $m) && $reqMethod === 'DELETE') {
     CartController::removeItem((int)$m[1]);
+}
+
+if ($subPath === '/cart' && $reqMethod === 'DELETE') {
+    CartController::clearCart();
 }
 
 // -------------------------------------------------------------------------

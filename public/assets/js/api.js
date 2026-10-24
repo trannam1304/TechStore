@@ -1206,6 +1206,9 @@ class ApiClient {
     },
     clear: async () => {
       this.clearCart();
+      try {
+        await this.request('/cart', { method: 'DELETE' });
+      } catch (e) {}
       return { success: true };
     }
   };
@@ -1401,4 +1404,26 @@ function setupLiveSearch() {
       }
     });
   }
+}
+
+// ===================================================
+// INJECT AMBIENT AURORA MESH (Hiệu ứng gradient loang lổ)
+// ===================================================
+function initAmbientAurora() {
+  if (document.querySelector('.ambient-aurora-bg')) return;
+  const aurora = document.createElement('div');
+  aurora.className = 'ambient-aurora-bg';
+  aurora.innerHTML = `
+    <div class="aurora-orb aurora-orb-1"></div>
+    <div class="aurora-orb aurora-orb-2"></div>
+    <div class="aurora-orb aurora-orb-3"></div>
+    <div class="aurora-orb aurora-orb-4"></div>
+  `;
+  document.body.prepend(aurora);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAmbientAurora);
+} else {
+  initAmbientAurora();
 }

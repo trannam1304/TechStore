@@ -1,8 +1,8 @@
 <?php
 /**
  * TechStore - CORS Middleware
- * Topic 1: RESTful API · PHP thu?n
- * Nhi?m v? T12: Validator, ErrorHandler chu?n JSON, CORS config
+ * Topic 1: RESTful API - PHP thuan
+ * Nhiem vu T12: Validator, ErrorHandler chuan JSON, CORS config
  */
 
 namespace Api\Middleware;
@@ -33,8 +33,8 @@ class CorsMiddleware {
         header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-HTTP-Method-Override, X-Signature');
         header('Access-Control-Max-Age: 86400'); // 24 hours preflight cache
 
-        // Tr? v? ngay l?p t?c n?u là OPTIONS request
-        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        // Tra ve ngay lap tuc neu la OPTIONS request
+        if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
             http_response_code(200);
             exit;
         }
