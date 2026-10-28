@@ -118,6 +118,12 @@
         }
         showToast('Đăng ký tài khoản thành công!', 'success');
         setTimeout(() => {
+          const urlParams = new URLSearchParams(window.location.search);
+          const redirect = urlParams.get('redirect');
+          if (redirect) {
+            window.location.href = redirect;
+            return;
+          }
           window.location.href = '/pages/account.html';
         }, 600);
       } else {

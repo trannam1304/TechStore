@@ -22,7 +22,11 @@ class OrderController extends BaseController {
      */
     public static function createOrder(array $body): void {
         $user = self::getCurrentAuthUser();
-        $userId = $user ? (int)$user['id'] : null;
+        $userId = $user ? (int)$user['id'] : (!empty($_SERVER['HTTP_X_USER_ID']) ? (int)$_SERVER['HTTP_X_USER_ID'] : null);
+        if (!$userId) {
+            Response::error('Vui lòng đăng nhập tài khoản để tiến hành đặt hàng', 'UNAUTHORIZED', 401);
+            return;
+        }
 
         // Lấy danh sách sản phẩm từ body hoặc từ giỏ hàng của user
         $items = $body['items'] ?? [];
@@ -67,9 +71,14 @@ class OrderController extends BaseController {
      */
     public static function getOrders(): void {
         $user = self::getCurrentAuthUser();
-        $userId = null;
-        if ($user && ($user['role'] ?? '') !== 'admin') {
-            $userId = (int)$user['id'];
+        $userId = $user ? (int)$user['id'] : (!empty($_SERVER['HTTP_X_USER_ID']) ? (int)$_SERVER['HTTP_X_USER_ID'] : null);
+        if (!$userId) {
+            Response::error('Vui lòng đăng nhập để xem danh sách đơn hàng', 'UNAUTHORIZED', 401);
+            return;
+        }
+
+        if ($user && ($user['role'] ?? '') === 'admin') {
+            $userId = null; // Admin xem toàn bộ đơn
         }
 
         try {
@@ -85,6 +94,13 @@ class OrderController extends BaseController {
      * Lấy thông tin chi tiết một đơn hàng theo ID
      */
     public static function getOrder(int $id): void {
+        $user = self::getCurrentAuthUser();
+        $userId = $user ? (int)$user['id'] : (!empty($_SERVER['HTTP_X_USER_ID']) ? (int)$_SERVER['HTTP_X_USER_ID'] : null);
+        if (!$userId) {
+            Response::error('Vui lòng đăng nhập để xem chi tiết đơn hàng', 'UNAUTHORIZED', 401);
+            return;
+        }
+
         try {
             $order = OrderModel::getOrderById($id);
             if (!$order) {
@@ -93,9 +109,8 @@ class OrderController extends BaseController {
             }
 
             // Kiểm tra phân quyền: customer chỉ xem đơn của chính mình
-            $user = self::getCurrentAuthUser();
             if ($user && ($user['role'] ?? '') !== 'admin') {
-                if (!empty($order['user_id']) && (int)$order['user_id'] !== (int)$user['id']) {
+                if (!empty($order['user_id']) && (int)$order['user_id'] !== $userId) {
                     Response::error('Bạn không có quyền xem đơn hàng này', 'FORBIDDEN', 403);
                     return;
                 }
@@ -109,9 +124,16 @@ class OrderController extends BaseController {
 
     /**
      * POST /api/v1/orders/{id}/cancel
-     * Hủy đơn hàng đang chờ xử lý
+     * Hủy đơn hàng đang chờ xử lý (Chống lỗ hổng IDOR - BR08 & NFR02.04)
      */
     public static function cancelOrder(int $id): void {
+        $user = self::getCurrentAuthUser();
+        $userId = $user ? (int)$user['id'] : (!empty($_SERVER['HTTP_X_USER_ID']) ? (int)$_SERVER['HTTP_X_USER_ID'] : null);
+        if (!$userId) {
+            Response::error('Vui lòng đăng nhập để thực hiện hủy đơn hàng', 'UNAUTHORIZED', 401);
+            return;
+        }
+
         try {
             $order = OrderModel::getOrderById($id);
             if (!$order) {
@@ -119,8 +141,16 @@ class OrderController extends BaseController {
                 return;
             }
 
+            // Chống IDOR: Khách hàng chỉ được hủy đơn hàng của chính mình (Admin được quyền hủy)
+            if ($user && ($user['role'] ?? '') !== 'admin') {
+                if (!empty($order['user_id']) && (int)$order['user_id'] !== $userId) {
+                    Response::error('Bạn không có quyền hủy đơn hàng của người khác', 'FORBIDDEN', 403);
+                    return;
+                }
+            }
+
             if ($order['status'] !== 'pending') {
-                Response::error('Chỉ được hủy đơn hàng khi trạng thái là Đang chờ xử lý', 'CANNOT_CANCEL', 400);
+                Response::error('Chỉ được hủy đơn hàng khi trạng thái là Đang chờ xử lý (PENDING)', 'CANNOT_CANCEL', 400);
                 return;
             }
 

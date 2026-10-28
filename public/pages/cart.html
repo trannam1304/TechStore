@@ -264,12 +264,11 @@
     let appliedCoupon = null;
 
     document.addEventListener('DOMContentLoaded', async () => {
-      // Đồng bộ từ server nếu local rỗng
-      let localCart = api.getCart();
-      if (!localCart.items || localCart.items.length === 0) {
+      // Nếu đã đăng nhập, luôn ưu tiên đồng bộ giỏ hàng chính xác từ MySQL của user đó
+      if (api.isLoggedIn()) {
         try {
           const res = await api.cart.get();
-          if (res && res.success && res.data && Array.isArray(res.data.items) && res.data.items.length > 0) {
+          if (res && res.success && res.data) {
             api.saveCart(res.data);
           }
         } catch (e) {}
@@ -283,6 +282,13 @@
         const cart = api.getCart();
         if (!cart.items || cart.items.length === 0) {
           showToast('Giỏ hàng đang trống!', 'warning');
+          return;
+        }
+        if (!api.isLoggedIn()) {
+          showToast('Vui lòng đăng nhập để tiến hành đặt hàng!', 'warning');
+          setTimeout(() => {
+            window.location.href = '/pages/login.html?redirect=/pages/checkout.html';
+          }, 800);
           return;
         }
         if (appliedCoupon) {
@@ -341,7 +347,7 @@
 
       let discount = 0;
       if (appliedCoupon) {
-        discount = appliedCoupon.discount_amount;
+        discount = appliedCoupon.discount_amount ?? appliedCoupon.discount ?? 0;
         document.getElementById('summary-discount-row').style.display = 'flex';
         document.getElementById('summary-coupon-code').textContent = appliedCoupon.code;
         document.getElementById('summary-discount').textContent = `-${formatVND(discount)}`;

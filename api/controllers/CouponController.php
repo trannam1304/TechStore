@@ -58,8 +58,10 @@ class CouponController extends BaseController {
         $discount = min($discount, $total);
 
         Response::success([
+            'valid'           => true,
             'code'            => $found['code'],
             'discount'        => round($discount),
+            'discount_amount' => round($discount),
             'discount_type'   => $found['discount_type'],
             'value'           => $val,
             'description'     => $found['description'] ?? '',
@@ -71,9 +73,23 @@ class CouponController extends BaseController {
      * GET /api/v1/coupons
      * Lấy danh sách mã giảm giá đang kích hoạt
      */
-    public static function listCoupons(): void {
+    public static function getCoupons(): void {
         $all = CouponModel::getAll();
-        $active = array_values(array_filter($all, fn($c) => ($c['status'] ?? '') === 'active'));
+        $now = date('Y-m-d H:i:s');
+        $active = array_values(array_filter($all, function($c) use ($now) {
+            if (($c['status'] ?? '') !== 'active') return false;
+            if (!empty($c['usage_limit']) && (int)$c['usage_limit'] > 0 && (int)($c['used_count'] ?? 0) >= (int)$c['usage_limit']) return false;
+            if (!empty($c['start_date']) && $c['start_date'] > $now) return false;
+            if (!empty($c['end_date']) && $c['end_date'] < $now) return false;
+            return true;
+        }));
         Response::success($active, 200);
+    }
+
+    /**
+     * Alias for getCoupons
+     */
+    public static function listCoupons(): void {
+        self::getCoupons();
     }
 }

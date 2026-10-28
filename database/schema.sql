@@ -13,7 +13,9 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- Xóa bảng cũ theo thứ tự ngược phụ thuộc khóa ngoại
 -- -----------------------------------------------------------------------------
 DROP VIEW IF EXISTS `cart`;
+DROP TABLE IF EXISTS `cart`;
 DROP VIEW IF EXISTS `wishlist`;
+DROP TABLE IF EXISTS `wishlist`;
 DROP TABLE IF EXISTS `audit_logs`;
 DROP TABLE IF EXISTS `product_similarity`;
 DROP TABLE IF EXISTS `product_views`;
@@ -189,7 +191,7 @@ CREATE TABLE `orders` (
     `customer_email` VARCHAR(255) DEFAULT NULL COMMENT 'Email nhận thông báo',
     `shipping_address` TEXT NOT NULL COMMENT 'Địa chỉ giao hàng',
     `payment_method` ENUM('cod', 'vietqr', 'bank_transfer') NOT NULL DEFAULT 'cod' COMMENT 'Phương thức thanh toán',
-    `payment_status` ENUM('pending', 'paid', 'failed') NOT NULL DEFAULT 'pending' COMMENT 'Trạng thái thanh toán',
+    `payment_status` ENUM('pending', 'paid', 'failed', 'expired') NOT NULL DEFAULT 'pending' COMMENT 'Trạng thái thanh toán',
     `status` ENUM('pending', 'confirmed', 'shipping', 'completed', 'cancelled') NOT NULL DEFAULT 'pending' COMMENT 'Trạng thái giao nhận đơn',
     `subtotal` DECIMAL(15, 2) NOT NULL DEFAULT 0 COMMENT 'Tổng tiền hàng trước giảm giá',
     `discount_amount` DECIMAL(15, 2) DEFAULT 0 COMMENT 'Số tiền được giảm',
@@ -231,7 +233,7 @@ CREATE TABLE `payments` (
     `payment_code` VARCHAR(100) NOT NULL UNIQUE COMMENT 'Mã giao dịch thanh toán duy nhất',
     `payment_method` ENUM('cod', 'vietqr', 'bank_transfer') NOT NULL DEFAULT 'cod' COMMENT 'Hình thức thanh toán',
     `amount` DECIMAL(15, 2) NOT NULL DEFAULT 0 COMMENT 'Số tiền thanh toán',
-    `status` ENUM('pending', 'paid', 'failed', 'refunded') NOT NULL DEFAULT 'pending' COMMENT 'Trạng thái giao dịch',
+    `status` ENUM('pending', 'paid', 'failed', 'refunded', 'expired') NOT NULL DEFAULT 'pending' COMMENT 'Trạng thái giao dịch',
     `transaction_id` VARCHAR(100) DEFAULT NULL COMMENT 'Mã đối soát giao dịch ngân hàng / cổng thanh toán',
     `qr_code_url` VARCHAR(500) DEFAULT NULL COMMENT 'URL sinh mã QR chuẩn VietQR',
     `payment_note` TEXT DEFAULT NULL COMMENT 'Nội dung chuyển khoản hoặc ghi chú',

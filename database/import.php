@@ -40,25 +40,51 @@ if (file_exists($envFile)) {
 echo "[*] Cấu hình kết nối: Host={$host}:{$port} | User={$user} | Database={$dbname}\n";
 
 // 1. Kết nối tới MySQL Server (chưa chọn database)
+$activePort = $port;
+$connected = false;
+$pdoServer = null;
+
 try {
     $dsnServer = "mysql:host={$host};port={$port};charset=utf8mb4";
     $pdoServer = new PDO($dsnServer, $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
     ]);
-    echo "[OK] Kết nối MySQL Server thành công!\n";
-
-    $pdoServer->exec("CREATE DATABASE IF NOT EXISTS `{$dbname}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-    echo "[OK] Đã kiểm tra/tạo CSDL `{$dbname}`.\n";
+    $connected = true;
 } catch (PDOException $e) {
-    echo "[ERROR] Không thể kết nối tới MySQL Server: " . $e->getMessage() . "\n";
-    echo "[!] Hãy chắc chắn rằng MySQL (qua Docker hoặc XAMPP) đang chạy trên cổng {$port}.\n";
-    exit(1);
+    // Thử cổng thay thế (3306 <-> 3307)
+    $altPort = ($port === '3307') ? '3306' : (($port === '3306') ? '3307' : null);
+    if ($altPort !== null) {
+        try {
+            echo "[*] Cổng {$port} không phản hồi, đang tự động thử cổng {$altPort}...\n";
+            $dsnServer = "mysql:host={$host};port={$altPort};charset=utf8mb4";
+            $pdoServer = new PDO($dsnServer, $user, $pass, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
+            ]);
+            $activePort = $altPort;
+            $connected = true;
+            echo "[OK] Kết nối thành công qua cổng thay thế {$activePort}!\n";
+        } catch (\Throwable $altEx) {
+            // Vẫn lỗi
+        }
+    }
+
+    if (!$connected) {
+        echo "[ERROR] Không thể kết nối tới MySQL Server: " . $e->getMessage() . "\n";
+        echo "[!] Hãy chắc chắn rằng MySQL (qua Docker hoặc XAMPP) đang chạy trên cổng {$port} hoặc {$altPort}.\n";
+        exit(1);
+    }
 }
+
+echo "[OK] Kết nối MySQL Server thành công!\n";
+
+$pdoServer->exec("CREATE DATABASE IF NOT EXISTS `{$dbname}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+echo "[OK] Đã kiểm tra/tạo CSDL `{$dbname}`.\n";
 
 // 2. Kết nối trực tiếp vào database techstore
 try {
-    $dsnDb = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
+    $dsnDb = "mysql:host={$host};port={$activePort};dbname={$dbname};charset=utf8mb4";
     $pdo = new PDO($dsnDb, $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_EMULATE_PREPARES => false,

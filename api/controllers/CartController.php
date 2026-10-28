@@ -26,7 +26,7 @@ class CartController extends BaseController {
      * 2. Hoặc Header X-User-Id (nếu test môi trường)
      * 3. Mặc định fallback về User 2 (Khách hàng mẫu)
      */
-    protected static function resolveUserId(): int {
+    protected static function resolveUserId(): ?int {
         $payload = AuthMiddleware::optional();
         if ($payload && !empty($payload['sub'])) {
             return (int)$payload['sub'];
@@ -36,7 +36,7 @@ class CartController extends BaseController {
             return (int)$_SERVER['HTTP_X_USER_ID'];
         }
 
-        return 2;
+        return null;
     }
 
     /**
@@ -45,6 +45,17 @@ class CartController extends BaseController {
      */
     public static function getCart(): void {
         $userId = self::resolveUserId();
+        if (!$userId) {
+            Response::success([
+                'items'          => [],
+                'total_items'    => 0,
+                'total_quantity' => 0,
+                'subtotal'       => 0,
+                'total_price'    => 0,
+                'total'          => 0
+            ], 200);
+            return;
+        }
         $cart = CartModel::getCart($userId);
         Response::success($cart, 200);
     }
@@ -55,6 +66,10 @@ class CartController extends BaseController {
      */
     public static function addItem(array $body): void {
         $userId = self::resolveUserId();
+        if (!$userId) {
+            Response::error('Vui lòng đăng nhập để lưu sản phẩm vào giỏ hàng trên máy chủ', 'UNAUTHORIZED', 401);
+            return;
+        }
 
         $validator = Validator::make($body, [
             'product_id' => 'required',
@@ -92,6 +107,10 @@ class CartController extends BaseController {
      */
     public static function updateItem(int $itemId, array $body): void {
         $userId = self::resolveUserId();
+        if (!$userId) {
+            Response::error('Vui lòng đăng nhập để cập nhật giỏ hàng trên máy chủ', 'UNAUTHORIZED', 401);
+            return;
+        }
 
         if (!isset($body['quantity'])) {
             Response::error('Thiếu trường số lượng mới (quantity)', 'VALIDATION_ERROR', 400);
@@ -119,6 +138,10 @@ class CartController extends BaseController {
      */
     public static function removeItem(int $itemId): void {
         $userId = self::resolveUserId();
+        if (!$userId) {
+            Response::error('Vui lòng đăng nhập để xóa sản phẩm khỏi giỏ hàng', 'UNAUTHORIZED', 401);
+            return;
+        }
 
         try {
             $cart = CartModel::removeItem($userId, $itemId);
@@ -134,6 +157,17 @@ class CartController extends BaseController {
      */
     public static function clearCart(): void {
         $userId = self::resolveUserId();
+        if (!$userId) {
+            Response::success([
+                'items'          => [],
+                'total_items'    => 0,
+                'total_quantity' => 0,
+                'subtotal'       => 0,
+                'total_price'    => 0,
+                'total'          => 0
+            ], 200, 'Đã làm trống toàn bộ giỏ hàng');
+            return;
+        }
         CartModel::clear($userId);
         $cart = CartModel::getCart($userId);
         Response::success($cart, 200, 'Đã làm trống toàn bộ giỏ hàng');

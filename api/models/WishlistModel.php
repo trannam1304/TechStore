@@ -12,13 +12,32 @@ use Config\Database;
 use PDO;
 
 class WishlistModel extends BaseModel {
+    private static ?string $tableName = null;
+
+    /**
+     * Tự động nhận diện tên bảng yêu thích (ưu tiên chuẩn số nhiều `wishlists`, fallback số ít `wishlist`)
+     */
+    public static function getTableName(): string {
+        if (self::$tableName === null) {
+            try {
+                $pdo = Database::getConnection();
+                $stmt = $pdo->query("SHOW TABLES LIKE 'wishlists'");
+                self::$tableName = ($stmt && $stmt->fetch()) ? 'wishlists' : 'wishlist';
+            } catch (\Throwable $e) {
+                self::$tableName = 'wishlists';
+            }
+        }
+        return self::$tableName;
+    }
+
     /**
      * Lấy danh sách sản phẩm yêu thích của user kèm thông tin sản phẩm
      */
     public static function getWishlist(int $userId): array {
         $pdo = Database::getConnection();
+        $table = self::getTableName();
         $sql = "SELECT p.*, w.created_at as favorited_at
-                FROM wishlists w
+                FROM {$table} w
                 JOIN products p ON w.product_id = p.id
                 WHERE w.user_id = ?
                 ORDER BY w.id DESC";
@@ -32,14 +51,15 @@ class WishlistModel extends BaseModel {
      */
     public static function add(int $userId, int $productId): bool {
         $pdo = Database::getConnection();
+        $table = self::getTableName();
         // Kiểm tra đã tồn tại chưa
-        $check = $pdo->prepare("SELECT id FROM wishlists WHERE user_id = ? AND product_id = ? LIMIT 1");
+        $check = $pdo->prepare("SELECT id FROM {$table} WHERE user_id = ? AND product_id = ? LIMIT 1");
         $check->execute([$userId, $productId]);
         if ($check->fetch()) {
             return true;
         }
 
-        $stmt = $pdo->prepare("INSERT INTO wishlists (user_id, product_id, created_at) VALUES (?, ?, NOW())");
+        $stmt = $pdo->prepare("INSERT INTO {$table} (user_id, product_id, created_at) VALUES (?, ?, NOW())");
         return $stmt->execute([$userId, $productId]);
     }
 
@@ -48,7 +68,8 @@ class WishlistModel extends BaseModel {
      */
     public static function remove(int $userId, int $productId): bool {
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("DELETE FROM wishlists WHERE user_id = ? AND product_id = ?");
+        $table = self::getTableName();
+        $stmt = $pdo->prepare("DELETE FROM {$table} WHERE user_id = ? AND product_id = ?");
         return $stmt->execute([$userId, $productId]);
     }
 }

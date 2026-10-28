@@ -640,8 +640,17 @@ runTest('Coupons', 'POST /coupons/validate - Xác thực mã giảm giá TECH10'
     return !empty($res['json']['data']['discount']);
 });
 
-// 7.2 Đánh giá sản phẩm
-runTest('Reviews', 'POST /products/{id}/reviews - Gửi đánh giá sao & bình luận vào MySQL', function() use ($customerToken, $pdo) {
+// 7.2 Đánh giá sản phẩm (Tuân thủ BR09: Chỉ khách hàng đã mua sản phẩm COMPLETED)
+runTest('Reviews', 'POST /products/{id}/reviews - Gửi đánh giá sao & bình luận vào MySQL', function() use ($customerToken, $pdo, $registeredUserId) {
+    // Seed đơn hàng COMPLETED cho product ID 1 để thỏa mãn BR09
+    $orderCode = 'ORD-E2E-' . time();
+    $stmtOrder = $pdo->prepare("INSERT INTO orders (order_code, user_id, customer_name, customer_phone, shipping_address, payment_method, payment_status, status, total_amount, created_at) VALUES (?, ?, 'Reviewer E2E', '0987654321', 'TP.HCM', 'cod', 'paid', 'completed', 34990000, NOW())");
+    $stmtOrder->execute([$orderCode, $registeredUserId]);
+    $orderId = (int)$pdo->lastInsertId();
+
+    $stmtItem = $pdo->prepare("INSERT INTO order_items (order_id, product_id, product_name, price, quantity) VALUES (?, 1, 'iPhone 16 Pro Max', 34990000, 1)");
+    $stmtItem->execute([$orderId]);
+
     $res = httpReq('POST', '/products/1/reviews', [
         'rating'    => 5,
         'comment'   => 'Sản phẩm cực kỳ chất lượng, đóng gói kỹ càng!',

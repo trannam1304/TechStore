@@ -8,6 +8,7 @@ namespace Api\Models;
 
 require_once __DIR__ . '/BaseModel.php';
 require_once __DIR__ . '/ProductModel.php';
+require_once __DIR__ . '/CartModel.php';
 
 use Config\Database;
 use PDO;
@@ -91,7 +92,8 @@ class OrderModel extends BaseModel {
 
             // Xóa giỏ hàng nếu user đăng nhập
             if (!empty($orderData['user_id'])) {
-                $stmtClearCart = $pdo->prepare("DELETE FROM carts WHERE user_id = ?");
+                $cartTable = CartModel::getTableName();
+                $stmtClearCart = $pdo->prepare("DELETE FROM {$cartTable} WHERE user_id = ?");
                 $stmtClearCart->execute([(int)$orderData['user_id']]);
             }
 
@@ -225,5 +227,74 @@ class OrderModel extends BaseModel {
         $sql = "UPDATE orders SET " . implode(', ', $fields) . " WHERE id = ?";
         $stmt = $pdo->prepare($sql);
         return $stmt->execute($params);
+    }
+
+    /**
+     * SYS01 & BR05: Hủy đơn VietQR quá hạn 15 phút và hoàn lại tồn kho
+     */
+    public static function expireOrder(int $id): bool {
+        $pdo = Database::getConnection();
+        $pdo->beginTransaction();
+
+        try {
+            $stmt = $pdo->prepare("SELECT id, status, payment_status, payment_method, created_at FROM orders WHERE id = ? FOR UPDATE");
+            $stmt->execute([$id]);
+            $order = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$order) {
+                $pdo->rollBack();
+                return false;
+            }
+
+            // Nếu đơn đã thanh toán thì không cho hết hạn
+            if (strtolower($order['payment_status']) === 'paid') {
+                $pdo->rollBack();
+                return false;
+            }
+
+            // Hoàn tồn kho sản phẩm
+            $items = self::getOrderItems($id);
+            $stmtRestock = $pdo->prepare("UPDATE products SET stock = stock + ? WHERE id = ?");
+            foreach ($items as $item) {
+                if (!empty($item['product_id'])) {
+                    $stmtRestock->execute([(int)$item['quantity'], (int)$item['product_id']]);
+                }
+            }
+
+            // Cập nhật trạng thái đơn sang cancelled, thanh toán expired
+            $stmtOrder = $pdo->prepare("UPDATE orders SET payment_status = 'expired', status = 'cancelled' WHERE id = ?");
+            $stmtOrder->execute([$id]);
+
+            // Cập nhật bảng payments
+            $stmtPay = $pdo->prepare("UPDATE payments SET status = 'expired' WHERE order_id = ?");
+            $stmtPay->execute([$id]);
+
+            $pdo->commit();
+            return true;
+        } catch (Exception $e) {
+            $pdo->rollBack();
+            return false;
+        }
+    }
+
+    /**
+     * SYS01: Quét và làm hết hạn tất cả đơn VietQR quá hạn 15 phút (900s)
+     */
+    public static function expireStaleVietQrOrders(): int {
+        $pdo = Database::getConnection();
+        $sql = "SELECT id FROM orders 
+                WHERE LOWER(payment_method) = 'vietqr' 
+                  AND LOWER(status) = 'pending' 
+                  AND LOWER(payment_status) = 'pending'
+                  AND created_at < (NOW() - INTERVAL 15 MINUTE)";
+        $stmt = $pdo->query($sql);
+        $orderIds = $stmt ? $stmt->fetchAll(PDO::FETCH_COLUMN) : [];
+
+        $expiredCount = 0;
+        foreach ($orderIds as $id) {
+            if (self::expireOrder((int)$id)) {
+                $expiredCount++;
+            }
+        }
+        return $expiredCount;
     }
 }

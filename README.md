@@ -5,6 +5,23 @@
 
 ---
 
+> [!CAUTION]
+> ### ⚠️ QUAN TRỌNG: CẬP NHẬT CƠ SỞ DỮ LIỆU NGAY SAU KHI `git pull`
+> Hệ thống đã **loại bỏ hoàn toàn cơ chế fallback `data.json`** và chuyển đổi 100% sang CSDL quan hệ **MySQL**. Các bảng đã được chuẩn hóa danh từ số nhiều (`carts`, `wishlists`), đồng thời bảng `products` được bổ sung các cột `slug` và `status`.
+> 
+> **Tất cả thành viên trong nhóm sau khi `git pull` BẮT BUỘC chạy lệnh import để đồng bộ CSDL, tránh bị sập luồng giỏ hàng và đơn hàng (Lỗi 500):**
+> ```bash
+> # 1. Đảm bảo MySQL (XAMPP hoặc Docker) đang chạy
+> # 2. Chạy lệnh tự động tạo bảng & nạp seed data:
+> php database/import.php
+> 
+> # Hoặc click đúp file batch tiện ích trên Windows:
+> import_db.bat
+> ```
+> *💡 Hệ thống đã tích hợp cơ chế tự động nhận diện cả 2 cổng `3306` (XAMPP) và `3307` (Docker), cùng cơ chế tương thích ngược (fallback) chống gãy API giữa bảng số ít `cart` và số nhiều `carts`.*
+
+---
+
 ## 1. Mục tiêu dự án
 
 - Xây dựng website bán hàng công nghệ hoàn chỉnh: khách xem – tìm – mua – thanh toán; quản trị viên quản lý hệ thống.

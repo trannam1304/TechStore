@@ -61,4 +61,31 @@ class ReviewModel extends BaseModel {
             'created_at' => $now
         ];
     }
+
+    /**
+     * BR09: Kiểm tra người dùng đã mua sản phẩm và đơn hàng ở trạng thái COMPLETED
+     */
+    public static function hasCompletedPurchase(int $userId, int $productId): bool {
+        $pdo = Database::getConnection();
+        $sql = "SELECT 1 
+                FROM order_items oi
+                JOIN orders o ON oi.order_id = o.id
+                WHERE o.user_id = ? 
+                  AND oi.product_id = ? 
+                  AND LOWER(o.status) = 'completed'
+                LIMIT 1";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$userId, $productId]);
+        return (bool)$stmt->fetchColumn();
+    }
+
+    /**
+     * BR09: Kiểm tra người dùng đã từng gửi đánh giá cho sản phẩm này hay chưa
+     */
+    public static function hasUserReviewed(int $userId, int $productId): bool {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT 1 FROM reviews WHERE user_id = ? AND product_id = ? LIMIT 1");
+        $stmt->execute([$userId, $productId]);
+        return (bool)$stmt->fetchColumn();
+    }
 }

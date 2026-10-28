@@ -402,6 +402,12 @@ class ApiClient {
     localStorage.removeItem(API_CONFIG.storageKeys.accessToken);
     localStorage.removeItem(API_CONFIG.storageKeys.refreshToken);
     localStorage.removeItem(API_CONFIG.storageKeys.user);
+    this.updateHeaderCartBadge();
+  }
+
+  getCartKey() {
+    const user = this.getCurrentUser();
+    return (user && user.id) ? `techstore_cart_user_${user.id}` : 'techstore_cart_guest';
   }
 
   isLoggedIn() {
@@ -700,6 +706,11 @@ class ApiClient {
       return { success: true, message: 'Đã xóa', data: cart };
     }
 
+    if (endpoint === '/cart' && method === 'DELETE') {
+      this.clearCart();
+      return { success: true, message: 'Đã xóa toàn bộ giỏ hàng', data: this.getCart() };
+    }
+
     // 19. COUPONS
     if (endpoint === '/coupons/validate' && method === 'POST') {
       const code = (body.code || '').toUpperCase().trim();
@@ -973,7 +984,8 @@ class ApiClient {
 
   // Cart Storage Helpers
   getCart() {
-    const raw = localStorage.getItem(API_CONFIG.storageKeys.cart);
+    const key = this.getCartKey();
+    const raw = localStorage.getItem(key);
     if (!raw) return { items: [], total: 0 };
     try {
       const cart = JSON.parse(raw);
@@ -985,13 +997,15 @@ class ApiClient {
   }
 
   saveCart(cart) {
+    const key = this.getCartKey();
     cart.total = (cart.items || []).reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    localStorage.setItem(API_CONFIG.storageKeys.cart, JSON.stringify(cart));
+    localStorage.setItem(key, JSON.stringify(cart));
     this.updateHeaderCartBadge();
   }
 
   clearCart() {
-    localStorage.removeItem(API_CONFIG.storageKeys.cart);
+    const key = this.getCartKey();
+    localStorage.removeItem(key);
     this.updateHeaderCartBadge();
   }
 
@@ -1058,6 +1072,23 @@ class ApiClient {
         const { access_token, refresh_token, user } = res.data;
         if (access_token || user) {
           this.setAuthTokens(access_token, refresh_token, user);
+          // Chuyển các món đồ khách vãng lai đã chọn vào giỏ hàng tài khoản
+          try {
+            const guestCartRaw = localStorage.getItem('techstore_cart_guest');
+            if (guestCartRaw) {
+              const guestCart = JSON.parse(guestCartRaw);
+              if (guestCart && Array.isArray(guestCart.items) && guestCart.items.length > 0) {
+                for (const item of guestCart.items) {
+                  await this.cart.addItem(item.product_id, item.quantity, item.variant);
+                }
+              }
+              localStorage.removeItem('techstore_cart_guest');
+            }
+          } catch (e) {}
+
+          try {
+            await this.cart.get();
+          } catch (e) {}
         }
       }
       return res;
@@ -1068,6 +1099,23 @@ class ApiClient {
         const { access_token, refresh_token, user } = res.data;
         if (access_token || user) {
           this.setAuthTokens(access_token, refresh_token, user);
+          // Chuyển các món đồ khách vãng lai đã chọn vào giỏ hàng tài khoản mới
+          try {
+            const guestCartRaw = localStorage.getItem('techstore_cart_guest');
+            if (guestCartRaw) {
+              const guestCart = JSON.parse(guestCartRaw);
+              if (guestCart && Array.isArray(guestCart.items) && guestCart.items.length > 0) {
+                for (const item of guestCart.items) {
+                  await this.cart.addItem(item.product_id, item.quantity, item.variant);
+                }
+              }
+              localStorage.removeItem('techstore_cart_guest');
+            }
+          } catch (e) {}
+
+          try {
+            await this.cart.get();
+          } catch (e) {}
         }
       }
       return res;
@@ -1121,25 +1169,21 @@ class ApiClient {
 
   cart = {
     get: async () => {
-      try {
-        const res = await this.request('/cart', { method: 'GET' });
-        if (res && res.success && res.data) {
-          const items = res.data.items || [];
-          const localCart = this.getCart();
-          if ((!localCart.items || localCart.items.length === 0) && items.length > 0) {
+      if (this.isLoggedIn()) {
+        try {
+          const res = await this.request('/cart', { method: 'GET' });
+          if (res && res.success && res.data) {
             this.saveCart(res.data);
+            return res;
           }
-        }
-        return res;
-      } catch (e) {
-        return { success: true, data: this.getCart() };
+        } catch (e) {}
       }
+      return { success: true, data: this.getCart() };
     },
     addItem: async (productId, quantity = 1, variant = '') => {
       productId = parseInt(productId, 10);
       quantity = Math.max(1, parseInt(quantity, 10) || 1);
       
-      // 1. Luôn cập nhật localStorage ngay lập tức để Guest và Auth đều lưu tức thì
       const cart = this.getCart();
       const products = getStoredProducts();
       let prod = products.find(p => p.id === productId);
@@ -1172,26 +1216,43 @@ class ApiClient {
         this.saveCart(cart);
       }
 
-      // 2. Gửi request lên server backend PHP (nếu backend đang chạy)
-      try {
-        const res = await this.request('/cart/items', { method: 'POST', body: JSON.stringify({ product_id: productId, quantity, variant }) });
-        return res || { success: true, data: cart };
-      } catch (e) {
-        return { success: true, data: cart };
+      // Chỉ gửi request lên server backend PHP nếu người dùng ĐÃ ĐĂNG NHẬP
+      if (this.isLoggedIn()) {
+        try {
+          const res = await this.request('/cart/items', { method: 'POST', body: JSON.stringify({ product_id: productId, quantity, variant }) });
+          if (res && res.success && res.data) {
+            this.saveCart(res.data);
+            return res;
+          }
+          return res || { success: true, data: cart };
+        } catch (e) {
+          return { success: true, data: cart };
+        }
       }
+
+      return { success: true, data: cart };
     },
     updateItem: async (itemId, quantity) => {
       itemId = parseInt(itemId, 10);
-      quantity = Math.max(1, parseInt(quantity, 10) || 1);
+      quantity = Math.max(0, parseInt(quantity, 10));
       const cart = this.getCart();
-      const item = cart.items.find(i => i.id === itemId || i.product_id === itemId);
-      if (item) {
-        item.quantity = quantity;
-        this.saveCart(cart);
+      if (quantity <= 0) {
+        cart.items = cart.items.filter(i => i.id !== itemId && i.product_id !== itemId);
+      } else {
+        const item = cart.items.find(i => i.id === itemId || i.product_id === itemId);
+        if (item) item.quantity = quantity;
       }
-      try {
-        await this.request(`/cart/items/${itemId}`, { method: 'PUT', body: JSON.stringify({ quantity }) });
-      } catch (e) {}
+      this.saveCart(cart);
+
+      if (this.isLoggedIn()) {
+        try {
+          const res = await this.request(`/cart/items/${itemId}`, { method: 'PUT', body: JSON.stringify({ quantity }) });
+          if (res && res.success && res.data) {
+            this.saveCart(res.data);
+            return res;
+          }
+        } catch (e) {}
+      }
       return { success: true, data: cart };
     },
     removeItem: async (itemId) => {
@@ -1199,16 +1260,25 @@ class ApiClient {
       const cart = this.getCart();
       cart.items = cart.items.filter(i => i.id !== itemId && i.product_id !== itemId);
       this.saveCart(cart);
-      try {
-        await this.request(`/cart/items/${itemId}`, { method: 'DELETE' });
-      } catch (e) {}
+
+      if (this.isLoggedIn()) {
+        try {
+          const res = await this.request(`/cart/items/${itemId}`, { method: 'DELETE' });
+          if (res && res.success && res.data) {
+            this.saveCart(res.data);
+            return res;
+          }
+        } catch (e) {}
+      }
       return { success: true, message: 'Đã xóa', data: cart };
     },
     clear: async () => {
       this.clearCart();
-      try {
-        await this.request('/cart', { method: 'DELETE' });
-      } catch (e) {}
+      if (this.isLoggedIn()) {
+        try {
+          await this.request('/cart', { method: 'DELETE' });
+        } catch (e) {}
+      }
       return { success: true };
     }
   };
@@ -1219,7 +1289,13 @@ class ApiClient {
   };
 
   orders = {
-    create: (orderData) => this.request('/orders', { method: 'POST', body: JSON.stringify(orderData) }),
+    create: async (orderData) => {
+      const res = await this.request('/orders', { method: 'POST', body: JSON.stringify(orderData) });
+      if (res && res.success) {
+        this.clearCart();
+      }
+      return res;
+    },
     getAll: () => this.request('/orders', { method: 'GET' }),
     getById: (id) => this.request(`/orders/${id}`, { method: 'GET' }),
     cancel: (id) => this.request(`/orders/${id}/cancel`, { method: 'POST' }),
