@@ -15,6 +15,24 @@ use PDO;
 use Exception;
 
 class CartModel extends BaseModel {
+    private static ?string $tableName = null;
+
+    /**
+     * Tự động nhận diện tên bảng giỏ hàng (ưu tiên chuẩn số nhiều `carts`, fallback số ít `cart`)
+     */
+    public static function getTableName(): string {
+        if (self::$tableName === null) {
+            try {
+                $pdo = Database::getConnection();
+                $stmt = $pdo->query("SHOW TABLES LIKE 'carts'");
+                self::$tableName = ($stmt && $stmt->fetch()) ? 'carts' : 'cart';
+            } catch (\Throwable $e) {
+                self::$tableName = 'carts';
+            }
+        }
+        return self::$tableName;
+    }
+
     /**
      * Lấy thông tin giỏ hàng của người dùng kèm chi tiết sản phẩm, đối chiếu giá và tồn kho
      * FR04.01: Trả về { items, total_items, subtotal, total }
@@ -36,6 +54,7 @@ class CartModel extends BaseModel {
         }
 
         try {
+            $table = self::getTableName();
             $sql = "SELECT 
                         c.id,
                         c.user_id,
@@ -48,7 +67,7 @@ class CartModel extends BaseModel {
                         p.price,
                         p.stock,
                         p.image
-                    FROM cart c
+                    FROM {$table} c
                     JOIN products p ON c.product_id = p.id
                     WHERE c.user_id = ?
                     ORDER BY c.created_at DESC, c.id DESC";
@@ -86,17 +105,21 @@ class CartModel extends BaseModel {
             }
 
             return [
-                'items' => $items,
-                'total_items' => $totalItems,
-                'subtotal' => $subtotal,
-                'total' => $subtotal
+                'items'          => $items,
+                'total_items'    => $totalItems,
+                'total_quantity' => $totalItems,
+                'subtotal'       => $subtotal,
+                'total_price'    => $subtotal,
+                'total'          => $subtotal
             ];
         } catch (\Throwable $e) {
             return [
-                'items' => [],
-                'total_items' => 0,
-                'subtotal' => 0,
-                'total' => 0
+                'items'          => [],
+                'total_items'    => 0,
+                'total_quantity' => 0,
+                'subtotal'       => 0,
+                'total_price'    => 0,
+                'total'          => 0
             ];
         }
     }
@@ -130,7 +153,8 @@ class CartModel extends BaseModel {
         }
 
         // 4. Tìm kiếm mặt hàng đã tồn tại trong giỏ của user
-        $findStmt = $pdo->prepare("SELECT id, quantity FROM cart WHERE user_id = ? AND product_id = ? AND (variant = ? OR (variant IS NULL AND ? = 'Mặc định')) LIMIT 1");
+        $table = self::getTableName();
+        $findStmt = $pdo->prepare("SELECT id, quantity FROM {$table} WHERE user_id = ? AND product_id = ? AND (variant = ? OR (variant IS NULL AND ? = 'Mặc định')) LIMIT 1");
         $findStmt->execute([$userId, $productId, $cleanVariant, $cleanVariant]);
         $existing = $findStmt->fetch(PDO::FETCH_ASSOC);
 
@@ -144,12 +168,12 @@ class CartModel extends BaseModel {
             );
         }
 
-        // 6. Cập nhật hoặc thêm mới bản ghi vào bảng cart
+        // 6. Cập nhật hoặc thêm mới bản ghi vào bảng cart/carts
         if ($existing) {
-            $upStmt = $pdo->prepare("UPDATE cart SET quantity = ?, created_at = NOW() WHERE id = ?");
+            $upStmt = $pdo->prepare("UPDATE {$table} SET quantity = ?, created_at = NOW() WHERE id = ?");
             $upStmt->execute([$targetQty, $existing['id']]);
         } else {
-            $insStmt = $pdo->prepare("INSERT INTO cart (user_id, product_id, quantity, variant, created_at) VALUES (?, ?, ?, ?, NOW())");
+            $insStmt = $pdo->prepare("INSERT INTO {$table} (user_id, product_id, quantity, variant, created_at) VALUES (?, ?, ?, ?, NOW())");
             $insStmt->execute([$userId, $productId, $quantity, $cleanVariant]);
         }
 
@@ -164,10 +188,11 @@ class CartModel extends BaseModel {
      */
     public static function updateItem(int $userId, int $itemId, int $quantity): array {
         $pdo = Database::getConnection();
+        $table = self::getTableName();
 
         // 1. Tìm mục trong giỏ
         $findStmt = $pdo->prepare("SELECT c.id, c.user_id, c.product_id, c.quantity, c.variant, p.name AS product_name, p.stock 
-                                   FROM cart c 
+                                   FROM {$table} c 
                                    JOIN products p ON c.product_id = p.id 
                                    WHERE (c.id = ? OR c.product_id = ?) AND c.user_id = ? 
                                    LIMIT 1");
@@ -180,7 +205,7 @@ class CartModel extends BaseModel {
 
         // 2. Nếu số lượng <= 0: Tự động xóa khỏi giỏ
         if ($quantity <= 0) {
-            $delStmt = $pdo->prepare("DELETE FROM cart WHERE id = ?");
+            $delStmt = $pdo->prepare("DELETE FROM {$table} WHERE id = ?");
             $delStmt->execute([$item['id']]);
             return self::getCart($userId);
         }
@@ -195,7 +220,7 @@ class CartModel extends BaseModel {
         }
 
         // 4. Cập nhật số lượng
-        $upStmt = $pdo->prepare("UPDATE cart SET quantity = ? WHERE id = ?");
+        $upStmt = $pdo->prepare("UPDATE {$table} SET quantity = ? WHERE id = ?");
         $upStmt->execute([$quantity, $item['id']]);
 
         return self::getCart($userId);
@@ -207,7 +232,8 @@ class CartModel extends BaseModel {
      */
     public static function removeItem(int $userId, int $itemId): array {
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("DELETE FROM cart WHERE (id = ? OR product_id = ?) AND user_id = ?");
+        $table = self::getTableName();
+        $stmt = $pdo->prepare("DELETE FROM {$table} WHERE (id = ? OR product_id = ?) AND user_id = ?");
         $stmt->execute([$itemId, $itemId, $userId]);
 
         return self::getCart($userId);
@@ -219,7 +245,8 @@ class CartModel extends BaseModel {
     public static function clear(int $userId): bool {
         try {
             $pdo = Database::getConnection();
-            $stmt = $pdo->prepare("DELETE FROM cart WHERE user_id = ?");
+            $table = self::getTableName();
+            $stmt = $pdo->prepare("DELETE FROM {$table} WHERE user_id = ?");
             return $stmt->execute([$userId]);
         } catch (\Throwable $e) {
             return false;

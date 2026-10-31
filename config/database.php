@@ -47,6 +47,17 @@ class Database {
         try {
             self::$instance = new PDO($dsn, $username, $password, $options);
         } catch (PDOException $e) {
+            // Tự động thử cổng MySQL thay thế (3306 <-> 3307) nếu cổng cấu hình bị từ chối kết nối
+            $altPort = ($port === '3307') ? '3306' : (($port === '3306') ? '3307' : null);
+            if ($altPort !== null) {
+                try {
+                    $altDsn = "mysql:host={$host};port={$altPort};dbname={$dbname};charset=utf8mb4";
+                    self::$instance = new PDO($altDsn, $username, $password, $options);
+                    return;
+                } catch (\Throwable $altEx) {
+                    // Tiếp tục ném lỗi gốc nếu cả 2 cổng đều thất bại
+                }
+            }
             error_log("[Database Connection Error] " . $e->getMessage());
             throw new PDOException("Lỗi kết nối cơ sở dữ liệu: " . $e->getMessage(), (int)$e->getCode());
         }

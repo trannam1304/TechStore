@@ -131,6 +131,12 @@
         }
         showToast('Đăng nhập thành công!', 'success');
         setTimeout(() => {
+          const urlParams = new URLSearchParams(window.location.search);
+          const redirect = urlParams.get('redirect');
+          if (redirect) {
+            window.location.href = redirect;
+            return;
+          }
           if (api.isAdmin()) {
             window.location.href = '/admin/index.html';
           } else {
@@ -141,6 +147,16 @@
         showToast(res.message || 'Sai thông tin đăng nhập', 'danger');
         btn.disabled = false;
         btn.textContent = 'Đăng Nhập';
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const redirect = new URLSearchParams(window.location.search).get('redirect');
+      if (redirect) {
+        const regLink = document.querySelector('a[href="/pages/register.html"]');
+        if (regLink) {
+          regLink.href = `/pages/register.html?redirect=${encodeURIComponent(redirect)}`;
+        }
       }
     });
 

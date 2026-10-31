@@ -31,8 +31,9 @@ class ErrorHandler {
         $statusCode = 500;
         $code = 'INTERNAL_SERVER_ERROR';
 
-        if ($e->getCode() >= 400 && $e->getCode() < 600) {
-            $statusCode = (int)$e->getCode();
+        $rawCode = $e->getCode();
+        if (is_numeric($rawCode) && (int)$rawCode >= 400 && (int)$rawCode < 600) {
+            $statusCode = (int)$rawCode;
         }
 
         $isDebug = getenv('APP_DEBUG') === 'true';

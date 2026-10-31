@@ -5,6 +5,23 @@
 
 ---
 
+> [!CAUTION]
+> ### ⚠️ QUAN TRỌNG: CẬP NHẬT CƠ SỞ DỮ LIỆU NGAY SAU KHI `git pull`
+> Hệ thống đã **loại bỏ hoàn toàn cơ chế fallback `data.json`** và chuyển đổi 100% sang CSDL quan hệ **MySQL**. Các bảng đã được chuẩn hóa danh từ số nhiều (`carts`, `wishlists`), đồng thời bảng `products` được bổ sung các cột `slug` và `status`.
+> 
+> **Tất cả thành viên trong nhóm sau khi `git pull` BẮT BUỘC chạy lệnh import để đồng bộ CSDL, tránh bị sập luồng giỏ hàng và đơn hàng (Lỗi 500):**
+> ```bash
+> # 1. Đảm bảo MySQL (XAMPP hoặc Docker) đang chạy
+> # 2. Chạy lệnh tự động tạo bảng & nạp seed data:
+> php database/import.php
+> 
+> # Hoặc click đúp file batch tiện ích trên Windows:
+> import_db.bat
+> ```
+> *💡 Hệ thống đã tích hợp cơ chế tự động nhận diện cả 2 cổng `3306` (XAMPP) và `3307` (Docker), cùng cơ chế tương thích ngược (fallback) chống gãy API giữa bảng số ít `cart` và số nhiều `carts`.*
+
+---
+
 ## 1. Mục tiêu dự án
 
 - Xây dựng website bán hàng công nghệ hoàn chỉnh: khách xem – tìm – mua – thanh toán; quản trị viên quản lý hệ thống.
@@ -56,25 +73,30 @@
 ```
 techstore/
 ├── public/                 # Document root (chỉ thư mục này public)
-│   ├── index.php           # Front controller
-│   ├── assets/             # css, js, images
-│   ├── pages/              # trang HTML phía khách
-│   └── admin/              # trang quản trị
-├── api/                    # REST API
-│   ├── routes.php          # Khai báo route
-│   ├── controllers/
-│   ├── models/
-│   ├── middleware/         # AuthMiddleware, RoleMiddleware, RateLimit, Cors
-│   ├── services/           # RecommendService, QrService, JwtService
-│   └── helpers/            # Response, Validator
-├── config/                 # config.php, database.php (không commit file .env thật)
-├── database/
-│   ├── schema.sql
-│   └── seed.sql
-├── docs/                   # essay, ERD, openapi.yaml, postman collection, ảnh demo
-├── tests/                  # Postman / script test
-├── .gitignore
-├── .env.example
+│   ├── index.php           # Front controller & API routing
+│   ├── assets/             # CSS tokens, JS API client, hình ảnh
+│   ├── pages/              # Giao diện khách hàng (HTML/JS)
+│   ├── admin/              # Giao diện quản trị Admin
+│   └── docs/               # Tài liệu tương tác Swagger UI (OpenAPI)
+├── api/                    # REST API thuần PHP
+│   ├── routes.php          # Định nghĩa và điều phối Route
+│   ├── controllers/        # Điều phối luồng nghiệp vụ
+│   ├── models/             # Tương tác CSDL MySQL qua PDO
+│   ├── middleware/         # AuthMiddleware, RoleMiddleware, Cors
+│   ├── services/           # JwtService, QrService
+│   └── helpers/            # Response, Validator, DataStore
+├── config/                 # Cấu hình CSDL Singleton & Đọc .env
+├── database/               # CSDL MySQL
+│   ├── schema.sql          # DDL tạo 17 bảng vật lý
+│   ├── seed.sql            # Dữ liệu khởi tạo chuẩn
+│   └── import.php          # Script tự động import CSDL qua PDO
+├── docs/                   # SRS, ERD, OpenAPI, Architecture, Báo cáo
+├── tests/                  # Bộ kiểm thử tự động (Unit / Integration / API)
+├── docker-compose.yml      # Cấu hình Docker MySQL 8.0 & phpMyAdmin
+├── start.bat               # Khởi động hệ thống 1-click (Windows)
+├── stop.bat                # Tắt máy chủ Web
+├── import_db.bat           # Tự động nạp CSDL vào MySQL
+├── .env.example            # Mẫu biến môi trường
 └── README.md
 ```
 
@@ -128,20 +150,100 @@ techstore/
 - JWT: hạn ngắn (15–60 phút) + refresh token lưu DB; kiểm tra role ở middleware.
 - CORS, rate limit, validate input phía server.
 
-## 8. Cài đặt & chạy
+## 8. Hướng dẫn cài đặt & Khởi chạy dự án
 
+Dự án hỗ trợ 2 phương thức khởi chạy: **Khởi chạy tự động với Docker & Batch script (Khuyên dùng)** hoặc **Khởi chạy thủ công với XAMPP / PHP CLI**.
+
+---
+
+### Cách 1: Khởi chạy 1-Click nhanh nhất (Khuyên dùng trên Windows)
+
+> Đảm bảo máy tính đã cài đặt **Docker Desktop** (hoặc **XAMPP**) và **PHP**.
+
+1. **Clone repository và chuẩn bị:**
+   ```bash
+   git clone https://github.com/trannam1304/TechStore.git
+   cd TechStore
+   ```
+2. **Khởi chạy CSDL MySQL bằng Docker Compose:**
+   ```bash
+   docker compose up -d
+   ```
+   *Lưu ý: Docker sẽ tự động khởi tạo database `techstore` và nạp toàn bộ cấu trúc bảng `schema.sql` cùng dữ liệu mẫu `seed.sql`.*
+3. **Khởi động ứng dụng:**
+   - Nhấp đúp vào file **`start.bat`** (hoặc chạy `./start.bat` trong terminal).
+   - Script sẽ tự động:
+     - Tạo file `.env` từ `.env.example` nếu chưa có.
+     - Kiểm tra kết nối MySQL (ưu tiên Docker container hoặc XAMPP).
+     - Khởi động Web Server tại cổng `8000`.
+     - Tự động mở trình duyệt web đến địa chỉ `http://localhost:8000`.
+
+---
+
+### Cách 2: Khởi chạy thủ công (XAMPP / PHP CLI & MySQL)
+
+1. **Cấu hình file môi trường (.env):**
+   ```bash
+   copy .env.example .env
+   ```
+   *Kiểm tra thông tin kết nối CSDL trong `.env` (`DB_HOST=127.0.0.1`, `DB_PORT=3306`, `DB_USER=root`, `DB_PASSWORD=`).*
+
+2. **Tự động Import CSDL vào MySQL:**
+   - Chạy file batch:
+     ```bash
+     import_db.bat
+     ```
+   - Hoặc chạy trực tiếp script PHP PDO Importer:
+     ```bash
+     php database/import.php
+     ```
+   - *(Hoặc import thủ công qua MySQL CLI nếu muốn):*
+     ```bash
+     mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS techstore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+     mysql -u root -p techstore < database/schema.sql
+     mysql -u root -p techstore < database/seed.sql
+     ```
+
+3. **Khởi chạy Web Server:**
+   ```bash
+   php -S localhost:8000 -t public
+   ```
+
+---
+
+### 🌐 Địa chỉ truy cập các dịch vụ
+
+| Dịch vụ | Địa chỉ URL | Ghi chú |
+|---|---|---|
+| **Giao diện Cửa hàng (Client)** | [http://localhost:8000](http://localhost:8000) | Xem sản phẩm, đặt hàng, thanh toán VietQR |
+| **Giao diện Quản trị (Admin)** | [http://localhost:8000/admin/](http://localhost:8000/admin/) | Dashboard KPI, quản lý đơn, sản phẩm, user |
+| **Tài liệu API Swagger / OpenAPI** | [http://localhost:8000/docs/](http://localhost:8000/docs/) | Tài liệu chi tiết và demo tương tác API |
+| **Quản trị CSDL (phpMyAdmin)** | [http://localhost:8080](http://localhost:8080) | User: `root` / Mật khẩu để trống (Khi dùng Docker) |
+
+---
+
+### 🔑 Tài khoản đăng nhập mẫu (Seed Data)
+
+| Vai trò | Email đăng nhập | Mật khẩu | Quyền hạn |
+|---|---|---|---|
+| **Quản trị viên (Admin)** | `admin@techstore.local` | `Admin@123` | Toàn quyền quản trị hệ thống, duyệt đơn, xem thống kê |
+| **Khách hàng (Customer)** | `user@techstore.local` | `User@123` | Đặt hàng, giỏ hàng, đánh giá, danh sách yêu thích |
+
+---
+
+### 🧪 Kiểm tra & Kiểm thử hệ thống (Automated Tests)
+
+Bạn có thể chạy các bộ kiểm thử tự động để xác minh toàn bộ hệ thống hoạt động ổn định:
 ```bash
-git clone https://github.com/trannam1304/TechStore 
-cp .env.example .env            # chỉnh DB, JWT_SECRET, thông tin ngân hàng
-mysql -u root -p < database/schema.sql
-mysql -u root -p techstore < database/seed.sql
-# Đặt document root vào /public (XAMPP/Laragon) hoặc:
-php -S localhost:8000 -t public
-# Hoặc khởi chạy nhanh bằng file .bat trên Windows:
-start.bat
+# 1. Kiểm tra tính đồng bộ CSDL MySQL (Xác nhận 100% không còn dính data.json)
+php tests/verify_mysql_sync.php
+
+# 2. Chạy toàn bộ 19 Test Case kiểm thử tự động API (JWT, Auth, Cart, Product, Category, Brand)
+php tests/test_api_t10_t14.php
 ```
 
-Tài khoản demo (seed): `admin@techstore.local / Admin@123`, `user@techstore.local / User@123`.
+Để dừng web server, bạn chỉ cần nhấn tổ hợp phím `Ctrl + C` hoặc chạy file `stop.bat`.
+
 
 ## 9. Nhóm thực hiện
 

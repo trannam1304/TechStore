@@ -224,7 +224,7 @@
       </div>
 
       <!-- Payment Success View -->
-      <div id="payment-success-view" class="payment-success-card">
+      <div id="payment-success-view" class="payment-success-card" style="display: none;">
         <div class="success-checkmark">🎉 ✓</div>
         <h2 style="font-size: 24px; font-weight: 900; color: var(--color-success); margin-bottom: 8px;">
           Thanh toán thành công!
@@ -236,6 +236,21 @@
         <div style="display: flex; gap: 12px; justify-content: center;">
           <a href="/pages/account.html#orders" class="btn btn-primary btn-lg">Xem chi tiết đơn hàng</a>
           <a href="/pages/index.html" class="btn btn-outline btn-lg">Tiếp tục mua hàng</a>
+        </div>
+      </div>
+
+      <!-- Payment Expired View (EF04.02 & BR05) -->
+      <div id="payment-expired-view" class="payment-success-card" style="display: none;">
+        <div style="font-size: 48px; margin-bottom: 12px;">⌛ ❌</div>
+        <h2 style="font-size: 24px; font-weight: 900; color: var(--color-danger); margin-bottom: 8px;">
+          Mã thanh toán VietQR đã hết hạn!
+        </h2>
+        <p style="font-size: 14px; color: var(--color-gray-dark); margin-bottom: 20px;">
+          Thời hạn thanh toán 15 phút cho mã QR này đã kết thúc theo quy định bảo toàn tồn kho (BR05). Bạn có thể làm mới hoặc hủy đơn hàng.
+        </p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-primary btn-lg" onclick="location.reload()">🔄 Tạo lại mã thanh toán</button>
+          <button class="btn btn-outline btn-lg" onclick="handleCancelExpiredOrder()">✕ Hủy đơn hàng</button>
         </div>
       </div>
     </div>
@@ -257,6 +272,14 @@
     let countdownTimer = null;
 
     document.addEventListener('DOMContentLoaded', async () => {
+      if (!api.isLoggedIn()) {
+        showToast('Vui lòng đăng nhập để xem thông tin thanh toán!', 'warning');
+        setTimeout(() => {
+          window.location.href = `/pages/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        }, 800);
+        return;
+      }
+
       const urlParams = new URLSearchParams(window.location.search);
       currentOrderId = parseInt(urlParams.get('orderId') || '1001', 10);
 
@@ -285,8 +308,14 @@
       document.getElementById('success-order-code').textContent = orderCode;
 
       // If already paid
-      if (order.payment_status === 'paid') {
+      if (order.payment_status === 'paid' || order.payment_status === 'PAID') {
         showSuccessState();
+        return;
+      }
+
+      // If already expired
+      if (order.payment_status === 'expired' || order.payment_status === 'EXPIRED') {
+        showExpiredState();
         return;
       }
 
@@ -309,8 +338,9 @@
       countdownTimer = setInterval(() => {
         if (seconds <= 0) {
           clearInterval(countdownTimer);
-          timerEl.textContent = 'Hết hạn';
+          timerEl.textContent = '00:00 (Hết hạn)';
           timerEl.style.color = '#ef4444';
+          showExpiredState();
           return;
         }
         seconds--;
@@ -323,10 +353,15 @@
     function startPolling() {
       pollInterval = setInterval(async () => {
         const res = await api.payments.getStatus(currentOrderId);
-        if (res.data?.is_paid || res.data?.payment_status === 'paid') {
+        const pStatus = (res.data?.payment_status || '').toUpperCase();
+        if (res.data?.is_paid || pStatus === 'PAID') {
           clearInterval(pollInterval);
           clearInterval(countdownTimer);
           showSuccessState();
+        } else if (res.data?.is_expired || pStatus === 'EXPIRED') {
+          clearInterval(pollInterval);
+          clearInterval(countdownTimer);
+          showExpiredState();
         }
       }, 3000);
     }
@@ -336,6 +371,7 @@
       if (countdownTimer) clearInterval(countdownTimer);
 
       document.getElementById('qr-active-view').style.display = 'none';
+      document.getElementById('payment-expired-view').style.display = 'none';
       document.getElementById('payment-success-view').style.display = 'block';
 
       const pill = document.getElementById('polling-status-pill');
@@ -343,6 +379,34 @@
         pill.className = 'polling-status paid';
         document.getElementById('polling-status-text').textContent = '✓ Đã thanh toán thành công';
       }
+    }
+
+    function showExpiredState() {
+      if (pollInterval) clearInterval(pollInterval);
+      if (countdownTimer) clearInterval(countdownTimer);
+
+      document.getElementById('qr-active-view').style.display = 'none';
+      document.getElementById('payment-success-view').style.display = 'none';
+      document.getElementById('payment-expired-view').style.display = 'block';
+
+      const pill = document.getElementById('polling-status-pill');
+      if (pill) {
+        pill.className = 'polling-status';
+        pill.style.backgroundColor = '#fee2e2';
+        pill.style.color = '#991b1b';
+        document.getElementById('polling-status-text').textContent = '✕ Mã thanh toán đã hết hạn (15 phút)';
+      }
+    }
+
+    async function handleCancelExpiredOrder() {
+      if (!currentOrderId) return;
+      try {
+        await api.orders.cancel(currentOrderId);
+        showToast('Đã hủy đơn hàng thành công!', 'info');
+      } catch (e) {}
+      setTimeout(() => {
+        window.location.href = '/pages/account.html#orders';
+      }, 600);
     }
 
     function copyToClipboard(elementId) {

@@ -253,7 +253,22 @@
     let cart = null;
     let appliedCoupon = null;
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!api.isLoggedIn()) {
+        showToast('Vui lòng đăng nhập để tiến hành thanh toán đơn hàng!', 'warning');
+        setTimeout(() => {
+          window.location.href = '/pages/login.html?redirect=/pages/checkout.html';
+        }, 600);
+        return;
+      }
+
+      try {
+        const res = await api.cart.get();
+        if (res && res.success && res.data) {
+          api.saveCart(res.data);
+        }
+      } catch (e) {}
+
       cart = api.getCart();
       if (!cart.items || cart.items.length === 0) {
         window.location.href = '/pages/cart.html';
@@ -299,7 +314,7 @@
 
       let discount = 0;
       if (appliedCoupon) {
-        discount = appliedCoupon.discount_amount;
+        discount = appliedCoupon.discount_amount ?? appliedCoupon.discount ?? 0;
         document.getElementById('checkout-discount-row').style.display = 'flex';
         document.getElementById('checkout-discount-code').textContent = appliedCoupon.code;
         document.getElementById('checkout-discount-amount').textContent = `-${formatVND(discount)}`;
@@ -316,6 +331,12 @@
 
     async function handleCheckout(e) {
       e.preventDefault();
+      if (!api.isLoggedIn()) {
+        showToast('Vui lòng đăng nhập để tiến hành đặt hàng!', 'danger');
+        window.location.href = '/pages/login.html?redirect=/pages/checkout.html';
+        return;
+      }
+
       const btn = document.getElementById('btn-submit-order');
       btn.disabled = true;
       btn.textContent = 'Đang xử lý đơn hàng...';
@@ -340,18 +361,23 @@
         const res = await api.orders.create(orderData);
         if (res.success) {
           const newOrder = res.data;
+          api.clearCart();
           sessionStorage.removeItem('applied_coupon');
           showToast('Đặt hàng thành công!', 'success');
 
           if (method === 'vietqr') {
-            // Redirect to Payment QR page
+            // Redirect to Payment QR page (hỗ trợ cả khách vãng lai và user)
             setTimeout(() => {
               window.location.href = `/pages/payment-qr.html?orderId=${newOrder.id}`;
             }, 800);
           } else {
-            // COD -> Redirect to user order history
+            // COD -> Redirect to user order history nếu đã đăng nhập, hoặc trang chủ nếu khách vãng lai
             setTimeout(() => {
-              window.location.href = `/pages/account.html#orders`;
+              if (api.isLoggedIn()) {
+                window.location.href = `/pages/account.html#orders`;
+              } else {
+                window.location.href = `/pages/index.html`;
+              }
             }, 800);
           }
         } else {

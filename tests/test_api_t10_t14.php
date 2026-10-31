@@ -122,8 +122,8 @@ assertTest($rfRevoked, "Thu hồi (Revoke) Refresh Token khi logout thành công
 // ---------------------------------------------------------
 echo "\n--- 4. KIỂM THỬ T13: Lọc, Tìm kiếm, Phân trang Sản phẩm ---\n";
 
-$allData = DataStore::getJsonData();
-$products = $allData['products'] ?? [];
+$res = \Api\Models\ProductModel::getAll(['limit' => 100]);
+$products = $res['items'] ?? [];
 assertTest(count($products) >= 40, "Số lượng sản phẩm trong kho đạt " . count($products) . " sản phẩm (≥ 40)");
 
 // Test lọc category_id = 1 (Điện thoại)
@@ -143,10 +143,10 @@ assertTest(count($priceFiltered) > 0, "Lọc theo khoảng giá [20.000.000đ - 
 // ---------------------------------------------------------
 echo "\n--- 5. KIỂM THỬ T14: Chi tiết sản phẩm, Danh mục & Thương hiệu ---\n";
 
-$categories = $allData['categories'] ?? [];
+$categories = \Api\Models\CategoryModel::all();
 assertTest(count($categories) === 5, "API Danh mục có đầy đủ 5 ngành hàng chuẩn");
 
-$brands = $allData['brands'] ?? [];
+$brands = \Api\Models\BrandModel::all();
 assertTest(count($brands) === 8, "API Thương hiệu có đầy đủ 8 hãng lớn (Apple, Samsung, Xiaomi, ASUS, Sony, Dell, Anker, Logitech)");
 
 // Test chi tiết sản phẩm ID = 1 (iPhone 16 Pro Max)
