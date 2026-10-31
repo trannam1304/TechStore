@@ -23,7 +23,7 @@ class ProductController extends BaseController {
      * T13: GET /api/v1/products
      * Danh sách sản phẩm với bộ lọc đa tiêu chí, tìm kiếm, sắp xếp và phân trang
      */
-    public static function index(array $query): void {
+    public static function index(array $query = []): void {
         $result = ProductModel::paginate($query);
         Response::paginate(
             $result['items'],
@@ -32,6 +32,13 @@ class ProductController extends BaseController {
             $result['limit'],
             'Lấy danh sách sản phẩm thành công'
         );
+    }
+
+    /**
+     * Alias getProducts cho index
+     */
+    public static function getProducts(array $query = []): void {
+        self::index($query);
     }
 
     /**

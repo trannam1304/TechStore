@@ -79,4 +79,4 @@ echo   Nhan to hop phim Ctrl + C de dung Web Server
 echo ========================================================
 echo.
 
-"%PHP_BIN%" -S 0.0.0.0:8000 -t public
+"%PHP_BIN%" -S 0.0.0.0:8000 -t public public/index.php

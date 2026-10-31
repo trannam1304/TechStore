@@ -36,7 +36,15 @@ class ProductModel extends BaseModel {
         $pdo = Database::getConnection();
 
         $page = max(1, (int)($filters['page'] ?? 1));
-        $limit = max(1, min(100, (int)($filters['limit'] ?? 12)));
+        $limitParam = $filters['limit'] ?? null;
+        if ($limitParam === 'all' || $limitParam === '0' || $limitParam === 0) {
+            $limit = 1000;
+        } elseif (isset($filters['limit']) && is_numeric($filters['limit'])) {
+            $limit = max(1, min(500, (int)$filters['limit']));
+        } else {
+            // Mặc định trả về tối đa 100 sản phẩm để bao quát toàn bộ danh sách sản phẩm
+            $limit = 100;
+        }
         $offset = ($page - 1) * $limit;
 
         $conditions = ["1=1"];
@@ -51,16 +59,30 @@ class ProductModel extends BaseModel {
             $params[] = $search;
         }
 
-        // 2. Lọc theo Danh mục
-        if (!empty($filters['category_id'])) {
-            $conditions[] = "category_id = ?";
-            $params[] = (int)$filters['category_id'];
+        // 2. Lọc theo Danh mục (Hỗ trợ category_id, category, cat, category_slug)
+        $catParam = $filters['category_id'] ?? $filters['category'] ?? $filters['cat'] ?? null;
+        if (!empty($catParam) && $catParam !== 'all' && $catParam !== '0') {
+            if (is_numeric($catParam)) {
+                $conditions[] = "category_id = ?";
+                $params[] = (int)$catParam;
+            } else {
+                $conditions[] = "(category_name = ? OR category_id IN (SELECT id FROM categories WHERE slug = ?))";
+                $params[] = $catParam;
+                $params[] = $catParam;
+            }
         }
 
-        // 3. Lọc theo Thương hiệu
-        if (!empty($filters['brand_id'])) {
-            $conditions[] = "brand_id = ?";
-            $params[] = (int)$filters['brand_id'];
+        // 3. Lọc theo Thương hiệu (Hỗ trợ brand_id, brand)
+        $brandParam = $filters['brand_id'] ?? $filters['brand'] ?? null;
+        if (!empty($brandParam) && $brandParam !== 'all' && $brandParam !== '0') {
+            if (is_numeric($brandParam)) {
+                $conditions[] = "brand_id = ?";
+                $params[] = (int)$brandParam;
+            } else {
+                $conditions[] = "(brand_name = ? OR brand_id IN (SELECT id FROM brands WHERE slug = ?))";
+                $params[] = $brandParam;
+                $params[] = $brandParam;
+            }
         }
 
         // 4. Lọc theo Khoảng giá
@@ -98,7 +120,7 @@ class ProductModel extends BaseModel {
         $totalItems = (int)$countStmt->fetchColumn();
 
         // 7. Sắp xếp
-        $sortOrder = "id DESC";
+        $sortOrder = "featured DESC, id ASC";
         $sort = $filters['sort'] ?? '';
         switch ($sort) {
             case 'price_asc':
@@ -108,14 +130,18 @@ class ProductModel extends BaseModel {
                 $sortOrder = "price DESC";
                 break;
             case 'rating_desc':
+            case 'rating':
                 $sortOrder = "rating DESC";
                 break;
             case 'views_desc':
                 $sortOrder = "view_count DESC";
                 break;
             case 'newest':
-            default:
                 $sortOrder = "id DESC";
+                break;
+            case 'featured':
+            default:
+                $sortOrder = "featured DESC, id ASC";
                 break;
         }
 
@@ -407,8 +433,8 @@ class ProductModel extends BaseModel {
                     $group = 'Công nghệ'; $key = 'Chip xử lý & Chuẩn Codec';
                 }
             }
-            // Ngành 5: Smartwatch & Phụ kiện
-            elseif ($catId === 5 || stripos($name, 'bàn phím') !== false || stripos($name, 'chuột') !== false || stripos($name, 'sạc') !== false || stripos($name, 'watch') !== false) {
+            // Ngành 5: Smartwatch & Ngành 6: Phụ kiện chính hãng
+            elseif ($catId === 5 || $catId === 6 || stripos($name, 'bàn phím') !== false || stripos($name, 'chuột') !== false || stripos($name, 'sạc') !== false || stripos($name, 'watch') !== false) {
                 if (stripos($name, 'bàn phím') !== false || stripos($name, 'keyboard') !== false) {
                     if (stripos($key, 'RAM') !== false || stripos($key, 'ROM') !== false) continue;
                     if (stripos($key, 'vi xử lý') !== false || stripos($key, 'chip') !== false) { $group = 'Cơ học'; $key = 'Loại Switch cơ học'; }
