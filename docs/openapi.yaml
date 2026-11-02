@@ -3,7 +3,8 @@ info:
   title: TechStore RESTful API Specification
   description: >-
     Hợp đồng API (API Contract) chính thức giữa Front-End (HTML/CSS/JS) và Back-End (PHP thuần & MySQL).
-    Thuộc Đồ án Topic 1: RESTful API · Các nhóm chức năng cốt lõi: Auth, Product, Cart, Order, Payments.
+    Thuộc Đồ án Topic 1: RESTful API · Đại học Tôn Đức Thắng.
+    Bao quát toàn diện 10 phân hệ nghiệp vụ: Auth, Products, Categories, Brands, Cart, Coupons, Orders, Payments, Reviews & Wishlist, Recommendations, Admin & Audit Logs.
     Tuân thủ nghiêm ngặt nguyên lý REST, chuẩn mã trạng thái HTTP và cấu trúc response thống nhất.
   version: 1.0.0
   contact:
@@ -26,25 +27,25 @@ tags:
   - name: Brands
     description: Thương hiệu công nghệ
   - name: Cart
-    description: Quản lý giỏ hàng mua sắm
-  - name: Orders
-    description: Quy trình đặt hàng, lịch sử đơn và cập nhật trạng thái
-  - name: Payments
-    description: Thanh toán chuyển khoản tự động VietQR (Napas247) và COD
+    description: Quản lý giỏ hàng mua sắm và kiểm soát tồn kho realtime
   - name: Coupons
     description: Mã voucher ưu đãi giảm giá
+  - name: Orders
+    description: Quy trình đặt hàng ACID, lịch sử đơn và cập nhật trạng thái
+  - name: Payments
+    description: Thanh toán chuyển khoản tự động VietQR (Napas247) và Webhook
   - name: Reviews
-    description: Đánh giá và nhận xét sản phẩm
+    description: Đánh giá và nhận xét sản phẩm sau mua (BR09)
   - name: Wishlist
-    description: Danh sách sản phẩm yêu thích
+    description: Danh sách sản phẩm yêu thích của khách hàng
   - name: Recommendations
-    description: Động cơ gợi ý sản phẩm tương tự (Cosine) và thường mua cùng (Apriori)
+    description: Động cơ gợi ý thông minh Cosine 5D, Apriori FBT và Hybrid Score
   - name: Admin
-    description: Quản trị hệ thống, thống kê doanh thu và Audit Logs
+    description: Quản trị hệ thống, KPI thống kê 7 ngày và Audit Logs
 
 paths:
   # ============================================================================
-  # NHÓM 1: AUTH (XÁC THỰC & PHÂN QUYỀN JWT)
+  # 1. AUTHENTICATION & USERS
   # ============================================================================
   /auth/register:
     post:
@@ -65,7 +66,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AuthResponse'
         '400':
-          description: Thiếu thông tin hoặc dữ liệu không hợp lệ
+          description: Dữ liệu gửi lên không hợp lệ
           content:
             application/json:
               schema:
@@ -104,7 +105,7 @@ paths:
   /auth/refresh:
     post:
       tags: [Auth]
-      summary: Cấp lại Access Token mới qua Refresh Token
+      summary: Cấp mới Access Token bằng Refresh Token (Silent Refresh)
       requestBody:
         required: true
         content:
@@ -125,7 +126,7 @@ paths:
                     properties:
                       access_token: { type: string, example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
                       token_type: { type: string, example: "Bearer" }
-                      expires_in: { type: integer, example: 3600 }
+                      expires_in: { type: integer, example: 7200 }
         '401':
           description: Refresh token không hợp lệ hoặc đã hết hạn
           content:
@@ -136,28 +137,26 @@ paths:
   /auth/logout:
     post:
       tags: [Auth]
-      summary: Đăng xuất và thu hồi Refresh Token
-      security:
-        - BearerAuth: []
-      responses:
-        '204':
-          description: Đăng xuất thành công, không trả nội dung (No Content)
-        '401':
-          description: Chưa đăng nhập hoặc token không hợp lệ
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  /auth/me:
-    get:
-      tags: [Auth]
-      summary: Lấy thông tin tài khoản đang đăng nhập
+      summary: Đăng xuất an toàn và thu hồi Refresh Token
       security:
         - BearerAuth: []
       responses:
         '200':
-          description: Thông tin người dùng hiện tại
+          description: Đăng xuất thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Lấy hồ sơ tài khoản đang đăng nhập
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lấy thông tin cá nhân thành công
           content:
             application/json:
               schema:
@@ -167,7 +166,7 @@ paths:
                   data:
                     $ref: '#/components/schemas/User'
         '401':
-          description: Không có quyền truy cập
+          description: Chưa đăng nhập hoặc token không hợp lệ
           content:
             application/json:
               schema:
@@ -176,18 +175,16 @@ paths:
   /auth/google:
     post:
       tags: [Auth]
-      summary: Đăng nhập qua OAuth 2.0 Google
+      summary: Đăng nhập bằng Google OAuth 2.0 Credential Token
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [token]
+              required: [credential]
               properties:
-                token:
-                  type: string
-                  description: Google ID Token nhận được từ Google Sign-In SDK
+                credential: { type: string, example: "eyJhbGciOiJSUzI1NiIs..." }
       responses:
         '200':
           description: Đăng nhập Google thành công
@@ -197,56 +194,46 @@ paths:
                 $ref: '#/components/schemas/AuthResponse'
 
   # ============================================================================
-  # NHÓM 2: PRODUCTS (SẢN PHẨM & TÌM KIẾM BỘ LỌC)
+  # 2. PRODUCTS & CATALOG
   # ============================================================================
   /products:
     get:
       tags: [Products]
-      summary: Danh sách sản phẩm với bộ lọc, tìm kiếm, sắp xếp và phân trang
+      summary: Lấy danh sách sản phẩm với bộ lọc đa tiêu chí, tìm kiếm và phân trang
       parameters:
-        - name: search
-          in: query
-          schema: { type: string }
-          description: Từ khóa tìm kiếm theo tên hoặc thông số
-          example: "iPhone 16"
-        - name: category_id
-          in: query
-          schema: { type: integer }
-          description: Lọc theo mã danh mục
-          example: 1
-        - name: brand_id
-          in: query
-          schema: { type: integer }
-          description: Lọc theo mã thương hiệu
-          example: 1
-        - name: min_price
-          in: query
-          schema: { type: number }
-          description: Khoảng giá tối thiểu (VND)
-          example: 10000000
-        - name: max_price
-          in: query
-          schema: { type: number }
-          description: Khoảng giá tối đa (VND)
-          example: 35000000
-        - name: sort
-          in: query
-          schema:
-            type: string
-            enum: [featured, price_asc, price_desc, rating_desc, newest]
-            default: featured
-          description: Tiêu chí sắp xếp danh sách
         - name: page
           in: query
           schema: { type: integer, default: 1 }
-          description: Số trang hiện tại
         - name: limit
           in: query
-          schema: { type: integer, default: 12 }
-          description: Số lượng sản phẩm mỗi trang
+          schema: { type: integer, default: 12, maximum: 100 }
+        - name: search
+          in: query
+          schema: { type: string }
+        - name: category_id
+          in: query
+          schema: { type: integer }
+        - name: brand_id
+          in: query
+          schema: { type: integer }
+        - name: min_price
+          in: query
+          schema: { type: number }
+        - name: max_price
+          in: query
+          schema: { type: number }
+        - name: ram
+          in: query
+          schema: { type: string }
+        - name: rom
+          in: query
+          schema: { type: string }
+        - name: sort
+          in: query
+          schema: { type: string, enum: [price_asc, price_desc, rating_desc, newest], default: newest }
       responses:
         '200':
-          description: Danh sách sản phẩm kèm dữ liệu phân trang
+          description: Danh sách sản phẩm kèm metadata phân trang
           content:
             application/json:
               schema:
@@ -273,18 +260,13 @@ paths:
               $ref: '#/components/schemas/ProductCreateRequest'
       responses:
         '201':
-          description: Tạo sản phẩm thành công
+          description: Tạo sản phẩm mới thành công
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success: { type: boolean, example: true }
-                  data:
-                    $ref: '#/components/schemas/Product'
-                  message: { type: string, example: "Tạo sản phẩm thành công" }
+                $ref: '#/components/schemas/SuccessResponse'
         '403':
-          description: Yêu cầu quyền Quản trị viên (Admin)
+          description: Yêu cầu quyền Quản trị viên
           content:
             application/json:
               schema:
@@ -293,16 +275,15 @@ paths:
   /products/{id}:
     get:
       tags: [Products]
-      summary: Chi tiết thông tin sản phẩm và thông số kỹ thuật
+      summary: Xem chi tiết sản phẩm, thông số kỹ thuật và thư viện ảnh
       parameters:
         - name: id
           in: path
           required: true
           schema: { type: integer }
-          description: ID sản phẩm
       responses:
         '200':
-          description: Thông tin chi tiết sản phẩm
+          description: Chi tiết sản phẩm
           content:
             application/json:
               schema:
@@ -320,7 +301,7 @@ paths:
 
     put:
       tags: [Products]
-      summary: Cập nhật toàn bộ thông tin sản phẩm (Quyền Admin)
+      summary: Cập nhật toàn diện sản phẩm (Quyền Admin)
       security:
         - BearerAuth: []
       parameters:
@@ -336,21 +317,15 @@ paths:
               $ref: '#/components/schemas/ProductCreateRequest'
       responses:
         '200':
-          description: Cập nhật thành công
+          description: Cập nhật sản phẩm thành công
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success: { type: boolean, example: true }
-                  data:
-                    $ref: '#/components/schemas/Product'
-        '404':
-          description: Không tìm thấy sản phẩm
+                $ref: '#/components/schemas/SuccessResponse'
 
     patch:
       tags: [Products]
-      summary: Cập nhật một phần thông tin sản phẩm (giá, tồn kho, nổi bật)
+      summary: Cập nhật một phần thông tin sản phẩm (Quyền Admin)
       security:
         - BearerAuth: []
       parameters:
@@ -366,19 +341,15 @@ paths:
               $ref: '#/components/schemas/ProductUpdateRequest'
       responses:
         '200':
-          description: Cập nhật một phần thành công
+          description: Cập nhật sản phẩm thành công
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success: { type: boolean, example: true }
-                  data:
-                    $ref: '#/components/schemas/Product'
+                $ref: '#/components/schemas/SuccessResponse'
 
     delete:
       tags: [Products]
-      summary: Xóa sản phẩm khỏi hệ thống (Quyền Admin)
+      summary: Xóa sản phẩm (Quyền Admin)
       security:
         - BearerAuth: []
       parameters:
@@ -387,18 +358,23 @@ paths:
           required: true
           schema: { type: integer }
       responses:
-        '204':
-          description: Đã xóa sản phẩm thành công (No Content)
-        '404':
-          description: Không tìm thấy sản phẩm
+        '200':
+          description: Xóa sản phẩm thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
 
+  # ============================================================================
+  # 3. CATEGORIES & BRANDS
+  # ============================================================================
   /categories:
     get:
       tags: [Categories]
-      summary: Lấy danh sách danh mục sản phẩm
+      summary: Lấy danh sách ngành hàng kèm số lượng sản phẩm liên kết
       responses:
         '200':
-          description: Danh sách danh mục ngành hàng
+          description: Danh sách danh mục
           content:
             application/json:
               schema:
@@ -410,13 +386,75 @@ paths:
                     items:
                       $ref: '#/components/schemas/Category'
 
+    post:
+      tags: [Categories]
+      summary: Tạo mới danh mục (Quyền Admin)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryCreateRequest'
+      responses:
+        '201':
+          description: Tạo danh mục thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /categories/{id}:
+    put:
+      tags: [Categories]
+      summary: Cập nhật thông tin danh mục (Quyền Admin)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryCreateRequest'
+      responses:
+        '200':
+          description: Cập nhật danh mục thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+    delete:
+      tags: [Categories]
+      summary: Xóa danh mục (Quyền Admin)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Xóa danh mục thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
   /brands:
     get:
       tags: [Brands]
       summary: Lấy danh sách thương hiệu công nghệ
       responses:
         '200':
-          description: Danh sách hãng
+          description: Danh sách thương hiệu
           content:
             application/json:
               schema:
@@ -428,29 +466,102 @@ paths:
                     items:
                       $ref: '#/components/schemas/Brand'
 
+    post:
+      tags: [Brands]
+      summary: Tạo mới thương hiệu (Quyền Admin)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandCreateRequest'
+      responses:
+        '201':
+          description: Tạo thương hiệu thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /brands/{id}:
+    put:
+      tags: [Brands]
+      summary: Cập nhật thương hiệu (Quyền Admin)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandCreateRequest'
+      responses:
+        '200':
+          description: Cập nhật thương hiệu thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+    delete:
+      tags: [Brands]
+      summary: Xóa thương hiệu (Quyền Admin)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Xóa thương hiệu thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
   # ============================================================================
-  # NHÓM 3: CART (GIỎ HÀNG KHÁCH HÀNG)
+  # 4. CART & INVENTORY CONTROL
   # ============================================================================
   /cart:
     get:
       tags: [Cart]
-      summary: Lấy thông tin giỏ hàng của người dùng hiện tại
+      summary: Lấy giỏ hàng của người dùng hiện tại kèm tính toán tổng tiền
       security:
         - BearerAuth: []
       responses:
         '200':
-          description: Chi tiết giỏ hàng và danh sách sản phẩm
+          description: Thông tin giỏ hàng
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CartResponse'
-        '401':
-          description: Chưa xác thực tài khoản
+
+    delete:
+      tags: [Cart]
+      summary: Làm trống toàn bộ giỏ hàng
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Đã dọn sạch giỏ hàng
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
 
   /cart/items:
     post:
       tags: [Cart]
-      summary: Thêm sản phẩm vào giỏ hàng
+      summary: Thêm sản phẩm vào giỏ hàng (Kiểm tra tồn kho realtime BR04)
       security:
         - BearerAuth: []
       requestBody:
@@ -461,23 +572,22 @@ paths:
               $ref: '#/components/schemas/AddToCartRequest'
       responses:
         '201':
-          description: Đã thêm sản phẩm vào giỏ thành công
+          description: Thêm vào giỏ thành công
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success: { type: boolean, example: true }
-                  data:
-                    $ref: '#/components/schemas/CartItem'
-                  message: { type: string, example: "Đã thêm vào giỏ hàng" }
+                $ref: '#/components/schemas/CartResponse'
         '400':
-          description: Số lượng không hợp lệ hoặc vượt tồn kho
+          description: Vượt quá số lượng tồn kho khả dụng
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /cart/items/{id}:
     put:
       tags: [Cart]
-      summary: Cập nhật số lượng mặt hàng trong giỏ
+      summary: Cập nhật số lượng món đồ trong giỏ (Tự động xóa nếu quantity = 0)
       security:
         - BearerAuth: []
       parameters:
@@ -485,7 +595,6 @@ paths:
           in: path
           required: true
           schema: { type: integer }
-          description: ID mục giỏ hàng
       requestBody:
         required: true
         content:
@@ -494,21 +603,15 @@ paths:
               $ref: '#/components/schemas/UpdateCartItemRequest'
       responses:
         '200':
-          description: Đã cập nhật số lượng
+          description: Cập nhật số lượng thành công
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success: { type: boolean, example: true }
-                  data:
-                    $ref: '#/components/schemas/CartItem'
-        '404':
-          description: Không tìm thấy mục trong giỏ
+                $ref: '#/components/schemas/CartResponse'
 
     delete:
       tags: [Cart]
-      summary: Xóa sản phẩm khỏi giỏ hàng
+      summary: Xóa một món đồ cụ thể khỏi giỏ
       security:
         - BearerAuth: []
       parameters:
@@ -517,23 +620,70 @@ paths:
           required: true
           schema: { type: integer }
       responses:
-        '204':
-          description: Đã xóa sản phẩm khỏi giỏ hàng thành công
-        '404':
-          description: Không tìm thấy mục cần xóa
+        '200':
+          description: Xóa món đồ khỏi giỏ thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartResponse'
 
   # ============================================================================
-  # NHÓM 4: ORDERS (ĐẶT HÀNG & QUẢN LÝ TIẾN ĐỘ ĐƠN HÀNG)
+  # 5. COUPONS ENGINE
+  # ============================================================================
+  /coupons:
+    get:
+      tags: [Coupons]
+      summary: Lấy danh sách các mã giảm giá công khai đang có hiệu lực
+      responses:
+        '200':
+          description: Danh sách mã giảm giá
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Coupon'
+
+  /coupons/validate:
+    post:
+      tags: [Coupons]
+      summary: Thẩm định mã giảm giá theo điều kiện đơn hàng tối thiểu và hạn dùng (BR07)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CouponValidateRequest'
+      responses:
+        '200':
+          description: Mã giảm giá hợp lệ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CouponValidateResponse'
+        '400':
+          description: Mã hết hạn, hết lượt hoặc chưa đạt đơn tối thiểu
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ============================================================================
+  # 6. ORDERS & ACID TRANSACTION
   # ============================================================================
   /orders:
     get:
       tags: [Orders]
-      summary: Lấy lịch sử danh sách đơn hàng của người dùng hiện tại
+      summary: Lấy danh sách lịch sử đơn hàng của tôi
       security:
         - BearerAuth: []
       responses:
         '200':
-          description: Danh sách đơn hàng
+          description: Lịch sử đơn hàng
           content:
             application/json:
               schema:
@@ -547,7 +697,7 @@ paths:
 
     post:
       tags: [Orders]
-      summary: Tạo đơn hàng mới từ giỏ hàng (Checkout)
+      summary: Tạo đơn hàng mới trong Database Transaction ACID (Trừ kho, tạo đơn, xóa giỏ)
       security:
         - BearerAuth: []
       requestBody:
@@ -567,14 +717,17 @@ paths:
                   success: { type: boolean, example: true }
                   data:
                     $ref: '#/components/schemas/Order'
-                  message: { type: string, example: "Đặt hàng thành công" }
         '400':
-          description: Giỏ hàng trống hoặc thông tin đặt hàng thiếu
+          description: Sản phẩm trong giỏ hết hàng hoặc giỏ hàng rỗng
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /orders/{id}:
     get:
       tags: [Orders]
-      summary: Lấy thông tin chi tiết của một đơn hàng
+      summary: Xem chi tiết đơn hàng (Chống IDOR BR03)
       security:
         - BearerAuth: []
       parameters:
@@ -584,7 +737,7 @@ paths:
           schema: { type: integer }
       responses:
         '200':
-          description: Chi tiết đơn hàng kèm danh sách sản phẩm và thanh toán
+          description: Chi tiết đơn hàng
           content:
             application/json:
               schema:
@@ -593,13 +746,17 @@ paths:
                   success: { type: boolean, example: true }
                   data:
                     $ref: '#/components/schemas/Order'
-        '404':
-          description: Không tìm thấy đơn hàng
+        '403':
+          description: Không có quyền truy cập đơn hàng của người khác
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /orders/{id}/cancel:
     post:
       tags: [Orders]
-      summary: Hủy đơn hàng (Khi đơn đang ở trạng thái pending hoặc confirmed)
+      summary: Khách hàng hủy đơn hàng khi trạng thái PENDING và tự động hoàn kho (BR08)
       security:
         - BearerAuth: []
       parameters:
@@ -609,21 +766,22 @@ paths:
           schema: { type: integer }
       responses:
         '200':
-          description: Đã hủy đơn hàng thành công
+          description: Hủy đơn hàng và hoàn kho thành công
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success: { type: boolean, example: true }
-                  message: { type: string, example: "Đã hủy đơn hàng thành công" }
+                $ref: '#/components/schemas/SuccessResponse'
         '400':
-          description: Đơn hàng đã được giao hoặc đã hoàn tất, không thể hủy
+          description: Đơn hàng đã được duyệt hoặc đang vận chuyển, không thể hủy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /orders/{id}/status:
     patch:
       tags: [Orders]
-      summary: Cập nhật trạng thái đơn hàng và trạng thái thanh toán (Quyền Admin)
+      summary: Cập nhật trạng thái xử lý và thanh toán của đơn hàng (Quyền Admin)
       security:
         - BearerAuth: []
       parameters:
@@ -639,24 +797,21 @@ paths:
               $ref: '#/components/schemas/UpdateOrderStatusRequest'
       responses:
         '200':
-          description: Đã cập nhật trạng thái đơn hàng
+          description: Cập nhật trạng thái đơn thành công
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success: { type: boolean, example: true }
-                  data:
-                    $ref: '#/components/schemas/Order'
-                  message: { type: string, example: "Cập nhật trạng thái thành công" }
+                $ref: '#/components/schemas/SuccessResponse'
 
   # ============================================================================
-  # NHÓM BỔ TRỢ: PAYMENTS, COUPONS & RECOMMENDATIONS
+  # 7. PAYMENTS (VIETQR & WEBHOOK)
   # ============================================================================
   /payments/qr:
     post:
       tags: [Payments]
-      summary: Khởi tạo mã VietQR chuẩn NAPAS247 cho đơn hàng
+      summary: Sinh ảnh mã VietQR NAPAS247 động theo số tiền và mã đơn (BR05)
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -665,7 +820,7 @@ paths:
               $ref: '#/components/schemas/VietQrInitRequest'
       responses:
         '201':
-          description: Sinh mã QR VietQR thành công
+          description: Khởi tạo mã VietQR thành công
           content:
             application/json:
               schema:
@@ -674,7 +829,9 @@ paths:
   /payments/{orderId}/status:
     get:
       tags: [Payments]
-      summary: Kiểm tra trạng thái thanh toán đơn hàng (Polling realtime)
+      summary: Polling kiểm tra trạng thái thanh toán đơn hàng mỗi 3 giây (BR06)
+      security:
+        - BearerAuth: []
       parameters:
         - name: orderId
           in: path
@@ -682,7 +839,7 @@ paths:
           schema: { type: integer }
       responses:
         '200':
-          description: Trạng thái thanh toán hiện tại
+          description: Trạng thái thanh toán của đơn
           content:
             application/json:
               schema:
@@ -693,39 +850,182 @@ paths:
                     type: object
                     properties:
                       order_id: { type: integer, example: 1001 }
-                      payment_status: { type: string, enum: [pending, paid, failed], example: "paid" }
-                      paid_at: { type: string, format: date-time, example: "2026-10-21 08:35:00" }
+                      payment_status: { type: string, enum: [PENDING, PAID, EXPIRED], example: "PAID" }
+                      order_status: { type: string, example: "CONFIRMED" }
+                      is_paid: { type: boolean, example: true }
 
-  /coupons/validate:
+  /payments/webhook:
     post:
-      tags: [Coupons]
-      summary: Kiểm tra và tính toán giảm giá của voucher
+      tags: [Payments]
+      summary: Webhook ngân hàng tự động duyệt tiền về kèm chữ ký HMAC-SHA256 (BR06)
+      parameters:
+        - name: X-Webhook-Signature
+          in: header
+          required: true
+          schema: { type: string }
+          description: Chữ ký HMAC-SHA256 tính từ body và WEBHOOK_SECRET
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CouponValidateRequest'
+              $ref: '#/components/schemas/WebhookPaymentRequest'
       responses:
         '200':
-          description: Mã giảm giá hợp lệ
+          description: Cập nhật thanh toán thành công
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CouponValidateResponse'
-        '400':
-          description: Chưa đạt điều kiện áp dụng voucher
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Chữ ký HMAC không hợp lệ hoặc thiếu header
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: Mã không tồn tại hoặc đã hết hạn
+
+  # ============================================================================
+  # 8. REVIEWS & WISHLIST
+  # ============================================================================
+  /products/{id}/reviews:
+    get:
+      tags: [Reviews]
+      summary: Lấy danh sách đánh giá của sản phẩm
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Danh sách đánh giá
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Review'
+
+    post:
+      tags: [Reviews]
+      summary: Gửi đánh giá sao 1-5 kèm bình luận sau khi mua hàng COMPLETED (BR09)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReviewRequest'
+      responses:
+        '201':
+          description: Gửi đánh giá thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '403':
+          description: Bạn chỉ có thể đánh giá sau khi đã mua hàng và đơn đã hoàn tất
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /wishlist:
+    get:
+      tags: [Wishlist]
+      summary: Lấy danh sách sản phẩm yêu thích cá nhân
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Danh sách sản phẩm yêu thích
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WishlistItem'
+
+    post:
+      tags: [Wishlist]
+      summary: Thêm sản phẩm vào danh sách yêu thích
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddToWishlistRequest'
+      responses:
+        '200':
+          description: Đã thêm vào danh sách yêu thích
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /wishlist/{id}:
+    delete:
+      tags: [Wishlist]
+      summary: Xóa sản phẩm khỏi danh sách yêu thích
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Đã xóa khỏi yêu thích
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  # ============================================================================
+  # 9. RECOMMENDATIONS & AI EVENTS
+  # ============================================================================
+  /events/view:
+    post:
+      tags: [Recommendations]
+      summary: Ghi nhận sự kiện xem sản phẩm vào MySQL (HTTP 202 Accepted)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ViewEventRequest'
+      responses:
+        '202':
+          description: Ghi nhận lượt xem thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  message: { type: string, example: "Ghi nhận lượt xem" }
 
   /products/{id}/recommendations:
     get:
       tags: [Recommendations]
-      summary: Lấy danh sách sản phẩm tương tự (Cosine) và thường mua cùng (Apriori)
+      summary: Gợi ý sản phẩm tương tự (Cosine 5D) và combo thường mua cùng (Apriori FBT)
       parameters:
         - name: id
           in: path
@@ -743,11 +1043,11 @@ paths:
                   data:
                     type: object
                     properties:
-                      similar_products:
+                      similar:
                         type: array
                         items:
                           $ref: '#/components/schemas/Product'
-                      frequently_bought_together:
+                      bought_together:
                         type: array
                         items:
                           $ref: '#/components/schemas/Product'
@@ -755,7 +1055,7 @@ paths:
   /recommendations/me:
     get:
       tags: [Recommendations]
-      summary: Gợi ý sản phẩm cá nhân hóa theo lịch sử xem và giỏ hàng của tôi
+      summary: Gợi ý sản phẩm cá nhân hóa theo công thức lai Hybrid Score (BR12)
       security:
         - BearerAuth: []
       responses:
@@ -768,9 +1068,106 @@ paths:
                 properties:
                   success: { type: boolean, example: true }
                   data:
+                    type: object
+                    properties:
+                      for_you:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Product'
+                      is_personalized: { type: boolean, example: true }
+                      algorithm: { type: string, example: "hybrid_score (0.4*Content + 0.4*CoOccur + 0.2*Popularity)" }
+
+  # ============================================================================
+  # 10. ADMIN & AUDIT LOGS
+  # ============================================================================
+  /admin/stats:
+    get:
+      tags: [Admin]
+      summary: Báo cáo tổng quan KPI doanh thu, đơn hàng và biểu đồ 7 ngày (Quyền Admin)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Thống kê Dashboard
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
+                    $ref: '#/components/schemas/AdminStatsResponse'
+        '403':
+          description: Yêu cầu quyền Quản trị viên
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /admin/users:
+    get:
+      tags: [Admin]
+      summary: Danh sách người dùng hệ thống (Quyền Admin)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Danh sách người dùng
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Product'
+                      $ref: '#/components/schemas/User'
+
+  /admin/users/{id}:
+    patch:
+      tags: [Admin]
+      summary: Khóa/mở khóa hoặc cập nhật phân quyền người dùng (Quyền Admin, cấm tự khóa BR15)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUserPatchRequest'
+      responses:
+        '200':
+          description: Cập nhật người dùng thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /admin/audit-logs:
+    get:
+      tags: [Admin]
+      summary: Tra cứu nhật ký kiểm toán bất biến của Quản trị viên (BR14)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Danh sách nhật ký kiểm toán
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AuditLog'
 
 # ==============================================================================
 # COMPONENTS SCHEMAS (ĐỊNH NGHĨA KIỂU DỮ LIỆU CHUẨN)
@@ -813,8 +1210,8 @@ components:
       properties:
         current_page: { type: integer, example: 1 }
         per_page: { type: integer, example: 12 }
-        total_items: { type: integer, example: 42 }
-        total_pages: { type: integer, example: 4 }
+        total_items: { type: integer, example: 83 }
+        total_pages: { type: integer, example: 7 }
 
     # 2. Auth Schemas
     RegisterRequest:
@@ -823,7 +1220,7 @@ components:
       properties:
         name: { type: string, example: "Nguyễn Văn A" }
         email: { type: string, format: email, example: "khachhang@gmail.com" }
-        password: { type: string, format: password, example: "MatKhau@123" }
+        password: { type: string, format: password, example: "Password@123" }
         phone: { type: string, example: "0987654321" }
         address: { type: string, example: "227 Nguyễn Văn Cừ, Quận 5, TP.HCM" }
 
@@ -865,7 +1262,7 @@ components:
             access_token: { type: string, example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
             refresh_token: { type: string, example: "b556b34819311e8c306d3756deeb3ea7..." }
             token_type: { type: string, example: "Bearer" }
-            expires_in: { type: integer, example: 3600 }
+            expires_in: { type: integer, example: 7200 }
 
     # 3. Product Schemas
     Product:
@@ -951,6 +1348,13 @@ components:
         icon: { type: string, example: "📱" }
         product_count: { type: integer, example: 10 }
 
+    CategoryCreateRequest:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, example: "Phụ kiện Gaming" }
+        icon: { type: string, example: "🎮" }
+
     Brand:
       type: object
       properties:
@@ -958,6 +1362,13 @@ components:
         name: { type: string, example: "Apple" }
         slug: { type: string, example: "apple" }
         logo: { type: string, example: "" }
+
+    BrandCreateRequest:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, example: "Razer" }
+        logo: { type: string, example: "razer-logo.png" }
 
     # 4. Cart Schemas
     CartItem:
@@ -998,7 +1409,7 @@ components:
       type: object
       required: [quantity]
       properties:
-        quantity: { type: integer, minimum: 1, example: 2 }
+        quantity: { type: integer, example: 2 }
 
     # 5. Order Schemas
     OrderItem:
@@ -1065,7 +1476,7 @@ components:
     # 6. Payment & VietQR Schemas
     VietQrInitRequest:
       type: object
-      required: [order_id, amount]
+      required: [order_id]
       properties:
         order_id: { type: integer, example: 1001 }
         amount: { type: number, example: 40870000 }
@@ -1078,16 +1489,36 @@ components:
         data:
           type: object
           properties:
-            order_id: { type: integer, example: 1001 }
-            order_code: { type: string, example: "TS-749201" }
+            qr_url: { type: string, example: "https://img.vietqr.io/image/MB-0123456789-compact2.png?amount=40870000&addInfo=TS-749201" }
+            bank_name: { type: string, example: "Ngân hàng Quân Đội (MB Bank)" }
+            account_number: { type: string, example: "0123456789" }
+            account_name: { type: string, example: "TECHSTORE VIETNAM" }
             amount: { type: number, example: 40870000 }
-            qr_image_url: { type: string, example: "https://api.vietqr.io/image/970422-0123456789-compact2.png?amount=40870000&addInfo=TS-749201" }
-            bank_id: { type: string, example: "MB" }
-            account_no: { type: string, example: "0123456789" }
-            account_name: { type: string, example: "TECHSTORE" }
-            transfer_content: { type: string, example: "TS-749201" }
+            order_code: { type: string, example: "TS-749201" }
+            expires_in: { type: integer, example: 900 }
+
+    WebhookPaymentRequest:
+      type: object
+      required: [order_code, amount]
+      properties:
+        order_code: { type: string, example: "TS-749201" }
+        amount: { type: number, example: 40870000 }
+        transaction_id: { type: string, example: "TXN-987654321" }
 
     # 7. Coupon Schemas
+    Coupon:
+      type: object
+      properties:
+        id: { type: integer, example: 1 }
+        code: { type: string, example: "TECH10" }
+        discount_type: { type: string, enum: [percent, fixed], example: "percent" }
+        value: { type: number, example: 10 }
+        min_order: { type: number, example: 20000000 }
+        max_discount: { type: number, example: 500000 }
+        usage_limit: { type: integer, example: 100 }
+        used_count: { type: integer, example: 12 }
+        status: { type: string, example: "active" }
+
     CouponValidateRequest:
       type: object
       required: [code, total]
@@ -1104,5 +1535,86 @@ components:
           properties:
             code: { type: string, example: "TECH10" }
             discount_type: { type: string, example: "percent" }
-            discount_amount: { type: number, example: 500000 }
-            new_total: { type: number, example: 34490000 }
+            discount: { type: number, example: 500000 }
+            final_total: { type: number, example: 34490000 }
+
+    # 8. Reviews & Wishlist Schemas
+    Review:
+      type: object
+      properties:
+        id: { type: integer, example: 1 }
+        product_id: { type: integer, example: 1 }
+        user_id: { type: integer, example: 2 }
+        user_name: { type: string, example: "Tuấn Kiệt" }
+        rating: { type: integer, minimum: 1, maximum: 5, example: 5 }
+        comment: { type: string, example: "Máy dùng mượt mà, camera xuất sắc!" }
+        created_at: { type: string, format: date-time, example: "2026-08-10 14:20:00" }
+
+    CreateReviewRequest:
+      type: object
+      required: [rating]
+      properties:
+        rating: { type: integer, minimum: 1, maximum: 5, example: 5 }
+        comment: { type: string, example: "Sản phẩm chính hãng đóng gói cẩn thận" }
+
+    WishlistItem:
+      type: object
+      properties:
+        id: { type: integer, example: 1 }
+        product_id: { type: integer, example: 1 }
+        name: { type: string, example: "iPhone 16 Pro Max 256GB" }
+        price: { type: number, example: 34990000 }
+        image: { type: string, example: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600" }
+
+    AddToWishlistRequest:
+      type: object
+      required: [product_id]
+      properties:
+        product_id: { type: integer, example: 1 }
+
+    ViewEventRequest:
+      type: object
+      required: [product_id]
+      properties:
+        product_id: { type: integer, example: 1 }
+
+    # 9. Admin Schemas
+    AdminStatsResponse:
+      type: object
+      properties:
+        revenue:
+          type: object
+          properties:
+            total: { type: number, example: 1001450000 }
+            this_month: { type: number, example: 154000000 }
+        orders:
+          type: object
+          properties:
+            total: { type: integer, example: 32 }
+            pending: { type: integer, example: 3 }
+        products:
+          type: object
+          properties:
+            total: { type: integer, example: 83 }
+            low_stock: { type: integer, example: 4 }
+        users:
+          type: object
+          properties:
+            total: { type: integer, example: 15 }
+
+    AdminUserPatchRequest:
+      type: object
+      properties:
+        status: { type: string, enum: [active, banned], example: "active" }
+        role: { type: string, enum: [customer, admin], example: "customer" }
+
+    AuditLog:
+      type: object
+      properties:
+        id: { type: integer, example: 1 }
+        admin_id: { type: integer, example: 1 }
+        admin_email: { type: string, example: "admin@techstore.local" }
+        action: { type: string, example: "UPDATE_ORDER_STATUS" }
+        details: { type: string, example: "Chuyển đơn hàng TS-749201 sang completed" }
+        ip_address: { type: string, example: "127.0.0.1" }
+        created_at: { type: string, format: date-time, example: "2026-08-05 10:00:00" }

@@ -7,7 +7,7 @@
 - **Đề tài:** Nền tảng Thương mại Điện tử Đồ Công nghệ TechStore ứng dụng RESTful API (JWT, Thanh toán VietQR, Thuật toán Gợi ý Sản phẩm)
 - **Môn học:** Công nghệ Web / Kiến trúc Phần mềm (Topic 1: RESTful API)
 - **Nhóm / Lớp:** TechStore / Nhóm 1
-- **Giảng viên hướng dẫn:** ThS. Nguyễn Khắc Cường
+- **Giảng viên hướng dẫn:** Thầy Trần Đại Nhân 
 - **Thành viên nhóm:**
   - Trần Hữu Nam (Trưởng nhóm / Core Backend & Architecture)
   - Nguyễn Thành Trung (Backend & Thuật toán Gợi ý / CSDL)
