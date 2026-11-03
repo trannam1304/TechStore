@@ -1327,32 +1327,9 @@ audit_logs = [
     {"id": 5, "user_id": 3, "user_name": "trung@techstore.local", "action": "BUILD_SIMILARITY", "description": "Chạy thuật toán Cosine Similarity và Apriori Baskets cập nhật bảng gợi ý", "ip_address": "127.0.0.1", "created_at": "2026-10-21 00:00:00"}
 ]
 
-# Write to database/data.json
-full_data_json = {
-    "users": users,
-    "categories": categories,
-    "brands": brands,
-    "products": products,
-    "coupons": coupons,
-    "orders": orders,
-    "order_items": order_items,
-    "payments": payments,
-    "reviews": reviews,
-    "wishlists": wishlists,
-    "cart": [
-        {"id": 1, "user_id": 2, "product_id": 1, "quantity": 1, "variant": "256GB - Titan Sa Mạc"},
-        {"id": 2, "user_id": 2, "product_id": 39, "quantity": 1, "variant": "Đen GaN 65W"}
-    ],
-    "product_similarity": product_similarity,
-    "product_views": product_views,
-    "refresh_tokens": refresh_tokens,
-    "audit_logs": audit_logs
-}
-
-data_json_path = os.path.join(os.path.dirname(__file__), "data.json")
-with open(data_json_path, "w", encoding="utf-8") as f:
-    json.dump(full_data_json, f, ensure_ascii=False, indent=2)
-print(f"Successfully saved data.json: {len(products)} products, {len(orders)} orders, {len(brands)} brands, {len(categories)} categories")
+# [REMOVED] Khong xuat data.json vi he thong da chuyen 100% sang MySQL (tuan thu tieu chi Zero data.json)
+# Chi tap trung sinh tep database/seed.sql chuan hoa
+print(f"Loaded datasets: {len(products)} products, {len(orders)} orders, {len(brands)} brands, {len(categories)} categories")
 
 # Now generate database/seed.sql
 def escape_sql(val):

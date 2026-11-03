@@ -293,7 +293,7 @@ gantt
   3. Quét mã VietQR (hoặc bấm Duyệt TT bên Admin) $\rightarrow$ Đơn hàng đổi sang Đã thanh toán ngay lập tức.
   4. Xem chi tiết sản phẩm $\rightarrow$ Kiểm tra khối "Sản phẩm tương tự" và "Thường mua cùng".
   5. Đăng nhập Admin $\rightarrow$ Xem Dashboard biểu đồ doanh thu 7 ngày $\rightarrow$ In hóa đơn bán lẻ.
-- [ ] **Báo cáo đồng nhất:** Số liệu trong báo cáo Word/PDF khớp 100% với tài liệu [SRS.md](file:///d:/TechStore/docs/SRS.md) và kết quả đo trong [TEST_REPORT.md](file:///d:/TechStore/tests/TEST_REPORT.md).
+- [ ] **Báo cáo đồng nhất:** Số liệu trong báo cáo Word/PDF khớp 100% với tài liệu [SRS.md](../SRS.md) và kết quả đo trong [TEST_REPORT.md](../../tests/TEST_REPORT.md).
 
 ---
 *Tài liệu Kế hoạch kiểm thử được biên soạn riêng cho đồ án TechStore E-Commerce (Đại học Tôn Đức Thắng).*
