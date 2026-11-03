@@ -153,7 +153,8 @@ assertTest(
 echo "\n[3] KIỂM THỬ GỢI Ý THÔNG MINH & HYBRID SCORING (FR09.03 & BR12):\n";
 
 // Chạy script build_similarity.php
-exec('php scripts/build_similarity.php', $cliOutput, $exitCode);
+$phpBin = defined('PHP_BINARY') && PHP_BINARY ? escapeshellarg(PHP_BINARY) : 'php';
+exec("{$phpBin} scripts/build_similarity.php", $cliOutput, $exitCode);
 assertTest(
     'SYS02 CLI: Chạy scripts/build_similarity.php thành công với exit code 0',
     $exitCode === 0,
