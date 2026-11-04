@@ -2654,15 +2654,46 @@ class ApiClient {
     }
 
     if (endpoint === '/auth/google' && method === 'POST') {
+      let gName = body.name || 'Google User';
+      let gEmail = body.email || 'google_user@gmail.com';
+      let gAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200';
+
+      const cred = body.credential || body.token || '';
+      if (cred && cred.includes('.')) {
+        try {
+          const parts = cred.split('.');
+          if (parts.length >= 2) {
+            const base64Url = parts[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            const p = JSON.parse(jsonPayload);
+            if (p.email) gEmail = p.email;
+            if (p.name) gName = p.name;
+            if (p.picture) gAvatar = p.picture;
+          }
+        } catch (e) {}
+      }
+
       const user = {
         id: 88,
-        name: 'Google User',
-        email: 'google_user@gmail.com',
+        name: gName,
+        email: gEmail,
         role: 'customer',
-        avatar: 'https://lh3.googleusercontent.com/a/default-user'
+        avatar: gAvatar
       };
-      this.setAuthTokens(`jwt_google_${Date.now()}`, `jwt_rf_google_${Date.now()}`, user);
-      return { success: true, data: { user, access_token: `jwt_google_${Date.now()}` } };
+      const access_token = `jwt_google_${Date.now()}`;
+      const refresh_token = `jwt_rf_google_${Date.now()}`;
+      this.setAuthTokens(access_token, refresh_token, user);
+      return { success: true, message: 'Đăng nhập Google thành công', data: { user, access_token, refresh_token } };
+    }
+
+    if (endpoint === '/auth/google/client-id' && method === 'GET') {
+      return {
+        success: true,
+        data: { client_id: localStorage.getItem('techstore_google_client_id') || '' }
+      };
     }
 
     // 6-11. PRODUCTS GROUP
@@ -3044,25 +3075,50 @@ class ApiClient {
     if (endpoint === '/admin/stats') {
       const products = getStoredProducts();
       const orders = this.getStoredOrders();
-      const totalRevenue = orders.reduce((sum, o) => sum + (o.payment_status === 'paid' ? o.total_amount : 0), 184500000);
+      const totalRevenue = orders.reduce((sum, o) => sum + ((o.payment_status === 'paid' || o.status === 'completed' || o.status === 'confirmed') ? Number(o.total_amount || 0) : 0), 184500000);
+      const pendingCount = orders.filter(o => o.payment_status === 'pending' || o.status === 'pending').length;
+      
+      const chart = [
+        { day: 'T2', amount: 18500000, revenue: 18500000 },
+        { day: 'T3', amount: 22400000, revenue: 22400000 },
+        { day: 'T4', amount: 19800000, revenue: 19800000 },
+        { day: 'T5', amount: 31200000, revenue: 31200000 },
+        { day: 'T6', amount: 28900000, revenue: 28900000 },
+        { day: 'T7', amount: 45000000, revenue: 45000000 },
+        { day: 'CN', amount: 38700000, revenue: 38700000 }
+      ];
+
       return {
         success: true,
         data: {
+          revenue: {
+            total: totalRevenue,
+            this_month: totalRevenue,
+            growth: '+14.8%'
+          },
+          orders: {
+            total: orders.length || 28,
+            pending: pendingCount,
+            by_status: { pending: pendingCount }
+          },
+          products: {
+            total: products.length,
+            low_stock: 4
+          },
+          customers: {
+            total: 142
+          },
+          users: {
+            total: 142
+          },
           total_revenue: totalRevenue,
           revenue_growth: '+14.8%',
           new_orders_count: orders.length || 28,
+          pending_orders_count: pendingCount,
           total_products: products.length,
           total_users: 142,
           recent_orders: orders.slice(0, 5),
-          revenue_chart: [
-            { day: 'T2', amount: 18500000 },
-            { day: 'T3', amount: 22400000 },
-            { day: 'T4', amount: 19800000 },
-            { day: 'T5', amount: 31200000 },
-            { day: 'T6', amount: 28900000 },
-            { day: 'T7', amount: 45000000 },
-            { day: 'CN', amount: 38700000 }
-          ]
+          revenue_chart: chart
         }
       };
     }
@@ -3228,8 +3284,9 @@ class ApiClient {
       return { success: true, message: 'Đã đăng xuất' };
     },
     me: () => this.request('/auth/me', { method: 'GET' }),
-    google: async (token) => {
-      const res = await this.request('/auth/google', { method: 'POST', body: JSON.stringify({ token }) });
+    google: async (payload) => {
+      const body = typeof payload === 'string' ? { token: payload } : payload;
+      const res = await this.request('/auth/google', { method: 'POST', body: JSON.stringify(body) });
       if (res && res.success && res.data) {
         const { access_token, refresh_token, user } = res.data;
         if (access_token || user) {
@@ -3237,6 +3294,14 @@ class ApiClient {
         }
       }
       return res;
+    },
+    getGoogleClientId: async () => {
+      try {
+        const res = await this.request('/auth/google/client-id', { method: 'GET' });
+        return res?.data?.client_id || '';
+      } catch (e) {
+        return '';
+      }
     }
   };
 

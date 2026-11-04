@@ -125,6 +125,10 @@ if ($subPath === '/auth/google' && $reqMethod === 'POST') {
     AuthController::google($body);
 }
 
+if ($subPath === '/auth/google/client-id' && $reqMethod === 'GET') {
+    AuthController::googleClientId();
+}
+
 // -------------------------------------------------------------------------
 // 2. PRODUCTS (ProductController)
 // -------------------------------------------------------------------------
