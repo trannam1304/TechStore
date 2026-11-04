@@ -2,6 +2,7 @@
 /**
  * TechStore - Order Controller
  * Quản lý đơn hàng: đặt hàng, xem danh sách, xem chi tiết, hủy đơn, cập nhật trạng thái thuần MySQL
+ * Đạt chuẩn RESTful Level 3 (HATEOAS State Machine Engine)
  */
 
 namespace Api\Controllers;
@@ -16,9 +17,42 @@ use Api\Models\CartModel;
 use Exception;
 
 class OrderController extends BaseController {
+
+    /**
+     * Helper sinh siêu liên kết HATEOAS cho Đơn hàng theo trạng thái vòng đời
+     */
+    private static function buildOrderLinks(array $order): array {
+        $id = (int)($order['id'] ?? 0);
+        $status = $order['status'] ?? 'pending';
+        $paymentStatus = $order['payment_status'] ?? 'pending';
+
+        $links = [
+            'self'       => ['href' => "/api/v1/orders/{$id}", 'method' => 'GET'],
+            'collection' => ['href' => '/api/v1/orders', 'method' => 'GET']
+        ];
+
+        // Nếu đơn đang chờ xử lý (pending) -> Cho phép hủy đơn và sinh mã VietQR
+        if ($status === 'pending') {
+            $links['cancel'] = ['href' => "/api/v1/orders/{$id}/cancel", 'method' => 'POST'];
+            if ($paymentStatus === 'pending') {
+                $links['payment_qr'] = ['href' => '/api/v1/payments/qr', 'method' => 'POST'];
+            }
+        }
+
+        // Nếu đơn đã hoàn thành (completed) -> Cho phép gửi đánh giá sản phẩm
+        if ($status === 'completed' && !empty($order['items'])) {
+            $firstProdId = $order['items'][0]['product_id'] ?? null;
+            if ($firstProdId) {
+                $links['review'] = ['href' => "/api/v1/products/{$firstProdId}/reviews", 'method' => 'POST'];
+            }
+        }
+
+        return $links;
+    }
+
     /**
      * POST /api/v1/orders
-     * Tạo đơn hàng mới từ giỏ hàng hoặc payload
+     * Tạo đơn hàng mới từ giỏ hàng hoặc payload (ACID Transaction)
      */
     public static function createOrder(array $body): void {
         $user = self::getCurrentAuthUser();
@@ -59,7 +93,8 @@ class OrderController extends BaseController {
 
         try {
             $order = OrderModel::createOrder($orderData, $items);
-            Response::success($order, 201, 'Tạo đơn hàng thành công');
+            $links = self::buildOrderLinks($order);
+            Response::success($order, 201, 'Tạo đơn hàng thành công', null, $links);
         } catch (Exception $e) {
             Response::error('Lỗi khi tạo đơn hàng: ' . $e->getMessage(), 'ORDER_CREATE_FAILED', 500);
         }
@@ -83,7 +118,11 @@ class OrderController extends BaseController {
 
         try {
             $orders = OrderModel::getAll($userId);
-            Response::success($orders, 200);
+            $links = [
+                'self'   => ['href' => '/api/v1/orders', 'method' => 'GET'],
+                'create' => ['href' => '/api/v1/orders', 'method' => 'POST']
+            ];
+            Response::success($orders, 200, '', null, $links);
         } catch (Exception $e) {
             Response::error('Lỗi truy vấn đơn hàng: ' . $e->getMessage(), 'ORDER_FETCH_FAILED', 500);
         }
@@ -91,7 +130,7 @@ class OrderController extends BaseController {
 
     /**
      * GET /api/v1/orders/{id}
-     * Lấy thông tin chi tiết một đơn hàng theo ID
+     * Lấy thông tin chi tiết một đơn hàng theo ID (HATEOAS state engine)
      */
     public static function getOrder(int $id): void {
         $user = self::getCurrentAuthUser();
@@ -116,7 +155,8 @@ class OrderController extends BaseController {
                 }
             }
 
-            Response::success($order, 200);
+            $links = self::buildOrderLinks($order);
+            Response::success($order, 200, '', null, $links);
         } catch (Exception $e) {
             Response::error('Lỗi truy vấn đơn hàng: ' . $e->getMessage(), 'ORDER_FETCH_FAILED', 500);
         }
@@ -156,7 +196,9 @@ class OrderController extends BaseController {
 
             $success = OrderModel::cancelOrder($id);
             if ($success) {
-                Response::success(OrderModel::getOrderById($id), 200, 'Hủy đơn hàng thành công');
+                $updatedOrder = OrderModel::getOrderById($id);
+                $links = self::buildOrderLinks($updatedOrder);
+                Response::success($updatedOrder, 200, 'Hủy đơn hàng thành công', null, $links);
             } else {
                 Response::error('Không thể hủy đơn hàng này', 'CANCEL_FAILED', 400);
             }
@@ -186,7 +228,9 @@ class OrderController extends BaseController {
             }
 
             OrderModel::updateStatus($id, $status ?: $order['status'], $paymentStatus);
-            Response::success(OrderModel::getOrderById($id), 200, 'Cập nhật trạng thái đơn hàng thành công');
+            $updatedOrder = OrderModel::getOrderById($id);
+            $links = self::buildOrderLinks($updatedOrder);
+            Response::success($updatedOrder, 200, 'Cập nhật trạng thái đơn hàng thành công', null, $links);
         } catch (Exception $e) {
             Response::error('Lỗi khi cập nhật trạng thái: ' . $e->getMessage(), 'UPDATE_FAILED', 500);
         }

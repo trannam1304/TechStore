@@ -2,6 +2,7 @@
 /**
  * TechStore - Category & Brand Controller (MVC)
  * Quản lý danh mục sản phẩm (Categories) và thương hiệu (Brands)
+ * Đạt chuẩn RESTful Level 3 (HATEOAS, Cache-Control & ETag)
  * Ủy quyền toàn bộ xử lý nghiệp vụ & truy xuất CSDL cho CategoryModel và BrandModel
  */
 
@@ -18,10 +19,13 @@ use Api\Models\BrandModel;
 class CategoryBrandController extends BaseController {
     /**
      * GET /api/v1/categories
-     * Lấy danh sách danh mục sản phẩm
+     * Lấy danh sách danh mục sản phẩm (Cacheable 600s & HATEOAS)
      */
     public static function getCategories(): void {
-        Response::success(CategoryModel::all(), 200);
+        $links = [
+            'self' => ['href' => '/api/v1/categories', 'method' => 'GET']
+        ];
+        Response::withCache(CategoryModel::all(), 600, 'Lấy danh sách ngành hàng thành công', null, $links);
     }
 
     /**
@@ -30,7 +34,13 @@ class CategoryBrandController extends BaseController {
      */
     public static function createCategory(array $body): void {
         $cat = CategoryModel::create($body);
-        Response::success($cat, 201, 'Tạo danh mục thành công');
+        $catId = $cat['id'] ?? null;
+        $links = $catId ? [
+            'self'   => ['href' => "/api/v1/categories/{$catId}", 'method' => 'GET'],
+            'update' => ['href' => "/api/v1/categories/{$catId}", 'method' => 'PUT'],
+            'delete' => ['href' => "/api/v1/categories/{$catId}", 'method' => 'DELETE']
+        ] : null;
+        Response::success($cat, 201, 'Tạo danh mục thành công', null, $links);
     }
 
     /**
@@ -42,7 +52,11 @@ class CategoryBrandController extends BaseController {
         if (!$updated) {
             Response::error('Không tìm thấy danh mục', 'NOT_FOUND', 404);
         }
-        Response::success($updated, 200, 'Cập nhật danh mục thành công');
+        $links = [
+            'self'   => ['href' => "/api/v1/categories/{$id}", 'method' => 'GET'],
+            'delete' => ['href' => "/api/v1/categories/{$id}", 'method' => 'DELETE']
+        ];
+        Response::success($updated, 200, 'Cập nhật danh mục thành công', null, $links);
     }
 
     /**
@@ -56,10 +70,13 @@ class CategoryBrandController extends BaseController {
 
     /**
      * GET /api/v1/brands
-     * Lấy danh sách thương hiệu công nghệ
+     * Lấy danh sách thương hiệu công nghệ (Cacheable 600s & HATEOAS)
      */
     public static function getBrands(): void {
-        Response::success(BrandModel::all(), 200);
+        $links = [
+            'self' => ['href' => '/api/v1/brands', 'method' => 'GET']
+        ];
+        Response::withCache(BrandModel::all(), 600, 'Lấy danh sách thương hiệu thành công', null, $links);
     }
 
     /**
@@ -68,7 +85,13 @@ class CategoryBrandController extends BaseController {
      */
     public static function createBrand(array $body): void {
         $brand = BrandModel::create($body);
-        Response::success($brand, 201, 'Tạo thương hiệu thành công');
+        $brandId = $brand['id'] ?? null;
+        $links = $brandId ? [
+            'self'   => ['href' => "/api/v1/brands/{$brandId}", 'method' => 'GET'],
+            'update' => ['href' => "/api/v1/brands/{$brandId}", 'method' => 'PUT'],
+            'delete' => ['href' => "/api/v1/brands/{$brandId}", 'method' => 'DELETE']
+        ] : null;
+        Response::success($brand, 201, 'Tạo thương hiệu thành công', null, $links);
     }
 
     /**
@@ -80,7 +103,11 @@ class CategoryBrandController extends BaseController {
         if (!$updated) {
             Response::error('Không tìm thấy hãng', 'NOT_FOUND', 404);
         }
-        Response::success($updated, 200, 'Cập nhật hãng thành công');
+        $links = [
+            'self'   => ['href' => "/api/v1/brands/{$id}", 'method' => 'GET'],
+            'delete' => ['href' => "/api/v1/brands/{$id}", 'method' => 'DELETE']
+        ];
+        Response::success($updated, 200, 'Cập nhật hãng thành công', null, $links);
     }
 
     /**
