@@ -39,12 +39,25 @@ function showToast(message, type = 'info', duration = 3500) {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
   
-  let icon = 'ℹ️';
-  if (type === 'success') icon = '✅';
-  if (type === 'danger' || type === 'error') icon = '⚠️';
-  if (type === 'warning') icon = '🔔';
+  let iconSvg = '';
+  if (typeof TechIcons !== 'undefined') {
+    if (type === 'success') iconSvg = TechIcons.render('check-circle', { size: 20, className: 'tech-icon-green' });
+    else if (type === 'danger' || type === 'error') iconSvg = TechIcons.render('alert-triangle', { size: 20, className: 'tech-icon-primary' });
+    else if (type === 'warning') iconSvg = TechIcons.render('bolt', { size: 20, className: 'tech-icon-gold' });
+    else iconSvg = TechIcons.render('info-circle', { size: 20, className: 'tech-icon-secondary' });
+  } else {
+    if (type === 'success') {
+      iconSvg = '<svg class="tech-icon tech-icon-green" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-5" stroke-width="2.2"/></svg>';
+    } else if (type === 'danger' || type === 'error') {
+      iconSvg = '<svg class="tech-icon tech-icon-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>';
+    } else if (type === 'warning') {
+      iconSvg = '<svg class="tech-icon tech-icon-gold" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>';
+    } else {
+      iconSvg = '<svg class="tech-icon tech-icon-secondary" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>';
+    }
+  }
 
-  toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+  toast.innerHTML = `<span class="toast-icon-wrap">${iconSvg}</span> <span class="toast-msg">${message}</span>`;
   container.appendChild(toast);
 
   setTimeout(() => {
@@ -82,10 +95,9 @@ const DEFAULT_PRODUCTS = [
     stock: 25,
     rating: 4.9,
     review_count: 142,
-    image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80',
+    image: '/assets/images/iphone-16-pro-max-256gb.png',
     images: [
-      'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80'
+      '/assets/images/iphone-16-pro-max-256gb.png'
     ],
     ram: '8GB',
     rom: '256GB',
@@ -109,9 +121,9 @@ const DEFAULT_PRODUCTS = [
     stock: 18,
     rating: 4.8,
     review_count: 98,
-    image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=600&auto=format&fit=crop&q=80',
+    image: '/assets/images/samsung-galaxy-s24-ultra.png',
     images: [
-      'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop&q=80'
+      '/assets/images/samsung-galaxy-s24-ultra.png'
     ],
     ram: '12GB',
     rom: '256GB',
@@ -135,9 +147,9 @@ const DEFAULT_PRODUCTS = [
     stock: 12,
     rating: 5.0,
     review_count: 64,
-    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80',
+    image: '/assets/images/macbook-pro-14-m3-pro.png',
     images: [
-      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80'
+      '/assets/images/macbook-pro-14-m3-pro.png'
     ],
     ram: '18GB',
     rom: '512GB SSD',
@@ -161,9 +173,9 @@ const DEFAULT_PRODUCTS = [
     stock: 8,
     rating: 4.9,
     review_count: 31,
-    image: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600&auto=format&fit=crop&q=80',
+    image: '/assets/images/asus-rog-zephyrus-g16-oled.png',
     images: [
-      'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&auto=format&fit=crop&q=80'
+      '/assets/images/asus-rog-zephyrus-g16-oled.png'
     ],
     ram: '32GB LPDDR5X',
     rom: '1TB PCIe 4.0 SSD',
@@ -187,9 +199,9 @@ const DEFAULT_PRODUCTS = [
     stock: 20,
     rating: 4.7,
     review_count: 54,
-    image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&auto=format&fit=crop&q=80',
+    image: '/assets/images/ipad-air-6-m2-11-inch.png',
     images: [
-      'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop&q=80'
+      '/assets/images/ipad-air-6-m2-11-inch.png'
     ],
     ram: '8GB',
     rom: '128GB',
@@ -213,9 +225,9 @@ const DEFAULT_PRODUCTS = [
     stock: 35,
     rating: 4.9,
     review_count: 180,
-    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80',
+    image: '/assets/images/sony-wh-1000xm5.png',
     images: [
-      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80'
+      '/assets/images/sony-wh-1000xm5.png'
     ],
     ram: '-',
     rom: '-',
@@ -239,9 +251,9 @@ const DEFAULT_PRODUCTS = [
     stock: 14,
     rating: 4.9,
     review_count: 42,
-    image: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600&auto=format&fit=crop&q=80',
+    image: '/assets/images/apple-watch-ultra-2.png',
     images: [
-      'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&auto=format&fit=crop&q=80'
+      '/assets/images/apple-watch-ultra-2.png'
     ],
     ram: '-',
     rom: '64GB',
@@ -265,9 +277,9 @@ const DEFAULT_PRODUCTS = [
     stock: 50,
     rating: 4.8,
     review_count: 215,
-    image: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80',
+    image: '/assets/images/cu-sac-anker-65w-ganprime.png',
     images: [
-      'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=800&auto=format&fit=crop&q=80'
+      '/assets/images/cu-sac-anker-65w-ganprime.png'
     ],
     ram: '-',
     rom: '-',
@@ -282,12 +294,12 @@ const DEFAULT_PRODUCTS = [
 ];
 
 const DEFAULT_CATEGORIES = [
-  { id: 1, name: 'Điện thoại', icon: '📱', slug: 'dien-thoai', product_count: 28 },
-  { id: 2, name: 'Laptop', icon: '💻', slug: 'laptop', product_count: 20 },
-  { id: 3, name: 'Tablet', icon: '📋', slug: 'tablet', product_count: 14 },
-  { id: 4, name: 'Âm thanh', icon: '🎧', slug: 'am-thanh', product_count: 16 },
+  { id: 1, name: 'Điện thoại', icon: 'category-phone', slug: 'dien-thoai', product_count: 28 },
+  { id: 2, name: 'Laptop', icon: 'category-laptop', slug: 'laptop', product_count: 20 },
+  { id: 3, name: 'Tablet', icon: 'category-tablet', slug: 'tablet', product_count: 14 },
+  { id: 4, name: 'Âm thanh', icon: 'category-audio', slug: 'am-thanh', product_count: 16 },
   { id: 5, name: 'Smartwatch', icon: '⌚', slug: 'smartwatch', product_count: 12 },
-  { id: 6, name: 'Phụ kiện', icon: '🔌', slug: 'phu-kien', product_count: 35 }
+  { id: 6, name: 'Phụ kiện', icon: 'category-accessory', slug: 'phu-kien', product_count: 35 }
 ];
 
 const DEFAULT_BRANDS = [
@@ -386,7 +398,32 @@ class ApiClient {
     const raw = localStorage.getItem(API_CONFIG.storageKeys.user);
     if (!raw) return null;
     try {
-      return JSON.parse(raw);
+      const user = JSON.parse(raw);
+      if (user) {
+        let changed = false;
+        ['name', 'address'].forEach(key => {
+          if (typeof user[key] === 'string' && user[key].includes('?')) {
+            const healed = user[key]
+              .replace(/Tu\?+n\s*Ki\?+t/gi, 'Tuấn Kiệt')
+              .replace(/H\?+u\s*Nam/gi, 'Hữu Nam')
+              .replace(/Th\?+nh\s*Trung/gi, 'Thành Trung')
+              .replace(/Kh\?+ch\s*h\?+ng/gi, 'Khách hàng')
+              .replace(/Nguy\?+n\s*V\?+n\s*C\?+/gi, 'Nguyễn Văn Cừ')
+              .replace(/Qu\?+n\s*5/gi, 'Quận 5')
+              .replace(/C\?+ch\s*M\?+ng\s*Th\?+ng\s*8/gi, 'Cách Mạng Tháng 8')
+              .replace(/Ph\?+ng\s*7/gi, 'Phường 7')
+              .replace(/Qu\?+n\s*10/gi, 'Quận 10');
+            if (healed !== user[key]) {
+              user[key] = healed;
+              changed = true;
+            }
+          }
+        });
+        if (changed) {
+          localStorage.setItem(API_CONFIG.storageKeys.user, JSON.stringify(user));
+        }
+      }
+      return user;
     } catch (e) {
       return null;
     }
@@ -606,8 +643,8 @@ class ApiClient {
         stock: parseInt(body.stock, 10) || 10,
         rating: 5.0,
         review_count: 0,
-        image: body.image || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80',
-        images: body.images || [body.image || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80'],
+        image: body.image || '/assets/images/iphone-16-128gb.png',
+        images: body.images || [body.image || '/assets/images/iphone-16-128gb.png'],
         ram: body.ram || '8GB',
         rom: body.rom || '128GB',
         chipset: body.chipset || '',
@@ -1289,7 +1326,11 @@ window.toggleWishlist = async function(productId, btn) {
     const res = await api.wishlist.toggle(productId);
     if (btn) {
       btn.classList.toggle('active', res.active);
-      btn.style.color = res.active ? '#d70018' : '#94a3b8';
+      if (typeof TechIcons !== 'undefined') {
+        btn.innerHTML = TechIcons.render(res.active ? 'heart-filled' : 'heart', { size: 18 });
+      } else {
+        btn.style.color = res.active ? '#d70018' : '#94a3b8';
+      }
     }
     showToast(res.active ? 'Đã thêm vào danh sách yêu thích!' : 'Đã bỏ khỏi danh sách yêu thích!', 'info');
   } catch (err) {
@@ -1315,16 +1356,36 @@ function setupUserDropdown() {
     const roleEl = document.getElementById('dropdown-role');
     if (nameEl) nameEl.textContent = user.name;
     if (roleEl) roleEl.textContent = user.role === 'admin' ? 'Quản trị viên' : 'Khách hàng';
+
+    // Asynchronously refresh user profile from backend to ensure latest DB synchronization
+    if (api.isLoggedIn()) {
+      api.auth.me().then(res => {
+        if (res && res.success && res.data) {
+          const freshUser = res.data;
+          api.setAuthTokens(null, null, freshUser);
+          if (nameEl) nameEl.textContent = freshUser.name;
+          if (roleEl) roleEl.textContent = freshUser.role === 'admin' ? 'Quản trị viên' : 'Khách hàng';
+        }
+      }).catch(() => {});
+    }
     
     // Show admin link if admin
     const adminLink = document.getElementById('dropdown-admin-link');
     if (adminLink) adminLink.style.display = api.isAdmin() ? 'flex' : 'none';
+
+    document.querySelectorAll('.topbar-admin-link, #topbar-admin-link').forEach(el => {
+      el.style.display = api.isAdmin() ? 'inline-flex' : 'none';
+    });
 
     const loginLinks = document.querySelectorAll('.guest-only');
     loginLinks.forEach(el => el.style.display = 'none');
     const userLinks = document.querySelectorAll('.auth-only');
     userLinks.forEach(el => el.style.display = 'flex');
   } else {
+    document.querySelectorAll('.topbar-admin-link, #topbar-admin-link').forEach(el => {
+      el.style.display = 'none';
+    });
+
     const loginLinks = document.querySelectorAll('.guest-only');
     loginLinks.forEach(el => el.style.display = 'flex');
     const userLinks = document.querySelectorAll('.auth-only');

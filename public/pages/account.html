@@ -107,6 +107,30 @@
       font-size: var(--font-size-sm);
     }
   </style>
+  <!-- Invoice Print Styles -->
+  <style>
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printable-invoice-modal, #printable-invoice-modal * {
+        visibility: visible;
+      }
+      #printable-invoice-modal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        display: block !important;
+        background: white;
+        color: black;
+        padding: 20px;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -115,8 +139,14 @@
     <div class="container">
       <div>TechStore - Quản lý tài khoản & lịch sử đơn hàng</div>
       <div class="topbar-links">
-        <a href="tel:18006018">Hotline: 1800.6018</a>
-        <a href="/admin/index.html" id="topbar-admin-link" style="color: var(--color-primary); font-weight: 600; display: none;">Trang Quản Trị</a>
+        <a href="tel:18006018">
+          <svg class="tech-icon tech-icon-xs" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M15 2a6 6 0 016 6M15 5a3 3 0 013 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Hotline: 1800.6018
+        </a>
+        <a href="/admin/index.html" id="topbar-admin-link" style="color: var(--color-primary); font-weight: 600; display: none;">
+          <svg class="tech-icon tech-icon-xs" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="2"/></svg>
+          Trang Quản Trị
+        </a>
       </div>
     </div>
   </div>
@@ -124,13 +154,22 @@
   <!-- Header -->
   <header class="header-main">
     <div class="container header-container">
-      <a href="/pages/index.html" class="logo">TechStore <span class="logo-badge">REST</span></a>
+      <a href="/pages/index.html" class="logo">
+        <span class="logo-mark-wrap">
+          <svg class="tech-icon tech-icon-lg logo-vector" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" fill="#d70018"/>
+            <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        TechStore <span class="logo-badge">REST</span>
+      </a>
 
       <div class="header-search">
         <form id="global-search-form" class="search-box">
           <input type="text" id="global-search-input" class="search-input" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
           <button type="submit" class="search-btn" aria-label="Tìm kiếm">
-            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M8 11a3 3 0 013-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/></svg>
           </button>
         </form>
         <div id="search-suggestions" class="search-suggestions"></div>
@@ -138,7 +177,7 @@
 
       <div class="header-actions">
         <a href="/pages/cart.html" class="header-action-btn">
-          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          <svg class="tech-icon tech-icon-md" viewBox="0 0 24 24" fill="none"><path d="M3 4h2l2.2 10.3a2 2 0 002 1.7h8.8a2 2 0 002-1.6L21.5 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="19.5" r="1.5" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.5" fill="currentColor"/></svg>
           <span>Giỏ hàng</span>
           <span class="badge-pill cart-badge" style="display: none;">0</span>
         </a>
@@ -161,19 +200,24 @@
 
         <nav class="account-nav-list">
           <div class="account-nav-item active" onclick="switchAccountTab('profile', this)">
-            👤 Thông tin tài khoản
+            <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M5 19.5a7 7 0 0114 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span>Thông tin tài khoản</span>
           </div>
           <div class="account-nav-item" id="nav-tab-orders" onclick="switchAccountTab('orders', this)">
-            📦 Lịch sử đơn hàng
+            <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 4.8v8.4l-9 4.8-9-4.8V7.8L12 3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 3v9.6M21 7.8l-9 4.8M3 7.8l9 4.8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+            <span>Lịch sử đơn hàng</span>
           </div>
           <div class="account-nav-item" id="nav-tab-wishlist" onclick="switchAccountTab('wishlist', this)">
-            ❤️ Sản phẩm yêu thích
+            <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none"><path d="M12 20.36L4.32 12.7A5 5 0 0111.4 5.64l.6.61.6-.61a5 5 0 017.08 7.07L12 20.36z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Sản phẩm yêu thích</span>
           </div>
           <div class="account-nav-item" onclick="switchAccountTab('password', this)">
-            🔒 Đổi mật khẩu
+            <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 10V6a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="15.5" r="1.5" fill="currentColor"/></svg>
+            <span>Đổi mật khẩu</span>
           </div>
           <div class="account-nav-item" style="color: var(--color-danger); margin-top: 12px; border-top: 1px solid #f1f5f9;" onclick="handleLogout()">
-            🚪 Đăng xuất
+            <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Đăng xuất</span>
           </div>
         </nav>
       </aside>
@@ -249,6 +293,7 @@
   </main>
 
   <!-- Scripts -->
+  <script src="/assets/js/icons.js"></script>
   <script src="/assets/js/api.js"></script>
   <script>
     let currentUser = null;
@@ -263,6 +308,18 @@
 
       currentUser = api.getCurrentUser();
       renderUserProfile(currentUser);
+
+      // Đồng bộ thông tin người dùng mới nhất từ backend database
+      try {
+        const meRes = await api.auth.me();
+        if (meRes && meRes.success && meRes.data) {
+          currentUser = meRes.data;
+          api.setAuthTokens(null, null, currentUser);
+          renderUserProfile(currentUser);
+        }
+      } catch (err) {
+        console.warn('Sync profile error:', err);
+      }
 
       // Show admin link if admin
       if (api.isAdmin()) {
@@ -316,10 +373,20 @@
     async function loadOrders() {
       const res = await api.orders.getAll();
       const orders = res.data || [];
+      myOrdersList = orders;
       const container = document.getElementById('orders-list-container');
 
       if (orders.length === 0) {
-        container.innerHTML = '<div style="text-align: center; color: #64748b; padding: 40px 0;">Bạn chưa có đơn hàng nào.</div>';
+        container.innerHTML = `
+          <div style="text-align: center; color: #64748b; padding: 48px 0;">
+            <div style="margin-bottom: 12px; display: inline-flex; padding: 16px; background: #f8fafc; border-radius: 50%;">
+              ${TechIcons.render('package', { size: 40, className: 'text-muted' })}
+            </div>
+            <div style="font-weight: 600; font-size: 15px;">Bạn chưa có đơn hàng nào</div>
+            <p style="font-size: 13px; margin-top: 4px;">Khám phá sản phẩm công nghệ hàng đầu tại TechStore ngay hôm nay</p>
+            <a href="/pages/products.html" class="btn btn-primary btn-sm" style="margin-top: 12px;">Mua sắm ngay</a>
+          </div>
+        `;
         return;
       }
 
@@ -329,6 +396,10 @@
         if (ord.status === 'shipping') statusBadge = '<span class="status-pill status-shipping">Đang giao hàng</span>';
         if (ord.status === 'completed') statusBadge = '<span class="status-pill status-completed">Giao thành công</span>';
         if (ord.status === 'cancelled') statusBadge = '<span class="status-pill status-cancelled">Đã hủy</span>';
+
+        const paymentMethodIcon = ord.payment_method === 'vietqr' 
+          ? `${TechIcons.render('vietqr-badge', { size: 16, className: 'text-primary' })} Chuyển khoản VietQR` 
+          : `${TechIcons.render('cash', { size: 16, className: 'text-success' })} Tiền mặt COD`;
 
         return `
           <div class="order-history-card">
@@ -340,29 +411,38 @@
               <div>${statusBadge}</div>
             </div>
 
-            <div style="font-size: 13px; color: #475569; margin-bottom: 8px;">
-              📍 Giao đến: ${ord.shipping_address || 'Địa chỉ của bạn'}
+            <div style="font-size: 13px; color: #475569; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+              ${TechIcons.render('map-pin', { size: 16, className: 'text-primary' })}
+              <span>Giao đến: <strong>${ord.shipping_address || 'Địa chỉ của bạn'}</strong></span>
             </div>
 
-            <div style="font-size: 13px; margin-bottom: 8px;">
-              Hình thức: <strong>${ord.payment_method === 'vietqr' ? '🏦 Chuyển khoản VietQR' : '💵 Tiền mặt COD'}</strong>
+            <div style="font-size: 13px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+              <span>Hình thức:</span>
+              <span style="display: inline-flex; align-items: center; gap: 4px; font-weight: 700;">${paymentMethodIcon}</span>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #e2e8f0; padding-top: 10px; margin-top: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #e2e8f0; padding-top: 10px; margin-top: 10px; flex-wrap: wrap; gap: 8px;">
               <div style="font-size: 15px; font-weight: 800; color: var(--color-primary);">
                 Tổng tiền: ${formatVND(ord.total_amount)}
               </div>
 
               <div style="display: flex; gap: 8px;">
                 ${ord.payment_method === 'vietqr' && ord.payment_status !== 'paid' && ord.status !== 'cancelled' ? `
-                  <a href="/pages/payment-qr.html?orderId=${ord.id}" class="btn btn-primary btn-sm">
-                    🏦 Thanh toán QR ngay
+                  <a href="/pages/payment-qr.html?orderId=${ord.id}" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+                    ${TechIcons.render('vietqr-badge', { size: 16 })}
+                    <span>Thanh toán VietQR ngay</span>
                   </a>
                 ` : ''}
 
+                <button class="btn btn-outline btn-sm" onclick="printCustomerInvoice(${ord.id})" style="display: inline-flex; align-items: center; gap: 4px;">
+                  ${TechIcons.render('printer', { size: 14 })}
+                  <span>In hóa đơn</span>
+                </button>
+
                 ${ord.status === 'pending' ? `
-                  <button class="btn btn-outline btn-sm" onclick="cancelOrder(${ord.id})" style="color: var(--color-danger);">
-                    Hủy đơn
+                  <button class="btn btn-outline btn-sm" onclick="cancelOrder(${ord.id})" style="color: var(--color-danger); display: inline-flex; align-items: center; gap: 4px;">
+                    ${TechIcons.render('trash', { size: 14 })}
+                    <span>Hủy đơn</span>
                   </button>
                 ` : ''}
               </div>
@@ -386,13 +466,24 @@
       const container = document.getElementById('wishlist-grid');
 
       if (wishlistItems.length === 0) {
-        container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 40px 0;">Danh sách yêu thích trống. Hãy nhấn ❤️ ở các sản phẩm bạn thích!</div>';
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; color: #64748b; padding: 48px 0;">
+            <div style="margin-bottom: 12px; display: inline-flex; padding: 16px; background: #fff1f2; border-radius: 50%;">
+              ${TechIcons.render('heart', { size: 40, className: 'text-primary' })}
+            </div>
+            <div style="font-weight: 600; font-size: 15px;">Danh sách yêu thích đang trống</div>
+            <p style="font-size: 13px; margin-top: 4px;">Hãy nhấn biểu tượng trái tim ở các sản phẩm bạn quan tâm để lưu lại</p>
+            <a href="/pages/products.html" class="btn btn-primary btn-sm" style="margin-top: 12px;">Khám phá ngay</a>
+          </div>
+        `;
         return;
       }
 
       container.innerHTML = wishlistItems.map(p => `
         <div class="product-card">
-          <button class="btn-wishlist active" onclick="removeFromWishlist(${p.id})" title="Bỏ yêu thích" style="color: #d70018;">❤️</button>
+          <button class="btn-wishlist active" onclick="removeFromWishlist(${p.id})" title="Bỏ yêu thích" aria-label="Bỏ yêu thích">
+            ${TechIcons.render('heart-filled', { size: 18 })}
+          </button>
           <a href="/pages/product-detail.html?id=${p.id}" class="product-thumb-wrap">
             <img src="${p.image}" class="product-thumb" alt="${p.name}">
           </a>
@@ -402,8 +493,9 @@
           <div class="product-price-row">
             <span class="price-current">${formatVND(p.price)}</span>
           </div>
-          <button class="btn btn-primary btn-sm btn-block" onclick="quickAddToCart(${p.id})">
-            🛒 Thêm giỏ
+          <button class="btn btn-primary btn-sm btn-block" onclick="quickAddToCart(${p.id})" style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+            ${TechIcons.render('cart-plus', { size: 16 })}
+            <span>Thêm giỏ</span>
           </button>
         </div>
       `).join('');
@@ -429,6 +521,104 @@
       api.auth.logout();
       showToast('Đã đăng xuất', 'info');
       setTimeout(() => window.location.href = '/pages/login.html', 500);
+    }
+  </script>
+  <!-- Printable Invoice Element (Visible during print) -->
+  <div id="printable-invoice-modal" style="display: none;">
+    <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 16px; margin-bottom: 24px;">
+      <h1 style="font-size: 26px; font-weight: 900; margin: 0; color: #d70018;">HỆ THỐNG TECHSTORE VIETNAM</h1>
+      <p style="margin: 4px 0; font-size: 13px;">Địa chỉ: 227 Nguyễn Văn Cừ, Quận 5, TP.HCM • Hotline: 1800.6018</p>
+      <h2 style="font-size: 20px; font-weight: 800; margin-top: 16px;">HÓA ĐƠN BÁN LẺ & GIAO HÀNG</h2>
+      <div style="font-size: 14px;" id="inv-order-code">Mã đơn: #TS-1001</div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 14px;">
+      <div>
+        <strong>Khách hàng:</strong> <span id="inv-cust-name"></span><br>
+        <strong>Số điện thoại:</strong> <span id="inv-cust-phone"></span><br>
+        <strong>Địa chỉ nhận:</strong> <span id="inv-cust-address"></span>
+      </div>
+      <div style="text-align: right;">
+        <strong>Ngày lập đơn:</strong> <span id="inv-date"></span><br>
+        <strong>Hình thức:</strong> <span id="inv-payment"></span><br>
+        <strong>Tình trạng:</strong> <span id="inv-status"></span>
+      </div>
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px;">
+      <thead>
+        <tr style="border-top: 1px solid #000; border-bottom: 1px solid #000; background: #f8fafc;">
+          <th style="padding: 8px; text-align: left;">STT</th>
+          <th style="padding: 8px; text-align: left;">Tên sản phẩm</th>
+          <th style="padding: 8px; text-align: center;">SL</th>
+          <th style="padding: 8px; text-align: right;">Đơn giá</th>
+          <th style="padding: 8px; text-align: right;">Thành tiền</th>
+        </tr>
+      </thead>
+      <tbody id="inv-items-tbody"></tbody>
+    </table>
+
+    <div style="text-align: right; font-size: 16px; border-top: 1px solid #000; padding-top: 12px; margin-bottom: 30px;">
+      <div>Tổng cộng thanh toán: <strong id="inv-total" style="font-size: 20px; color: #d70018;"></strong></div>
+    </div>
+
+    <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 40px;">
+      <div>
+        <strong>Người mua hàng</strong><br>
+        <span style="font-size: 12px; color: #64748b;">(Ký và ghi rõ họ tên)</span>
+      </div>
+      <div>
+        <strong>Người lập phiếu (TechStore)</strong><br>
+        <span style="font-size: 12px; color: #64748b;">(Đã ký điện tử)</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let myOrdersList = [];
+    async function printCustomerInvoice(orderId) {
+      let ord = myOrdersList.find(o => o.id === orderId);
+      if (!ord) {
+        const res = await api.orders.getById(orderId);
+        ord = res.data;
+      }
+      if (!ord) {
+        showToast('Không tìm thấy thông tin đơn hàng', 'danger');
+        return;
+      }
+
+      document.getElementById('inv-order-code').textContent = `Mã đơn: #${ord.order_code || ord.id}`;
+      document.getElementById('inv-cust-name').textContent = ord.customer_name || currentUser?.name || 'Khách hàng';
+      document.getElementById('inv-cust-phone').textContent = ord.customer_phone || currentUser?.phone || '-';
+      document.getElementById('inv-cust-address').textContent = ord.shipping_address || currentUser?.address || '-';
+      document.getElementById('inv-date').textContent = new Date(ord.created_at).toLocaleString('vi-VN');
+      document.getElementById('inv-payment').textContent = ord.payment_method === 'vietqr' ? 'VietQR 24/7' : 'Tiền mặt COD';
+      
+      let sttText = 'Chờ xử lý';
+      if (ord.status === 'confirmed' || ord.payment_status === 'paid') sttText = 'Đã xác nhận / Đã thanh toán';
+      if (ord.status === 'shipping') sttText = 'Đang giao hàng';
+      if (ord.status === 'completed') sttText = 'Hoàn tất';
+      if (ord.status === 'cancelled') sttText = 'Đã hủy';
+      document.getElementById('inv-status').textContent = sttText;
+
+      const itemsTbody = document.getElementById('inv-items-tbody');
+      const items = ord.items || [];
+      itemsTbody.innerHTML = items.map((it, idx) => `
+        <tr style="border-bottom: 1px solid #e2e8f0;">
+          <td style="padding: 8px;">${idx + 1}</td>
+          <td style="padding: 8px;"><strong>${it.product_name || it.name}</strong></td>
+          <td style="padding: 8px; text-align: center;">${it.quantity}</td>
+          <td style="padding: 8px; text-align: right;">${formatVND(it.price)}</td>
+          <td style="padding: 8px; text-align: right;"><strong>${formatVND(it.price * it.quantity)}</strong></td>
+        </tr>
+      `).join('');
+
+      document.getElementById('inv-total').textContent = formatVND(ord.total_amount);
+
+      const printEl = document.getElementById('printable-invoice-modal');
+      printEl.style.display = 'block';
+      window.print();
+      printEl.style.display = 'none';
     }
   </script>
 </body>

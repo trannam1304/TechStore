@@ -83,61 +83,6 @@
             "avatar": "https:\/\/images.unsplash.com\/photo-1438761681033-6461ffad8d80?w=200",
             "status": "active",
             "created_at": "2026-06-01 08:50:00"
-        },
-        {
-            "name": "Auto Test Customer",
-            "email": "autotest_75764@techstore.local",
-            "password_hash": "$2y$10$D8OfvO0G1Eoapu.adGwpLuF6wTSasOnC4565mObJ50xkiiwjBGAI.",
-            "role": "customer",
-            "phone": "0987654321",
-            "address": null,
-            "status": "active",
-            "id": 8,
-            "created_at": "2026-10-22 03:13:20"
-        },
-        {
-            "name": "Auto Test Customer",
-            "email": "autotest_49687@techstore.local",
-            "password_hash": "$2y$10$FDbQwggLprW1Cbga4rTFi.FC5PCSrz1nOkVjZddELak2XQyq31\/kK",
-            "role": "customer",
-            "phone": "0987654321",
-            "address": null,
-            "status": "active",
-            "id": 9,
-            "created_at": "2026-10-22 03:14:35"
-        },
-        {
-            "name": "Auto Test Customer",
-            "email": "autotest_52627@techstore.local",
-            "password_hash": "$2y$10$JK6BeUyMPNcEuJYXG7uWm.Yu8upkNqSPDdJSMXs8.6Yq0xqeYSy4O",
-            "role": "customer",
-            "phone": "0987654321",
-            "address": null,
-            "status": "active",
-            "id": 10,
-            "created_at": "2026-10-22 03:22:52"
-        },
-        {
-            "name": "Auto Test Customer",
-            "email": "autotest_44139@techstore.local",
-            "password_hash": "$2y$10$oId.PNnK10vEBXtUGohSf.Xj7grgkxLqrB3hN6Zec7D4IYITxz8Vi",
-            "role": "customer",
-            "phone": "0987654321",
-            "address": null,
-            "status": "active",
-            "id": 11,
-            "created_at": "2026-10-22 03:33:51"
-        },
-        {
-            "name": "Trần Hữu Nam",
-            "email": "tranhuunam13042006@gmail.com",
-            "password_hash": "$2y$10$gHwcHuDIH2IUh6ovBtxBwunfEx9LaL86YmNBTmLzeMd4wpHKglpu.",
-            "role": "customer",
-            "phone": "0321321321",
-            "address": null,
-            "status": "active",
-            "id": 12,
-            "created_at": "2026-10-22 03:44:42"
         }
     ],
     "categories": [
@@ -187,7 +132,7 @@
             "id": 1,
             "name": "Apple",
             "slug": "apple",
-            "logo": "",
+            "logo": "Apple",
             "description": "Thương hiệu công nghệ hàng đầu thế giới với hệ sinh thái iPhone, Mac, iPad cao cấp."
         },
         {
@@ -255,10 +200,9 @@
             "rating": 4.95,
             "review_count": 142,
             "view_count": 1850,
-            "image": "https:\/\/images.unsplash.com\/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/iphone-16-pro-max-256gb.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-                "https:\/\/images.unsplash.com\/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/iphone-16-pro-max-256gb.png"
             ],
             "ram": "8GB",
             "rom": "256GB",
@@ -284,9 +228,9 @@
             "rating": 4.88,
             "review_count": 89,
             "view_count": 1200,
-            "image": "https:\/\/images.unsplash.com\/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/iphone-16-128gb.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/iphone-16-128gb.png"
             ],
             "ram": "8GB",
             "rom": "128GB",
@@ -312,9 +256,9 @@
             "rating": 4.85,
             "review_count": 110,
             "view_count": 950,
-            "image": "https:\/\/images.unsplash.com\/photo-1592750475338-74b7b21085ab?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/iphone-15-pro-128gb.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/iphone-15-pro-128gb.png"
             ],
             "ram": "8GB",
             "rom": "128GB",
@@ -340,9 +284,9 @@
             "rating": 4.9,
             "review_count": 105,
             "view_count": 1600,
-            "image": "https:\/\/images.unsplash.com\/photo-1610945265064-0e34e5519bbf?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-s24-ultra.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/samsung-galaxy-s24-ultra.png"
             ],
             "ram": "12GB",
             "rom": "256GB",
@@ -368,9 +312,9 @@
             "rating": 4.82,
             "review_count": 64,
             "view_count": 820,
-            "image": "https:\/\/images.unsplash.com\/photo-1580910051074-3eb694886505?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-s24-plus.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/samsung-galaxy-s24-plus.png"
             ],
             "ram": "12GB",
             "rom": "256GB",
@@ -396,9 +340,9 @@
             "rating": 4.87,
             "review_count": 45,
             "view_count": 980,
-            "image": "https:\/\/images.unsplash.com\/photo-1574944985070-8f3ebc6b79d2?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-z-fold6.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1574944985070-8f3ebc6b79d2?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/samsung-galaxy-z-fold6.png"
             ],
             "ram": "12GB",
             "rom": "256GB",
@@ -424,9 +368,9 @@
             "rating": 4.89,
             "review_count": 78,
             "view_count": 1100,
-            "image": "https:\/\/images.unsplash.com\/photo-1567581935884-3349723552ca?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/xiaomi-14-ultra.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1567581935884-3349723552ca?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/xiaomi-14-ultra.png"
             ],
             "ram": "16GB",
             "rom": "512GB",
@@ -452,9 +396,9 @@
             "rating": 4.8,
             "review_count": 52,
             "view_count": 750,
-            "image": "https:\/\/images.unsplash.com\/photo-1598327105666-5b89351aff97?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/xiaomi-14t-pro.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/xiaomi-14t-pro.png"
             ],
             "ram": "12GB",
             "rom": "512GB",
@@ -480,9 +424,9 @@
             "rating": 4.92,
             "review_count": 63,
             "view_count": 890,
-            "image": "https:\/\/images.unsplash.com\/photo-1550009158-9ebf69173e03?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/asus-rog-phone-8-pro.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1550009158-9ebf69173e03?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/asus-rog-phone-8-pro.png"
             ],
             "ram": "16GB",
             "rom": "512GB",
@@ -508,9 +452,9 @@
             "rating": 4.75,
             "review_count": 115,
             "view_count": 1400,
-            "image": "https:\/\/images.unsplash.com\/photo-1585060544812-6b45742d762f?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-a55-5g.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1585060544812-6b45742d762f?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/samsung-galaxy-a55-5g.png"
             ],
             "ram": "8GB",
             "rom": "128GB",
@@ -536,9 +480,9 @@
             "rating": 4.96,
             "review_count": 68,
             "view_count": 1500,
-            "image": "https:\/\/images.unsplash.com\/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/macbook-pro-14-m3-pro.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/macbook-pro-14-m3-pro.png"
             ],
             "ram": "18GB",
             "rom": "512GB SSD",
@@ -564,9 +508,9 @@
             "rating": 4.88,
             "review_count": 92,
             "view_count": 1350,
-            "image": "https:\/\/images.unsplash.com\/photo-1611186871348-b1ce696e52c9?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/macbook-air-13-m3.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1611186871348-b1ce696e52c9?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/macbook-air-13-m3.png"
             ],
             "ram": "8GB",
             "rom": "256GB SSD",
@@ -592,9 +536,9 @@
             "rating": 4.98,
             "review_count": 31,
             "view_count": 720,
-            "image": "https:\/\/images.unsplash.com\/photo-1541807084-5c52b6b3adef?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/macbook-pro-16-m3-max.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/macbook-pro-16-m3-max.png"
             ],
             "ram": "36GB",
             "rom": "1TB SSD",
@@ -620,9 +564,9 @@
             "rating": 4.91,
             "review_count": 45,
             "view_count": 1100,
-            "image": "https:\/\/images.unsplash.com\/photo-1603302576837-37561b2e2302?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/asus-rog-zephyrus-g16-oled.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1603302576837-37561b2e2302?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/asus-rog-zephyrus-g16-oled.png"
             ],
             "ram": "32GB LPDDR5X",
             "rom": "1TB PCIe 4.0 SSD",
@@ -648,9 +592,9 @@
             "rating": 4.86,
             "review_count": 56,
             "view_count": 890,
-            "image": "https:\/\/images.unsplash.com\/photo-1496181133206-80ce9b88a853?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/asus-zenbook-14-oled-ux3405.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/asus-zenbook-14-oled-ux3405.png"
             ],
             "ram": "16GB LPDDR5X",
             "rom": "1TB NVMe SSD",
@@ -676,9 +620,9 @@
             "rating": 4.79,
             "review_count": 74,
             "view_count": 980,
-            "image": "https:\/\/images.unsplash.com\/photo-1588872657578-7efd1f1555ed?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/asus-tuf-gaming-a15.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/asus-tuf-gaming-a15.png"
             ],
             "ram": "16GB DDR5",
             "rom": "512GB PCIe SSD",
@@ -704,9 +648,9 @@
             "rating": 4.93,
             "review_count": 38,
             "view_count": 790,
-            "image": "https:\/\/images.unsplash.com\/photo-1593642632823-8f785ba67e45?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/dell-xps-14-9440.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1593642632823-8f785ba67e45?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/dell-xps-14-9440.png"
             ],
             "ram": "32GB LPDDR5X",
             "rom": "1TB SSD",
@@ -732,9 +676,9 @@
             "rating": 4.95,
             "review_count": 27,
             "view_count": 650,
-            "image": "https:\/\/images.unsplash.com\/photo-1587614382346-4ec70e388b28?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/dell-xps-16-9640.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1587614382346-4ec70e388b28?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/dell-xps-16-9640.png"
             ],
             "ram": "32GB LPDDR5X",
             "rom": "1TB PCIe SSD",
@@ -760,9 +704,9 @@
             "rating": 4.76,
             "review_count": 85,
             "view_count": 1120,
-            "image": "https:\/\/images.unsplash.com\/photo-1525547719571-a2d4ac8945e2?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/dell-inspiron-14-5440.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1525547719571-a2d4ac8945e2?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/dell-inspiron-14-5440.png"
             ],
             "ram": "16GB DDR5",
             "rom": "512GB SSD",
@@ -788,9 +732,9 @@
             "rating": 4.82,
             "review_count": 49,
             "view_count": 710,
-            "image": "https:\/\/images.unsplash.com\/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/xiaomi-redmibook-pro-15.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/xiaomi-redmibook-pro-15.png"
             ],
             "ram": "32GB LPDDR5X",
             "rom": "1TB PCIe 4.0 SSD",
@@ -816,9 +760,9 @@
             "rating": 4.97,
             "review_count": 72,
             "view_count": 1300,
-            "image": "https:\/\/images.unsplash.com\/photo-1544244015-0df4b3ffc6b0?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/ipad-pro-11-m4-oled.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/ipad-pro-11-m4-oled.png"
             ],
             "ram": "8GB",
             "rom": "256GB",
@@ -844,9 +788,9 @@
             "rating": 4.88,
             "review_count": 88,
             "view_count": 1420,
-            "image": "https:\/\/images.unsplash.com\/photo-1561154464-82e9adf32764?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/ipad-air-6-m2-11-inch.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1561154464-82e9adf32764?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/ipad-air-6-m2-11-inch.png"
             ],
             "ram": "8GB",
             "rom": "128GB",
@@ -872,9 +816,9 @@
             "rating": 4.81,
             "review_count": 130,
             "view_count": 1600,
-            "image": "https:\/\/images.unsplash.com\/photo-1589739900243-4b52cd9b104e?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/ipad-gen-10-64gb.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1589739900243-4b52cd9b104e?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/ipad-gen-10-64gb.png"
             ],
             "ram": "4GB",
             "rom": "64GB",
@@ -900,9 +844,9 @@
             "rating": 4.92,
             "review_count": 53,
             "view_count": 850,
-            "image": "https:\/\/images.unsplash.com\/photo-1585792180666-f7547c6a28c5?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-tab-s9-ultra.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1585792180666-f7547c6a28c5?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/samsung-galaxy-tab-s9-ultra.png"
             ],
             "ram": "12GB",
             "rom": "256GB",
@@ -928,9 +872,9 @@
             "rating": 4.79,
             "review_count": 67,
             "view_count": 920,
-            "image": "https:\/\/images.unsplash.com\/photo-1527698266440-12104e498b76?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-tab-s9-fe.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1527698266440-12104e498b76?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/samsung-galaxy-tab-s9-fe.png"
             ],
             "ram": "6GB",
             "rom": "128GB",
@@ -956,9 +900,9 @@
             "rating": 4.84,
             "review_count": 42,
             "view_count": 680,
-            "image": "https:\/\/images.unsplash.com\/photo-1561154464-82e9adf32764?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/xiaomi-pad-6s-pro.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1561154464-82e9adf32764?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/xiaomi-pad-6s-pro.png"
             ],
             "ram": "8GB",
             "rom": "256GB",
@@ -984,9 +928,9 @@
             "rating": 4.93,
             "review_count": 168,
             "view_count": 1950,
-            "image": "https:\/\/images.unsplash.com\/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/sony-wh-1000xm5.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/sony-wh-1000xm5.png"
             ],
             "ram": null,
             "rom": null,
@@ -1012,9 +956,9 @@
             "rating": 4.87,
             "review_count": 94,
             "view_count": 1250,
-            "image": "https:\/\/images.unsplash.com\/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/sony-wf-1000xm5.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1590658268037-6bf12165a8df?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/sony-wf-1000xm5.png"
             ],
             "ram": null,
             "rom": null,
@@ -1040,9 +984,9 @@
             "rating": 4.8,
             "review_count": 51,
             "view_count": 620,
-            "image": "https:\/\/images.unsplash.com\/photo-1545454675-3531b543be5d?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/sony-srs-xe300.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1545454675-3531b543be5d?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/sony-srs-xe300.png"
             ],
             "ram": null,
             "rom": null,
@@ -1068,9 +1012,9 @@
             "rating": 4.94,
             "review_count": 210,
             "view_count": 2300,
-            "image": "https:\/\/images.unsplash.com\/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/apple-airpods-pro-2-usb-c.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1600294037681-c80b4cb5b434?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/apple-airpods-pro-2-usb-c.png"
             ],
             "ram": null,
             "rom": null,
@@ -1096,9 +1040,9 @@
             "rating": 4.85,
             "review_count": 48,
             "view_count": 850,
-            "image": "https:\/\/images.unsplash.com\/photo-1546435770-a3e426bf472b?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/apple-airpods-max-usb-c.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/apple-airpods-max-usb-c.png"
             ],
             "ram": null,
             "rom": null,
@@ -1124,9 +1068,9 @@
             "rating": 4.82,
             "review_count": 60,
             "view_count": 780,
-            "image": "https:\/\/images.unsplash.com\/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-buds3-pro.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1590658268037-6bf12165a8df?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/samsung-galaxy-buds3-pro.png"
             ],
             "ram": null,
             "rom": null,
@@ -1152,9 +1096,9 @@
             "rating": 4.77,
             "review_count": 82,
             "view_count": 950,
-            "image": "https:\/\/images.unsplash.com\/photo-1572536147248-ac59a8abfa4b?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/xiaomi-redmi-buds-5-pro.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1572536147248-ac59a8abfa4b?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/xiaomi-redmi-buds-5-pro.png"
             ],
             "ram": null,
             "rom": null,
@@ -1180,9 +1124,9 @@
             "rating": 4.88,
             "review_count": 64,
             "view_count": 710,
-            "image": "https:\/\/images.unsplash.com\/photo-1608043152269-423dbba4e7e1?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/anker-soundcore-motion-boom-plus.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1608043152269-423dbba4e7e1?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/anker-soundcore-motion-boom-plus.png"
             ],
             "ram": null,
             "rom": null,
@@ -1208,9 +1152,9 @@
             "rating": 4.95,
             "review_count": 76,
             "view_count": 1200,
-            "image": "https:\/\/images.unsplash.com\/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/apple-watch-ultra-2.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/apple-watch-ultra-2.png"
             ],
             "ram": null,
             "rom": "64GB",
@@ -1236,9 +1180,9 @@
             "rating": 4.86,
             "review_count": 92,
             "view_count": 1150,
-            "image": "https:\/\/images.unsplash.com\/photo-1508685096489-7aacd43bd3b1?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/apple-watch-series-9-45mm.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1508685096489-7aacd43bd3b1?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/apple-watch-series-9-45mm.png"
             ],
             "ram": null,
             "rom": "64GB",
@@ -1264,9 +1208,9 @@
             "rating": 4.9,
             "review_count": 48,
             "view_count": 870,
-            "image": "https:\/\/images.unsplash.com\/photo-1522335789203-aabd1fc54bc9?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-watch-ultra.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1522335789203-aabd1fc54bc9?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/samsung-galaxy-watch-ultra.png"
             ],
             "ram": "2GB",
             "rom": "32GB",
@@ -1292,9 +1236,9 @@
             "rating": 4.81,
             "review_count": 65,
             "view_count": 760,
-            "image": "https:\/\/images.unsplash.com\/photo-1510017803434-a899398421b3?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-watch-6-classic.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1510017803434-a899398421b3?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/samsung-galaxy-watch-6-classic.png"
             ],
             "ram": "2GB",
             "rom": "16GB",
@@ -1320,9 +1264,9 @@
             "rating": 4.9,
             "review_count": 184,
             "view_count": 1890,
-            "image": "https:\/\/images.unsplash.com\/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/cu-sac-anker-65w-ganprime.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1583863788434-e58a36330cf0?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/cu-sac-anker-65w-ganprime.png"
             ],
             "ram": null,
             "rom": null,
@@ -1348,9 +1292,9 @@
             "rating": 4.92,
             "review_count": 98,
             "view_count": 1200,
-            "image": "https:\/\/images.unsplash.com\/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/cu-sac-anker-100w-ganprime.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1583863788434-e58a36330cf0?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/cu-sac-anker-100w-ganprime.png"
             ],
             "ram": null,
             "rom": null,
@@ -1376,9 +1320,9 @@
             "rating": 4.96,
             "review_count": 175,
             "view_count": 1750,
-            "image": "https:\/\/images.unsplash.com\/photo-1527864550417-7fd91fc51a46?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/logitech-mx-master-3s.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1527864550417-7fd91fc51a46?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/logitech-mx-master-3s.png"
             ],
             "ram": null,
             "rom": null,
@@ -1404,9 +1348,9 @@
             "rating": 4.91,
             "review_count": 88,
             "view_count": 1100,
-            "image": "https:\/\/images.unsplash.com\/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/logitech-mx-mechanical.png",
             "images": [
-                "https:\/\/images.unsplash.com\/photo-1587829741301-dc798b83add3?w=800&auto=format&fit=crop&q=80"
+                "\/assets\/images\/logitech-mx-mechanical.png"
             ],
             "ram": null,
             "rom": null,
@@ -2081,32 +2025,6 @@
             "note": "Khách yêu cầu hủy đơn do đổi ý",
             "created_at": "2026-10-21 11:45:00",
             "updated_at": "2026-10-21 11:45:00"
-        },
-        {
-            "id": 1031,
-            "order_code": "TS-973225",
-            "customer_name": "trần nam",
-            "customer_phone": "0774562768",
-            "customer_email": "tranhuunam13042006@gmail.com",
-            "shipping_address": "225 nguyễn văn cừ, quận 5, Hồ Chí Minh",
-            "payment_method": "vietqr",
-            "payment_status": "pending",
-            "status": "pending",
-            "total_amount": 29990000,
-            "discount_amount": 0,
-            "note": "",
-            "items": [
-                {
-                    "id": 1792634617946,
-                    "product_id": 2,
-                    "name": "Samsung Galaxy S24 Ultra 5G 12GB\/256GB",
-                    "price": 29990000,
-                    "quantity": 1,
-                    "variant": "Mặc định",
-                    "image": "https:\/\/images.unsplash.com\/photo-1610945265064-0e34e5519bbf?w=600&auto=format&fit=crop&q=80"
-                }
-            ],
-            "created_at": "2026-10-22 04:04:08"
         }
     ],
     "order_items": [
@@ -2118,7 +2036,7 @@
             "price": 34990000,
             "quantity": 1,
             "variant": "256GB - Titan Sa Mạc",
-            "image": "https:\/\/images.unsplash.com\/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/iphone-16-pro-max-256gb.png",
             "created_at": "2026-08-05 09:30:00"
         },
         {
@@ -2129,7 +2047,7 @@
             "price": 5490000,
             "quantity": 1,
             "variant": "Trắng USB-C",
-            "image": "https:\/\/images.unsplash.com\/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/apple-airpods-pro-2-usb-c.png",
             "created_at": "2026-08-05 09:30:00"
         },
         {
@@ -2140,7 +2058,7 @@
             "price": 890000,
             "quantity": 1,
             "variant": "Đen GaN 65W",
-            "image": "https:\/\/images.unsplash.com\/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/cu-sac-anker-65w-ganprime.png",
             "created_at": "2026-08-05 09:30:00"
         },
         {
@@ -2151,7 +2069,7 @@
             "price": 49990000,
             "quantity": 1,
             "variant": "Space Black 18GB\/512GB",
-            "image": "https:\/\/images.unsplash.com\/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/macbook-pro-14-m3-pro.png",
             "created_at": "2026-08-10 14:15:00"
         },
         {
@@ -2162,7 +2080,7 @@
             "price": 2190000,
             "quantity": 1,
             "variant": "Đen Graphite",
-            "image": "https:\/\/images.unsplash.com\/photo-1527864550417-7fd91fc51a46?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/logitech-mx-master-3s.png",
             "created_at": "2026-08-10 14:15:00"
         },
         {
@@ -2173,7 +2091,7 @@
             "price": 1290000,
             "quantity": 1,
             "variant": "Đen 100W",
-            "image": "https:\/\/images.unsplash.com\/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/cu-sac-anker-100w-ganprime.png",
             "created_at": "2026-08-10 14:15:00"
         },
         {
@@ -2184,7 +2102,7 @@
             "price": 29990000,
             "quantity": 1,
             "variant": "Xám Titan 12GB\/256GB",
-            "image": "https:\/\/images.unsplash.com\/photo-1610945265064-0e34e5519bbf?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-s24-ultra.png",
             "created_at": "2026-08-14 11:00:00"
         },
         {
@@ -2195,7 +2113,7 @@
             "price": 4990000,
             "quantity": 1,
             "variant": "Bạc",
-            "image": "https:\/\/images.unsplash.com\/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-buds3-pro.png",
             "created_at": "2026-08-14 11:00:00"
         },
         {
@@ -2206,7 +2124,7 @@
             "price": 890000,
             "quantity": 1,
             "variant": "Trắng GaN 65W",
-            "image": "https:\/\/images.unsplash.com\/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/cu-sac-anker-65w-ganprime.png",
             "created_at": "2026-08-14 11:00:00"
         },
         {
@@ -2217,7 +2135,7 @@
             "price": 59990000,
             "quantity": 1,
             "variant": "Eclipse Gray OLED RTX 4070",
-            "image": "https:\/\/images.unsplash.com\/photo-1603302576837-37561b2e2302?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/asus-rog-zephyrus-g16-oled.png",
             "created_at": "2026-08-18 16:20:00"
         },
         {
@@ -2228,7 +2146,7 @@
             "price": 7490000,
             "quantity": 1,
             "variant": "Đen",
-            "image": "https:\/\/images.unsplash.com\/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/sony-wh-1000xm5.png",
             "created_at": "2026-08-18 16:20:00"
         },
         {
@@ -2239,7 +2157,7 @@
             "price": 2190000,
             "quantity": 1,
             "variant": "Đen Graphite",
-            "image": "https:\/\/images.unsplash.com\/photo-1527864550417-7fd91fc51a46?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/logitech-mx-master-3s.png",
             "created_at": "2026-08-18 16:20:00"
         },
         {
@@ -2250,7 +2168,7 @@
             "price": 27990000,
             "quantity": 1,
             "variant": "Space Black 256GB",
-            "image": "https:\/\/images.unsplash.com\/photo-1544244015-0df4b3ffc6b0?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/ipad-pro-11-m4-oled.png",
             "created_at": "2026-08-22 10:45:00"
         },
         {
@@ -2261,7 +2179,7 @@
             "price": 5490000,
             "quantity": 1,
             "variant": "Trắng USB-C",
-            "image": "https:\/\/images.unsplash.com\/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/apple-airpods-pro-2-usb-c.png",
             "created_at": "2026-08-22 10:45:00"
         },
         {
@@ -2272,7 +2190,7 @@
             "price": 2190000,
             "quantity": 1,
             "variant": "Xám Pale Grey",
-            "image": "https:\/\/images.unsplash.com\/photo-1527864550417-7fd91fc51a46?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/logitech-mx-master-3s.png",
             "created_at": "2026-08-28 15:10:00"
         },
         {
@@ -2283,7 +2201,7 @@
             "price": 3390000,
             "quantity": 1,
             "variant": "Tactile Quiet Fullsize",
-            "image": "https:\/\/images.unsplash.com\/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/logitech-mx-mechanical.png",
             "created_at": "2026-08-28 15:10:00"
         },
         {
@@ -2294,7 +2212,7 @@
             "price": 34990000,
             "quantity": 1,
             "variant": "256GB - Titan Tự Nhiên",
-            "image": "https:\/\/images.unsplash.com\/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/iphone-16-pro-max-256gb.png",
             "created_at": "2026-09-02 09:00:00"
         },
         {
@@ -2305,7 +2223,7 @@
             "price": 890000,
             "quantity": 1,
             "variant": "Đen GaN 65W",
-            "image": "https:\/\/images.unsplash.com\/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/cu-sac-anker-65w-ganprime.png",
             "created_at": "2026-09-02 09:00:00"
         },
         {
@@ -2316,7 +2234,7 @@
             "price": 26990000,
             "quantity": 1,
             "variant": "Midnight 8GB\/256GB",
-            "image": "https:\/\/images.unsplash.com\/photo-1611186871348-b1ce696e52c9?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/macbook-air-13-m3.png",
             "created_at": "2026-09-05 13:40:00"
         },
         {
@@ -2327,7 +2245,7 @@
             "price": 2190000,
             "quantity": 1,
             "variant": "Đen Graphite",
-            "image": "https:\/\/images.unsplash.com\/photo-1527864550417-7fd91fc51a46?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/logitech-mx-master-3s.png",
             "created_at": "2026-09-05 13:40:00"
         },
         {
@@ -2338,7 +2256,7 @@
             "price": 7490000,
             "quantity": 1,
             "variant": "Bạc",
-            "image": "https:\/\/images.unsplash.com\/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/sony-wh-1000xm5.png",
             "created_at": "2026-09-09 11:20:00"
         },
         {
@@ -2349,7 +2267,7 @@
             "price": 3490000,
             "quantity": 1,
             "variant": "Xanh Dương IP67",
-            "image": "https:\/\/images.unsplash.com\/photo-1545454675-3531b543be5d?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/sony-srs-xe300.png",
             "created_at": "2026-09-09 11:20:00"
         },
         {
@@ -2360,7 +2278,7 @@
             "price": 20990000,
             "quantity": 1,
             "variant": "49mm Dây Alpine Cam",
-            "image": "https:\/\/images.unsplash.com\/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/apple-watch-ultra-2.png",
             "created_at": "2026-09-12 17:30:00"
         },
         {
@@ -2371,7 +2289,7 @@
             "price": 5490000,
             "quantity": 1,
             "variant": "Trắng USB-C",
-            "image": "https:\/\/images.unsplash.com\/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/apple-airpods-pro-2-usb-c.png",
             "created_at": "2026-09-12 17:30:00"
         },
         {
@@ -2382,7 +2300,7 @@
             "price": 21990000,
             "quantity": 1,
             "variant": "128GB - Ultramarine",
-            "image": "https:\/\/images.unsplash.com\/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/iphone-16-128gb.png",
             "created_at": "2026-09-15 08:30:00"
         },
         {
@@ -2393,7 +2311,7 @@
             "price": 5490000,
             "quantity": 1,
             "variant": "Trắng USB-C",
-            "image": "https:\/\/images.unsplash.com\/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/apple-airpods-pro-2-usb-c.png",
             "created_at": "2026-09-15 08:30:00"
         },
         {
@@ -2404,7 +2322,7 @@
             "price": 890000,
             "quantity": 1,
             "variant": "Trắng GaN 65W",
-            "image": "https:\/\/images.unsplash.com\/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/cu-sac-anker-65w-ganprime.png",
             "created_at": "2026-09-15 08:30:00"
         },
         {
@@ -2415,7 +2333,7 @@
             "price": 16490000,
             "quantity": 1,
             "variant": "Starlight 128GB",
-            "image": "https:\/\/images.unsplash.com\/photo-1561154464-82e9adf32764?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/ipad-air-6-m2-11-inch.png",
             "created_at": "2026-09-18 14:00:00"
         },
         {
@@ -2426,7 +2344,7 @@
             "price": 5490000,
             "quantity": 1,
             "variant": "Trắng USB-C",
-            "image": "https:\/\/images.unsplash.com\/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/apple-airpods-pro-2-usb-c.png",
             "created_at": "2026-09-18 14:00:00"
         },
         {
@@ -2437,7 +2355,7 @@
             "price": 54990000,
             "quantity": 1,
             "variant": "Platinum Core Ultra 7",
-            "image": "https:\/\/images.unsplash.com\/photo-1593642632823-8f785ba67e45?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/dell-xps-14-9440.png",
             "created_at": "2026-09-21 16:50:00"
         },
         {
@@ -2448,7 +2366,7 @@
             "price": 2190000,
             "quantity": 1,
             "variant": "Đen Graphite",
-            "image": "https:\/\/images.unsplash.com\/photo-1527864550417-7fd91fc51a46?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/logitech-mx-master-3s.png",
             "created_at": "2026-09-21 16:50:00"
         },
         {
@@ -2459,7 +2377,7 @@
             "price": 1290000,
             "quantity": 1,
             "variant": "Đen 100W",
-            "image": "https:\/\/images.unsplash.com\/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/cu-sac-anker-100w-ganprime.png",
             "created_at": "2026-09-21 16:50:00"
         },
         {
@@ -2470,7 +2388,7 @@
             "price": 29990000,
             "quantity": 1,
             "variant": "Đen Titan",
-            "image": "https:\/\/images.unsplash.com\/photo-1610945265064-0e34e5519bbf?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-s24-ultra.png",
             "created_at": "2026-09-24 10:15:00"
         },
         {
@@ -2481,7 +2399,7 @@
             "price": 16490000,
             "quantity": 1,
             "variant": "47mm Titan Xám",
-            "image": "https:\/\/images.unsplash.com\/photo-1522335789203-aabd1fc54bc9?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-watch-ultra.png",
             "created_at": "2026-09-24 10:15:00"
         },
         {
@@ -2492,7 +2410,7 @@
             "price": 28990000,
             "quantity": 1,
             "variant": "Đen Da Leica 512GB",
-            "image": "https:\/\/images.unsplash.com\/photo-1567581935884-3349723552ca?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/xiaomi-14-ultra.png",
             "created_at": "2026-09-27 12:45:00"
         },
         {
@@ -2503,7 +2421,7 @@
             "price": 13990000,
             "quantity": 1,
             "variant": "Xám 256GB",
-            "image": "https:\/\/images.unsplash.com\/photo-1561154464-82e9adf32764?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/xiaomi-pad-6s-pro.png",
             "created_at": "2026-09-27 12:45:00"
         },
         {
@@ -2514,7 +2432,7 @@
             "price": 1490000,
             "quantity": 1,
             "variant": "Trắng",
-            "image": "https:\/\/images.unsplash.com\/photo-1572536147248-ac59a8abfa4b?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/xiaomi-redmi-buds-5-pro.png",
             "created_at": "2026-09-27 12:45:00"
         },
         {
@@ -2525,7 +2443,7 @@
             "price": 29490000,
             "quantity": 1,
             "variant": "Xanh Ponder Blue 1TB",
-            "image": "https:\/\/images.unsplash.com\/photo-1496181133206-80ce9b88a853?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/asus-zenbook-14-oled-ux3405.png",
             "created_at": "2026-09-30 15:20:00"
         },
         {
@@ -2536,7 +2454,7 @@
             "price": 2190000,
             "quantity": 1,
             "variant": "Đen Graphite",
-            "image": "https:\/\/images.unsplash.com\/photo-1527864550417-7fd91fc51a46?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/logitech-mx-master-3s.png",
             "created_at": "2026-09-30 15:20:00"
         },
         {
@@ -2547,7 +2465,7 @@
             "price": 34990000,
             "quantity": 1,
             "variant": "256GB - Titan Đen",
-            "image": "https:\/\/images.unsplash.com\/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/iphone-16-pro-max-256gb.png",
             "created_at": "2026-10-02 09:10:00"
         },
         {
@@ -2558,7 +2476,7 @@
             "price": 10490000,
             "quantity": 1,
             "variant": "Nhôm Midnight 45mm",
-            "image": "https:\/\/images.unsplash.com\/photo-1508685096489-7aacd43bd3b1?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/apple-watch-series-9-45mm.png",
             "created_at": "2026-10-02 09:10:00"
         },
         {
@@ -2569,7 +2487,7 @@
             "price": 49990000,
             "quantity": 1,
             "variant": "Space Black 18GB\/512GB",
-            "image": "https:\/\/images.unsplash.com\/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/macbook-pro-14-m3-pro.png",
             "created_at": "2026-10-05 11:35:00"
         },
         {
@@ -2580,7 +2498,7 @@
             "price": 3390000,
             "quantity": 1,
             "variant": "Tactile Mini",
-            "image": "https:\/\/images.unsplash.com\/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/logitech-mx-mechanical.png",
             "created_at": "2026-10-05 11:35:00"
         },
         {
@@ -2591,7 +2509,7 @@
             "price": 2190000,
             "quantity": 1,
             "variant": "Xám Pale Grey",
-            "image": "https:\/\/images.unsplash.com\/photo-1527864550417-7fd91fc51a46?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/logitech-mx-master-3s.png",
             "created_at": "2026-10-05 11:35:00"
         },
         {
@@ -2602,7 +2520,7 @@
             "price": 5490000,
             "quantity": 1,
             "variant": "Trắng USB-C",
-            "image": "https:\/\/images.unsplash.com\/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/apple-airpods-pro-2-usb-c.png",
             "created_at": "2026-10-07 14:25:00"
         },
         {
@@ -2613,7 +2531,7 @@
             "price": 890000,
             "quantity": 1,
             "variant": "Trắng GaN 65W",
-            "image": "https:\/\/images.unsplash.com\/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/cu-sac-anker-65w-ganprime.png",
             "created_at": "2026-10-07 14:25:00"
         },
         {
@@ -2624,7 +2542,7 @@
             "price": 25990000,
             "quantity": 1,
             "variant": "Mecha Gray RTX 4060",
-            "image": "https:\/\/images.unsplash.com\/photo-1588872657578-7efd1f1555ed?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/asus-tuf-gaming-a15.png",
             "created_at": "2026-10-09 16:00:00"
         },
         {
@@ -2635,7 +2553,7 @@
             "price": 7490000,
             "quantity": 1,
             "variant": "Đen",
-            "image": "https:\/\/images.unsplash.com\/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/sony-wh-1000xm5.png",
             "created_at": "2026-10-09 16:00:00"
         },
         {
@@ -2646,7 +2564,7 @@
             "price": 23990000,
             "quantity": 1,
             "variant": "Xám Graphite 256GB",
-            "image": "https:\/\/images.unsplash.com\/photo-1585792180666-f7547c6a28c5?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-tab-s9-ultra.png",
             "created_at": "2026-10-11 10:50:00"
         },
         {
@@ -2657,7 +2575,7 @@
             "price": 4990000,
             "quantity": 1,
             "variant": "Bạc",
-            "image": "https:\/\/images.unsplash.com\/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-buds3-pro.png",
             "created_at": "2026-10-11 10:50:00"
         },
         {
@@ -2668,7 +2586,7 @@
             "price": 34990000,
             "quantity": 1,
             "variant": "256GB - Titan Trắng",
-            "image": "https:\/\/images.unsplash.com\/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/iphone-16-pro-max-256gb.png",
             "created_at": "2026-10-13 13:15:00"
         },
         {
@@ -2679,7 +2597,7 @@
             "price": 13290000,
             "quantity": 1,
             "variant": "Space Gray USB-C",
-            "image": "https:\/\/images.unsplash.com\/photo-1546435770-a3e426bf472b?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/apple-airpods-max-usb-c.png",
             "created_at": "2026-10-13 13:15:00"
         },
         {
@@ -2690,7 +2608,7 @@
             "price": 27990000,
             "quantity": 1,
             "variant": "Phantom Black 512GB",
-            "image": "https:\/\/images.unsplash.com\/photo-1550009158-9ebf69173e03?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/asus-rog-phone-8-pro.png",
             "created_at": "2026-10-15 08:45:00"
         },
         {
@@ -2701,7 +2619,7 @@
             "price": 5990000,
             "quantity": 1,
             "variant": "Đen",
-            "image": "https:\/\/images.unsplash.com\/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/sony-wf-1000xm5.png",
             "created_at": "2026-10-15 08:45:00"
         },
         {
@@ -2712,7 +2630,7 @@
             "price": 16490000,
             "quantity": 1,
             "variant": "Bạc Platinum i5",
-            "image": "https:\/\/images.unsplash.com\/photo-1525547719571-a2d4ac8945e2?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/dell-inspiron-14-5440.png",
             "created_at": "2026-10-16 11:20:00"
         },
         {
@@ -2723,7 +2641,7 @@
             "price": 890000,
             "quantity": 1,
             "variant": "Đen GaN 65W",
-            "image": "https:\/\/images.unsplash.com\/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/cu-sac-anker-65w-ganprime.png",
             "created_at": "2026-10-16 11:20:00"
         },
         {
@@ -2734,7 +2652,7 @@
             "price": 21990000,
             "quantity": 1,
             "variant": "128GB - Hồng",
-            "image": "https:\/\/images.unsplash.com\/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/iphone-16-128gb.png",
             "created_at": "2026-10-17 15:30:00"
         },
         {
@@ -2745,7 +2663,7 @@
             "price": 5490000,
             "quantity": 1,
             "variant": "Trắng USB-C",
-            "image": "https:\/\/images.unsplash.com\/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/apple-airpods-pro-2-usb-c.png",
             "created_at": "2026-10-17 15:30:00"
         },
         {
@@ -2756,7 +2674,7 @@
             "price": 18990000,
             "quantity": 1,
             "variant": "Bạc Unibody R7",
-            "image": "https:\/\/images.unsplash.com\/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/xiaomi-redmibook-pro-15.png",
             "created_at": "2026-10-18 10:00:00"
         },
         {
@@ -2767,7 +2685,7 @@
             "price": 2190000,
             "quantity": 1,
             "variant": "Đen Graphite",
-            "image": "https:\/\/images.unsplash.com\/photo-1527864550417-7fd91fc51a46?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/logitech-mx-master-3s.png",
             "created_at": "2026-10-18 10:00:00"
         },
         {
@@ -2778,7 +2696,7 @@
             "price": 41990000,
             "quantity": 1,
             "variant": "Xám Phantom 256GB",
-            "image": "https:\/\/images.unsplash.com\/photo-1574944985070-8f3ebc6b79d2?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-z-fold6.png",
             "created_at": "2026-10-19 14:10:00"
         },
         {
@@ -2789,7 +2707,7 @@
             "price": 16490000,
             "quantity": 1,
             "variant": "47mm Titan Trắng",
-            "image": "https:\/\/images.unsplash.com\/photo-1522335789203-aabd1fc54bc9?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/samsung-galaxy-watch-ultra.png",
             "created_at": "2026-10-19 14:10:00"
         },
         {
@@ -2800,7 +2718,7 @@
             "price": 89990000,
             "quantity": 1,
             "variant": "Silver M3 Max 1TB",
-            "image": "https:\/\/images.unsplash.com\/photo-1541807084-5c52b6b3adef?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/macbook-pro-16-m3-max.png",
             "created_at": "2026-10-20 09:30:00"
         },
         {
@@ -2811,7 +2729,7 @@
             "price": 1290000,
             "quantity": 1,
             "variant": "Đen 100W",
-            "image": "https:\/\/images.unsplash.com\/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/cu-sac-anker-100w-ganprime.png",
             "created_at": "2026-10-20 09:30:00"
         },
         {
@@ -2822,7 +2740,7 @@
             "price": 24990000,
             "quantity": 1,
             "variant": "128GB Titan Tự Nhiên",
-            "image": "https:\/\/images.unsplash.com\/photo-1592750475338-74b7b21085ab?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/iphone-15-pro-128gb.png",
             "created_at": "2026-10-21 08:20:00"
         },
         {
@@ -2833,7 +2751,7 @@
             "price": 5490000,
             "quantity": 1,
             "variant": "Trắng USB-C",
-            "image": "https:\/\/images.unsplash.com\/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/apple-airpods-pro-2-usb-c.png",
             "created_at": "2026-10-21 08:20:00"
         },
         {
@@ -2844,7 +2762,7 @@
             "price": 76990000,
             "quantity": 1,
             "variant": "Core Ultra 9 RTX 4070",
-            "image": "https:\/\/images.unsplash.com\/photo-1587614382346-4ec70e388b28?w=600&auto=format&fit=crop&q=80",
+            "image": "\/assets\/images\/dell-xps-16-9640.png",
             "created_at": "2026-10-21 11:45:00"
         }
     ],
@@ -3590,34 +3508,22 @@
             "created_at": "2026-09-18 13:40:00"
         }
     ],
-    "cart": {
-        "0": {
+    "cart": [
+        {
             "id": 1,
             "user_id": 2,
             "product_id": 1,
             "quantity": 1,
             "variant": "256GB - Titan Sa Mạc"
         },
-        "1": {
+        {
             "id": 2,
             "user_id": 2,
             "product_id": 39,
             "quantity": 1,
             "variant": "Đen GaN 65W"
-        },
-        "items": [
-            {
-                "id": 1792640768,
-                "product_id": 2,
-                "name": "iPhone 16 128GB",
-                "price": 21990000,
-                "quantity": 1,
-                "variant": "",
-                "image": "https:\/\/images.unsplash.com\/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80"
-            }
-        ],
-        "total": 21990000
-    },
+        }
+    ],
     "product_similarity": [
         {
             "id": 1,
@@ -4250,250 +4156,10 @@
         {
             "id": 4,
             "user_id": 2,
-            "token_hash": "cdd69059ea3ea118b171c0f3e22aad10fd27c3b2c32f78d7c0f0a8f3eb3092c2",
-            "expires_at": "2026-10-29 02:01:05",
+            "token_hash": "febb0cfc1c6943e622a1672c48c1ba444c48fb3f200f66235679350b5511b6d6",
+            "expires_at": "2026-11-12 06:32:18",
             "revoked": 1,
-            "created_at": "2026-10-22 03:01:05"
-        },
-        {
-            "id": 5,
-            "user_id": 2,
-            "token_hash": "7d0578c47006fd13e6f0c0edcb1925cd112cb1604638c0d3b6f4d4a89e1c90a6",
-            "expires_at": "2026-10-29 02:01:35",
-            "revoked": 1,
-            "created_at": "2026-10-22 03:01:35"
-        },
-        {
-            "id": 6,
-            "user_id": 1,
-            "token_hash": "5b12359b8f22a392fb14a1dced80824b32e27b62d96584aa459c0928dfb50fa4",
-            "expires_at": "2026-10-29 02:01:51",
-            "revoked": 1,
-            "created_at": "2026-10-22 03:01:51"
-        },
-        {
-            "id": 7,
-            "user_id": 8,
-            "token_hash": "1994055ba9eaa051fc386eba7a7eb0dcd14ebbcc94c4910640157c41c35e650e",
-            "expires_at": "2026-10-29 02:13:20",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:13:20"
-        },
-        {
-            "id": 8,
-            "user_id": 1,
-            "token_hash": "82b0423abb7e808e1dc778bc17bba57a947f00ae981b9dcbb6424aa237448c7b",
-            "expires_at": "2026-10-29 02:13:20",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:13:20"
-        },
-        {
-            "id": 9,
-            "user_id": 2,
-            "token_hash": "86e289ca810fca8af1d7b0aaacc6c539c2d3f6fd5880d153a15b1986003e8c8c",
-            "expires_at": "2026-10-29 02:13:21",
-            "revoked": 1,
-            "created_at": "2026-10-22 03:13:21"
-        },
-        {
-            "id": 10,
-            "user_id": 9,
-            "token_hash": "309f75d4c044c67ec751d36c27df68e40472bed2483062f78643eeddf0c3ddf6",
-            "expires_at": "2026-10-29 02:14:35",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:14:35"
-        },
-        {
-            "id": 11,
-            "user_id": 1,
-            "token_hash": "1d5953e6747faf1a2bb40d4f513a2264b7d25230121824b5b7b513378828532b",
-            "expires_at": "2026-10-29 02:14:36",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:14:36"
-        },
-        {
-            "id": 12,
-            "user_id": 2,
-            "token_hash": "083d9b8ecab4e7d940395d13616e66ac55b6acd7cef2beec7fda101e83086b37",
-            "expires_at": "2026-10-29 02:14:36",
-            "revoked": 1,
-            "created_at": "2026-10-22 03:14:36"
-        },
-        {
-            "id": 13,
-            "user_id": 1,
-            "token_hash": "da87560c71d574d5f55735415513ed70e6ecbe2d2b36c76822c088f3ed8d6b31",
-            "expires_at": "2026-10-29 02:22:06",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:22:06"
-        },
-        {
-            "id": 14,
-            "user_id": 10,
-            "token_hash": "6436c26f5d17c94e0301f4e14dfee078185bb832ff1a11e2ca29bc50dcb46471",
-            "expires_at": "2026-10-29 02:22:52",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:22:52"
-        },
-        {
-            "id": 15,
-            "user_id": 1,
-            "token_hash": "348b657dfa9862f384f81c4df91a98e4fc0ca552924003026dcc028b986b1c1d",
-            "expires_at": "2026-10-29 02:22:52",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:22:52"
-        },
-        {
-            "id": 16,
-            "user_id": 2,
-            "token_hash": "60a6baeb4bb5ac587ee2ca6cd58037c6f6dbf760be795a058b78faf6980d8849",
-            "expires_at": "2026-10-29 02:22:52",
-            "revoked": 1,
-            "created_at": "2026-10-22 03:22:52"
-        },
-        {
-            "id": 17,
-            "user_id": 2,
-            "token_hash": "68c2063cb02229d79858d5b308207f589660c9d3377bf07f69d23b50cc727e2d",
-            "expires_at": "2026-10-29 02:32:03",
-            "revoked": 1,
-            "created_at": "2026-10-22 03:32:03"
-        },
-        {
-            "id": 18,
-            "user_id": 2,
-            "token_hash": "9dbe643e300666b787691529afcd243888512845ee0697f2b05e5b2c13c37aa1",
-            "expires_at": "2026-10-29 02:33:43",
-            "revoked": 1,
-            "created_at": "2026-10-22 03:33:43"
-        },
-        {
-            "id": 19,
-            "user_id": 11,
-            "token_hash": "35b4fba4815626187ff6a763feb82687f8968cedb4eda70729b64bccedf9612f",
-            "expires_at": "2026-10-29 02:33:51",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:33:51"
-        },
-        {
-            "id": 20,
-            "user_id": 1,
-            "token_hash": "22f4f027d2c1dfdd1a6eb404e59660bf03046e3c28960f5482e3d5f52b3e51bb",
-            "expires_at": "2026-10-29 02:33:51",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:33:51"
-        },
-        {
-            "id": 21,
-            "user_id": 2,
-            "token_hash": "24f548516f8a906cbfbf2d8302e3daf6a5abe1bd6e192600f92e184db863d810",
-            "expires_at": "2026-10-29 02:33:51",
-            "revoked": 1,
-            "created_at": "2026-10-22 03:33:51"
-        },
-        {
-            "id": 22,
-            "user_id": 12,
-            "token_hash": "1d4e793ee99c699df8ee4e7bfd6d75c8691c8f4148e9371b43736d01fa3314de",
-            "expires_at": "2026-10-29 02:44:42",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:44:42"
-        },
-        {
-            "id": 23,
-            "user_id": 12,
-            "token_hash": "bfd12e9b960e87539b97e614f208ddb82acd145e2e172dfc2e134d3380d9f0db",
-            "expires_at": "2026-10-29 02:44:54",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:44:54"
-        },
-        {
-            "id": 24,
-            "user_id": 12,
-            "token_hash": "c96370303895f3cf17725a0b057a30134476c560b284a7da381a4d3e18e21936",
-            "expires_at": "2026-10-29 02:45:09",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:45:09"
-        },
-        {
-            "id": 25,
-            "user_id": 12,
-            "token_hash": "eb93687f4356e2a4a70836df472ca4fd6a78b9605e3eb379b7a069f9b595292c",
-            "expires_at": "2026-10-29 02:45:13",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:45:13"
-        },
-        {
-            "id": 26,
-            "user_id": 2,
-            "token_hash": "ffe7db591e7b15370fb607de76c56c0509fa27837f9602d87e217a823b708f5b",
-            "expires_at": "2026-10-29 02:45:24",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:45:24"
-        },
-        {
-            "id": 27,
-            "user_id": 1,
-            "token_hash": "45348a63b451e44069567b3636541aa2c8ec697ea5a0ad67fdd22901ed90ea60",
-            "expires_at": "2026-10-29 02:45:32",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:45:32"
-        },
-        {
-            "id": 28,
-            "user_id": 12,
-            "token_hash": "07e111a7837e506c818b49e7a6db911cd2897628ef19b7e8db9f159ce561346a",
-            "expires_at": "2026-10-29 02:45:50",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:45:50"
-        },
-        {
-            "id": 29,
-            "user_id": 12,
-            "token_hash": "bc5e3ce0ddb3e05e6a015a7ca5cff08428e5fd78412c6c55f004556da9cb0815",
-            "expires_at": "2026-10-29 02:45:54",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:45:54"
-        },
-        {
-            "id": 30,
-            "user_id": 2,
-            "token_hash": "b765a80a16eb14689d835d5e91910101ea50d25b4a2a874fb2eb95c031c522be",
-            "expires_at": "2026-10-29 02:56:42",
-            "revoked": 0,
-            "created_at": "2026-10-22 03:56:42"
-        },
-        {
-            "id": 31,
-            "user_id": 12,
-            "token_hash": "7a23f771282ead1c30c68b41f12e19844bfde061be9272c340726ae5cb81fb31",
-            "expires_at": "2026-10-29 03:04:24",
-            "revoked": 0,
-            "created_at": "2026-10-22 04:04:24"
-        },
-        {
-            "id": 32,
-            "user_id": 2,
-            "token_hash": "8e8bd36e5022517c2ad37dc36cf95b8d1eb1862d14c8aca142ea35f33432d77e",
-            "expires_at": "2026-10-29 04:39:38",
-            "revoked": 1,
-            "created_at": "2026-10-22 05:39:38"
-        },
-        {
-            "id": 33,
-            "user_id": 12,
-            "token_hash": "958a5d66c3523443158b8536efe8844d1c162edd8802a52e88c0a5ff02e1edd5",
-            "expires_at": "2026-10-29 04:45:27",
-            "revoked": 0,
-            "created_at": "2026-10-22 05:45:27"
-        },
-        {
-            "id": 34,
-            "user_id": 12,
-            "token_hash": "4132f2f7f912bc38d2914ac831a2575f71b6965be00d93664ae47310c43021de",
-            "expires_at": "2026-10-29 05:46:58",
-            "revoked": 0,
-            "created_at": "2026-10-22 06:46:58"
+            "created_at": "2026-11-05 06:32:18"
         }
     ],
     "audit_logs": [

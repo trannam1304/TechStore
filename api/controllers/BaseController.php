@@ -126,7 +126,7 @@ abstract class BaseController {
                 ['id' => 6, 'name' => 'Phụ kiện', 'icon' => '🔌', 'slug' => 'phu-kien', 'product_count' => 35]
             ],
             'brands' => [
-                ['id' => 1, 'name' => 'Apple', 'logo' => ''],
+                ['id' => 1, 'name' => 'Apple', 'logo' => 'Apple'],
                 ['id' => 2, 'name' => 'Samsung', 'logo' => 'Samsung'],
                 ['id' => 3, 'name' => 'Xiaomi', 'logo' => 'Xiaomi'],
                 ['id' => 4, 'name' => 'ASUS', 'logo' => 'ASUS'],

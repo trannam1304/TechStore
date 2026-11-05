@@ -4,6 +4,8 @@
  * Author: Tuan Kiet (Front-end & Documentation)
  */
 
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+
 :root {
   /* Brand Primary Colors (CellphoneS Crimson) */
   --color-primary: #d70018;
@@ -38,8 +40,16 @@
   --color-info-light: #f0f9ff;
 
   /* Typography */
-  --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-mono: 'Consolas', 'Courier New', Courier, monospace;
+
+  /* Icon Sizing Tokens */
+  --icon-size-xs: 14px;
+  --icon-size-sm: 18px;
+  --icon-size-md: 22px;
+  --icon-size-lg: 28px;
+  --icon-size-xl: 36px;
+  --icon-size-2xl: 48px;
 
   --font-size-xs: 0.75rem;    /* 12px */
   --font-size-sm: 0.875rem;   /* 14px */

@@ -131,10 +131,19 @@
   <!-- Top Bar -->
   <div class="topbar">
     <div class="container">
-      <div>TechStore - Giỏ hàng trực tuyến an toàn & nhanh chóng</div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <svg class="tech-icon tech-icon-primary" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 5.5v6.2c0 5.3 3.4 10.2 8 11.3 4.6-1.1 8-6 8-11.3V5.5L12 2z" stroke-linejoin="round" fill="currentColor" fill-opacity="0.15"/><path d="M8.5 11.8l2.3 2.3 4.7-4.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>TechStore - Giỏ hàng trực tuyến an toàn & nhanh chóng</span>
+      </div>
       <div class="topbar-links">
-        <a href="/pages/account.html">Tra cứu đơn hàng</a>
-        <a href="tel:18006018">Hotline: 1800.6018</a>
+        <a href="/pages/account.html" style="display: inline-flex; align-items: center; gap: 6px;">
+          <svg class="tech-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 4.8v8.4l-9 4.8-9-4.8V7.8L12 3z" stroke-linejoin="round"/><path d="M12 3v9.6M21 7.8l-9 4.8M3 7.8l9 4.8" stroke-linejoin="round"/></svg>
+          Tra cứu đơn hàng
+        </a>
+        <a href="tel:18006018" style="display: inline-flex; align-items: center; gap: 6px;">
+          <svg class="tech-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke-linejoin="round"/><path d="M15 2a6 6 0 016 6M15 5a3 3 0 013 3" stroke-linecap="round"/></svg>
+          Hotline: 1800.6018
+        </a>
       </div>
     </div>
   </div>
@@ -142,13 +151,19 @@
   <!-- Header -->
   <header class="header-main">
     <div class="container header-container">
-      <a href="/pages/index.html" class="logo">TechStore <span class="logo-badge">REST</span></a>
+      <a href="/pages/index.html" class="logo">
+        <span class="logo-icon-wrap" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.4); box-shadow: 0 4px 14px rgba(0,0,0,0.2);">
+          <svg class="tech-icon" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" fill="#ffffff"/><path d="M2 17l10 5 10-5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12l10 5 10-5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span style="font-size: 22px; font-weight: 900; letter-spacing: -0.5px;">TechStore</span>
+        <span class="logo-badge">REST</span>
+      </a>
 
       <div class="header-search">
         <form id="global-search-form" class="search-box">
           <input type="text" id="global-search-input" class="search-input" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
           <button type="submit" class="search-btn" aria-label="Tìm kiếm">
-            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <svg class="tech-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21" stroke-width="2.2" stroke-linecap="round"/><path d="M8 11a3 3 0 013-3" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/></svg>
           </button>
         </form>
         <div id="search-suggestions" class="search-suggestions"></div>
@@ -156,12 +171,12 @@
 
       <div class="header-actions">
         <a href="/pages/account.html#wishlist" class="header-action-btn">
-          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+          <svg class="tech-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.36L4.32 12.7A5 5 0 0111.4 5.64l.6.61.6-.61a5 5 0 017.08 7.07L12 20.36z"/></svg>
           <span>Yêu thích</span>
         </a>
 
         <a href="/pages/cart.html" class="header-action-btn">
-          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          <svg class="tech-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.2 10.3a2 2 0 002 1.7h8.8a2 2 0 002-1.6L21.5 7H6"/><circle cx="9.5" cy="19.5" r="1.5" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.5" fill="currentColor"/></svg>
           <span>Giỏ hàng</span>
           <span class="badge-pill cart-badge" style="display: none;">0</span>
         </a>
@@ -227,23 +242,34 @@
           </div>
 
           <!-- Checkout Button -->
-          <button class="btn btn-primary btn-block btn-lg" style="margin-top: 24px; font-weight: 800;" id="btn-to-checkout">
-            ⚡ TIẾN HÀNH ĐẶT HÀNG
+          <button class="btn btn-primary btn-block btn-lg" style="margin-top: 24px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px;" id="btn-to-checkout">
+            <svg class="tech-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" stroke-linejoin="round" fill="currentColor" fill-opacity="0.3"/></svg>
+            TIẾN HÀNH ĐẶT HÀNG
           </button>
           
           <div style="text-align: center; margin-top: 12px;">
-            <a href="/pages/products.html" style="font-size: 13px; color: var(--color-primary);">&lt; Tiếp tục mua sắm</a>
+            <a href="/pages/products.html" style="font-size: 13px; color: var(--color-primary); display: inline-flex; align-items: center; gap: 4px;">
+              <svg class="tech-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Tiếp tục mua sắm
+            </a>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Empty State -->
-    <div id="cart-empty-state" style="display: none; text-align: center; padding: 80px 20px; background: white; border-radius: 16px; border: 1px solid #e2e8f0; margin-top: 24px;">
-      <div style="font-size: 64px; margin-bottom: 16px;">🛒</div>
+    <div id="cart-empty-state" style="display: none; text-align: center; padding: 80px 20px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-top: 24px;">
+      <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+        <div class="benefit-icon-wrap" style="width: 72px; height: 72px;">
+          <svg class="tech-icon tech-icon-primary" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h2l2.2 10.3a2 2 0 002 1.7h8.8a2 2 0 002-1.6L21.5 7H6"/><circle cx="9.5" cy="19.5" r="1.5" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.5" fill="currentColor"/></svg>
+        </div>
+      </div>
       <h3 style="font-size: 20px; font-weight: 800; color: #1e293b; margin-bottom: 8px;">Giỏ hàng của bạn đang trống</h3>
       <p style="font-size: 14px; color: #64748b; margin-bottom: 24px;">Hãy khám phá các thiết bị công nghệ hấp dẫn tại TechStore và lấp đầy giỏ hàng nhé!</p>
-      <a href="/pages/products.html" class="btn btn-primary btn-lg">Khám phá sản phẩm ngay</a>
+      <a href="/pages/products.html" class="btn btn-primary btn-lg" style="display: inline-flex; align-items: center; gap: 8px;">
+        <svg class="tech-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21" stroke-width="2.2" stroke-linecap="round"/></svg>
+        Khám phá sản phẩm ngay
+      </a>
     </div>
 
     <!-- Recommendations (recommend.js) -->
@@ -258,6 +284,7 @@
   </footer>
 
   <!-- Scripts -->
+  <script src="/assets/js/icons.js"></script>
   <script src="/assets/js/api.js"></script>
   <script src="/assets/js/recommend.js"></script>
   <script>
@@ -328,7 +355,9 @@
           <div style="font-size: 14px; font-weight: 800; min-width: 110px; text-align: right; color: var(--color-dark);">
             ${formatVND(item.price * item.quantity)}
           </div>
-          <button class="cart-item-remove" onclick="removeCartItem(${item.id})" title="Xóa khỏi giỏ">✕</button>
+          <button class="cart-item-remove" onclick="removeCartItem(${item.id})" title="Xóa khỏi giỏ" style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px;">
+            <svg class="tech-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke-linecap="round"/></svg>
+          </button>
         </div>
       `).join('');
 
@@ -393,12 +422,12 @@
       if (res.success) {
         appliedCoupon = res.data;
         feedbackEl.style.color = '#10b981';
-        feedbackEl.textContent = `✓ ${res.message}: Giảm ${formatVND(appliedCoupon.discount_amount)}`;
+        feedbackEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:4px;">${TechIcons.render('check-circle', { size: 14, className: 'text-success' })} <span>${res.message}: Giảm ${formatVND(appliedCoupon.discount_amount)}</span></span>`;
         updateSummary(cart.total);
       } else {
         appliedCoupon = null;
         feedbackEl.style.color = '#ef4444';
-        feedbackEl.textContent = `✕ ${res.message}`;
+        feedbackEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:4px;">${TechIcons.render('close', { size: 14, className: 'text-danger' })} <span>${res.message}</span></span>`;
         updateSummary(cart.total);
       }
     }

@@ -31,3 +31,7 @@ desktop.ini
 # Test & Coverage reports
 coverage/
 .phpunit.result.cache
+
+# Python cache
+__pycache__/
+*.pyc

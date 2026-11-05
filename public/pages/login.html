@@ -52,7 +52,16 @@
 
   <div class="auth-card">
     <div class="auth-logo">
-      <a href="/pages/index.html">TechStore <span class="logo-badge">REST</span></a>
+      <a href="/pages/index.html" style="display: inline-flex; align-items: center; gap: 8px;">
+        <span class="logo-mark-wrap">
+          <svg class="tech-icon tech-icon-lg logo-vector" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" fill="#d70018"/>
+            <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        TechStore <span class="logo-badge">REST</span>
+      </a>
       <p style="font-size: 14px; color: var(--color-gray); margin-top: 6px;">Đăng nhập để trải nghiệm mua sắm công nghệ</p>
     </div>
 
@@ -69,7 +78,9 @@
         </div>
         <div style="position: relative;">
           <input type="password" id="login-password" class="form-control" required placeholder="••••••••">
-          <button type="button" onclick="togglePasswordVisibility('login-password', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--color-gray);">👁️</button>
+          <button type="button" id="btn-toggle-pass" onclick="togglePasswordVisibility('login-password', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--color-gray); background: none; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center;" aria-label="Hiện/ẩn mật khẩu">
+            <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>
+          </button>
         </div>
       </div>
 
@@ -91,14 +102,17 @@
 
       <!-- Quick Demo Login Credentials -->
       <div class="quick-login-box">
-        <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">
-          ⚡ Tài khoản demo (Click để đăng nhập nhanh):
+        <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
+          <svg class="tech-icon tech-icon-xs text-primary" viewBox="0 0 24 24" fill="none"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="currentColor" fill-opacity="0.2"/></svg>
+          <span>Tài khoản demo (Click để đăng nhập nhanh):</span>
         </div>
-        <button type="button" class="btn btn-outline quick-btn" onclick="fillAndLogin('admin@techstore.local', 'Admin@123')">
-          👤 Đăng nhập Admin (admin@techstore.local)
+        <button type="button" class="btn btn-outline quick-btn" onclick="fillAndLogin('admin@techstore.local', 'Admin@123')" style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <svg class="tech-icon tech-icon-xs text-primary" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="2"/></svg>
+          <span>Đăng nhập Admin (admin@techstore.local)</span>
         </button>
-        <button type="button" class="btn btn-outline quick-btn" onclick="fillAndLogin('user@techstore.local', 'User@123')">
-          🛍️ Đăng nhập Khách hàng (user@techstore.local)
+        <button type="button" class="btn btn-outline quick-btn" onclick="fillAndLogin('user@techstore.local', 'User@123')" style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <svg class="tech-icon tech-icon-xs text-primary" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M5 19.5a7 7 0 0114 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>Đăng nhập Khách hàng (user@techstore.local)</span>
         </button>
       </div>
     </form>
@@ -108,11 +122,15 @@
     </div>
 
     <div style="text-align: center; margin-top: 12px;">
-      <a href="/pages/index.html" style="font-size: 13px; color: var(--color-gray);">&lt; Quay lại trang chủ</a>
+      <a href="/pages/index.html" style="font-size: 13px; color: var(--color-gray); display: inline-flex; align-items: center; gap: 4px;">
+        <svg class="tech-icon tech-icon-xs" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Quay lại trang chủ
+      </a>
     </div>
   </div>
 
   <!-- Scripts -->
+  <script src="/assets/js/icons.js"></script>
   <script src="/assets/js/api.js"></script>
   <script>
     document.getElementById('login-form').addEventListener('submit', async (e) => {
@@ -148,10 +166,10 @@
       const field = document.getElementById(fieldId);
       if (field.type === 'password') {
         field.type = 'text';
-        btn.textContent = '🙈';
+        btn.innerHTML = TechIcons.render('eye-off', { size: 18 });
       } else {
         field.type = 'password';
-        btn.textContent = '👁️';
+        btn.innerHTML = TechIcons.render('eye', { size: 18 });
       }
     }
 
