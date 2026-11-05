@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechStore - RESTful API Live Inspector</title>
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-hover: #334155;
+      --border-color: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --color-primary: #38bdf8;
+      --color-success: #10b981;
+      --color-warning: #f59e0b;
+      --color-danger: #ef4444;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top Bar */
+    .topbar {
+      background: #090d16;
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-badge {
+      background: #0284c7;
+      color: #fff;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .topbar-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--color-success);
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-success);
+      box-shadow: 0 0 10px var(--color-success);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+    }
+
+    /* Main Container (Split Columns) */
+    .container {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 45px);
+      overflow: hidden;
+    }
+
+    /* Left Stream Sidebar */
+    .stream-pane {
+      width: 38%;
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      background: #0c1322;
+    }
+
+    .pane-header {
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .stream-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .stream-item {
+      padding: 10px 12px;
+      background: var(--bg-card);
+      border: 1px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .stream-item:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .stream-item.active {
+      border-color: var(--color-primary);
+      background: #172554;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+    }
+
+    .item-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .method-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .method-GET { background: #0284c7; color: #fff; }
+    .method-POST { background: #16a34a; color: #fff; }
+    .method-PUT { background: #d97706; color: #fff; }
+    .method-DELETE { background: #dc2626; color: #fff; }
+
+    .status-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .status-200, .status-201 { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
+    .status-401 { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+    .status-403 { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
+    .status-404 { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid #94a3b8; }
+
+    .item-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #e2e8f0;
+      line-height: 1.4;
+    }
+
+    .item-url {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Right Detail Inspector */
+    .detail-pane {
+      width: 62%;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-dark);
+      overflow-y: auto;
+      padding: 14px 18px;
+      gap: 12px;
+    }
+
+    .detail-banner {
+      background: #172554;
+      border: 1px solid #1d4ed8;
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .detail-banner-icon {
+      font-size: 16px;
+      color: #60a5fa;
+    }
+
+    .detail-banner-text {
+      font-size: 13px;
+      font-weight: 700;
+      color: #93c5fd;
+    }
+
+    .endpoint-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .endpoint-url-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    .metrics-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1px solid #334155;
+      padding-top: 8px;
+      margin-top: 4px;
+    }
+
+    .metric-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .metric-val {
+      font-weight: 700;
+      color: #f1f5f9;
+      font-family: var(--font-mono);
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+
+    .code-box {
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #38bdf8;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 280px;
+      overflow-y: auto;
+      line-height: 1.5;
+    }
+
+    .sec-alert {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #fca5a5;
+      line-height: 1.5;
+    }
+
+    .sec-alert.success {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: #6ee7b7;
+    }
+
+    .sec-alert.warning {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #fde68a;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <span>TechStore RESTful API</span>
+      <span class="brand-badge">Live Inspector</span>
+      <span style="color: var(--text-muted); font-size: 12px; font-weight: normal;">| Topic 1: RESTful Architecture</span>
+    </div>
+    <div class="topbar-status">
+      <div class="status-dot"></div>
+      <span>ĐANG ĐỒNG BỘ TELEMETRY THỜI GIAN THỰC</span>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Left Request Stream -->
+    <div class="stream-pane">
+      <div class="pane-header">
+        <span>Tiến trình API Request</span>
+        <span id="request-count">0 / 8 hoàn thành</span>
+      </div>
+      <div class="stream-list" id="stream-list">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Right Detail Inspector -->
+    <div class="detail-pane" id="detail-pane">
+      <div class="detail-banner">
+        <span class="detail-banner-icon">ℹ</span>
+        <span class="detail-banner-text" id="detail-banner-text">Hệ thống sẵn sàng tiếp nhận tiến trình kiểm thử bảo mật.</span>
+      </div>
+
+      <div class="endpoint-card">
+        <div class="endpoint-url-row">
+          <span class="method-pill" id="detail-method">GET</span>
+          <span id="detail-url">/api/v1/auth/me</span>
+        </div>
+        <div class="metrics-bar">
+          <div class="metric-item">
+            <span>Status:</span>
+            <span class="status-badge" id="detail-status">200 OK</span>
+          </div>
+          <div class="metric-item">
+            <span>Độ trễ:</span>
+            <span class="metric-val" id="detail-time">22.4 ms</span>
+          </div>
+          <div class="metric-item">
+            <span>Payload:</span>
+            <span class="metric-val" id="detail-size">1.2 KB</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Guard Info -->
+      <div class="sec-alert" id="detail-sec-alert">
+        <strong>Cơ chế bảo vệ:</strong> Chờ kích hoạt kiểm thử từ trình duyệt bên trái.
+      </div>
+
+      <!-- Request Headers & Payload -->
+      <div class="section-title">Request Headers & Authorization</div>
+      <pre class="code-box" id="detail-req-headers">Authorization: Bearer [Chưa truyền token]</pre>
+
+      <!-- Response Body -->
+      <div class="section-title">Response JSON (RFC 7807 / REST Payload)</div>
+      <pre class="code-box" id="detail-res-body">{
+  "status": "ready"
+}</pre>
+    </div>
+  </div>
+
+  <script>
+    const requests = [];
+
+    window.triggerApiStep = function(step) {
+      requests.push(step);
+      renderList();
+      selectStep(requests.length - 1);
+    };
+
+    function renderList() {
+      const list = document.getElementById('stream-list');
+      list.innerHTML = '';
+      document.getElementById('request-count').innerText = `${requests.length} / 8 hoàn thành`;
+
+      requests.forEach((req, idx) => {
+        const item = document.createElement('div');
+        item.className = 'stream-item' + (idx === requests.length - 1 ? ' active' : '');
+        item.onclick = () => selectStep(idx);
+
+        const statusClass = 'status-' + (req.status || 200);
+        const methodClass = 'method-' + (req.method || 'GET');
+
+        item.innerHTML = `
+          <div class="item-top">
+            <span class="method-pill ${methodClass}">${req.method}</span>
+            <span class="status-badge ${statusClass}">${req.status} ${req.statusText}</span>
+          </div>
+          <div class="item-title">${req.name}</div>
+          <div class="item-url">${req.url}</div>
+        `;
+        list.appendChild(item);
+      });
+
+      // Auto scroll to bottom
+      list.scrollTop = list.scrollHeight;
+    }
+
+    function selectStep(idx) {
+      const req = requests[idx];
+      if (!req) return;
+
+      // Update active class
+      const items = document.querySelectorAll('.stream-item');
+      items.forEach((el, i) => {
+        if (i === idx) el.classList.add('active');
+        else el.classList.remove('active');
+      });
+
+      // Update detail pane
+      document.getElementById('detail-banner-text').innerText = req.name;
+
+      const m = document.getElementById('detail-method');
+      m.className = 'method-pill method-' + req.method;
+      m.innerText = req.method;
+
+      document.getElementById('detail-url').innerText = req.url;
+
+      const st = document.getElementById('detail-status');
+      st.className = 'status-badge status-' + req.status;
+      st.innerText = req.status + ' ' + req.statusText;
+
+      document.getElementById('detail-time').innerText = req.time || '18.4 ms';
+      document.getElementById('detail-size').innerText = req.size || '528 B';
+
+      // Security Alert
+      const alert = document.getElementById('detail-sec-alert');
+      alert.className = 'sec-alert ' + (req.status === 200 || req.status === 201 ? 'success' : (req.status === 403 ? 'warning' : ''));
+      alert.innerHTML = `<strong>Tiêu chuẩn Kiến trúc & Bảo mật:</strong> ${req.securityNote || 'Chuẩn xác thực RESTful API'}`;
+
+      // Headers
+      document.getElementById('detail-req-headers').innerText = typeof req.reqHeaders === 'string' 
+        ? req.reqHeaders 
+        : JSON.stringify(req.reqHeaders, null, 2);
+
+      // Response
+      document.getElementById('detail-res-body').innerText = typeof req.resBody === 'string' 
+        ? req.resBody 
+        : JSON.stringify(req.resBody, null, 2);
+    }
+  </script>
+</body>
+</html>
+

@@ -2,7 +2,7 @@
 /**
  * TechStore - Cart Controller (Clean MVC Orchestrator)
  * FR04: Quản lý Giỏ hàng và Kiểm soát Tồn kho thời gian thực (Server-side Cart & Realtime Inventory)
- * Tuân thủ chuẩn RESTful API, loại bỏ phụ thuộc data.json, điều phối CartModel
+ * Tuân thủ chuẩn RESTful Level 3 (HATEOAS Hypermedia Controls)
  */
 
 namespace Api\Controllers;
@@ -20,6 +20,20 @@ use Api\Helpers\Validator;
 use Throwable;
 
 class CartController extends BaseController {
+
+    /**
+     * Helper sinh siêu liên kết HATEOAS cho Giỏ hàng
+     */
+    private static function buildCartLinks(): array {
+        return [
+            'self'         => ['href' => '/api/v1/cart', 'method' => 'GET'],
+            'add_item'     => ['href' => '/api/v1/cart/items', 'method' => 'POST'],
+            'clear'        => ['href' => '/api/v1/cart', 'method' => 'DELETE'],
+            'checkout'     => ['href' => '/api/v1/orders', 'method' => 'POST'],
+            'apply_coupon' => ['href' => '/api/v1/coupons/validate', 'method' => 'POST']
+        ];
+    }
+
     /**
      * Xác định User ID của phiên làm việc
      * 1. Lấy từ Access Token (JWT Bearer)
@@ -41,7 +55,7 @@ class CartController extends BaseController {
 
     /**
      * GET /api/v1/cart
-     * FR04.01: Lấy thông tin giỏ hàng của người dùng hiện tại kèm tổng tiền và đối chiếu tồn kho
+     * FR04.01: Lấy thông tin giỏ hàng của người dùng hiện tại kèm tổng tiền và đối chiếu tồn kho (HATEOAS)
      */
     public static function getCart(): void {
         $userId = self::resolveUserId();
@@ -53,11 +67,11 @@ class CartController extends BaseController {
                 'subtotal'       => 0,
                 'total_price'    => 0,
                 'total'          => 0
-            ], 200);
+            ], 200, '', null, self::buildCartLinks());
             return;
         }
         $cart = CartModel::getCart($userId);
-        Response::success($cart, 200);
+        Response::success($cart, 200, '', null, self::buildCartLinks());
     }
 
     /**
@@ -90,7 +104,7 @@ class CartController extends BaseController {
 
         try {
             $cart = CartModel::addItem($userId, $productId, $quantity, $variant);
-            Response::success($cart, 201, 'Đã thêm sản phẩm vào giỏ hàng');
+            Response::success($cart, 201, 'Đã thêm sản phẩm vào giỏ hàng', null, self::buildCartLinks());
         } catch (Throwable $e) {
             $code = $e->getCode();
             $statusCode = (is_numeric($code) && (int)$code >= 400 && (int)$code < 600) ? (int)$code : 400;
@@ -123,7 +137,7 @@ class CartController extends BaseController {
             $msg = ($quantity <= 0) 
                 ? 'Đã tự động xóa sản phẩm khỏi giỏ do số lượng về 0' 
                 : 'Đã cập nhật số lượng món đồ trong giỏ';
-            Response::success($cart, 200, $msg);
+            Response::success($cart, 200, $msg, null, self::buildCartLinks());
         } catch (Throwable $e) {
             $code = $e->getCode();
             $statusCode = (is_numeric($code) && (int)$code >= 400 && (int)$code < 600) ? (int)$code : 400;
@@ -145,7 +159,7 @@ class CartController extends BaseController {
 
         try {
             $cart = CartModel::removeItem($userId, $itemId);
-            Response::success($cart, 200, 'Đã xóa sản phẩm khỏi giỏ hàng thành công');
+            Response::success($cart, 200, 'Đã xóa sản phẩm khỏi giỏ hàng thành công', null, self::buildCartLinks());
         } catch (Throwable $e) {
             Response::error($e->getMessage(), 'ERROR', 400);
         }
@@ -165,11 +179,11 @@ class CartController extends BaseController {
                 'subtotal'       => 0,
                 'total_price'    => 0,
                 'total'          => 0
-            ], 200, 'Đã làm trống toàn bộ giỏ hàng');
+            ], 200, 'Đã làm trống toàn bộ giỏ hàng', null, self::buildCartLinks());
             return;
         }
         CartModel::clear($userId);
         $cart = CartModel::getCart($userId);
-        Response::success($cart, 200, 'Đã làm trống toàn bộ giỏ hàng');
+        Response::success($cart, 200, 'Đã làm trống toàn bộ giỏ hàng', null, self::buildCartLinks());
     }
 }

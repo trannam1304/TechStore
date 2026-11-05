@@ -39,12 +39,25 @@ function showToast(message, type = 'info', duration = 3500) {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
   
-  let icon = 'ℹ️';
-  if (type === 'success') icon = '✅';
-  if (type === 'danger' || type === 'error') icon = '⚠️';
-  if (type === 'warning') icon = '🔔';
+  let iconSvg = '';
+  if (typeof TechIcons !== 'undefined') {
+    if (type === 'success') iconSvg = TechIcons.render('check-circle', { size: 20, className: 'tech-icon-green' });
+    else if (type === 'danger' || type === 'error') iconSvg = TechIcons.render('alert-triangle', { size: 20, className: 'tech-icon-primary' });
+    else if (type === 'warning') iconSvg = TechIcons.render('bolt', { size: 20, className: 'tech-icon-gold' });
+    else iconSvg = TechIcons.render('info-circle', { size: 20, className: 'tech-icon-secondary' });
+  } else {
+    if (type === 'success') {
+      iconSvg = '<svg class="tech-icon tech-icon-green" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-5" stroke-width="2.2"/></svg>';
+    } else if (type === 'danger' || type === 'error') {
+      iconSvg = '<svg class="tech-icon tech-icon-primary" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>';
+    } else if (type === 'warning') {
+      iconSvg = '<svg class="tech-icon tech-icon-gold" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>';
+    } else {
+      iconSvg = '<svg class="tech-icon tech-icon-secondary" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>';
+    }
+  }
 
-  toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+  toast.innerHTML = `<span class="toast-icon-wrap">${iconSvg}</span> <span class="toast-msg">${message}</span>`;
   container.appendChild(toast);
 
   setTimeout(() => {
@@ -71,23 +84,20 @@ function debounce(func, delay = 300) {
 // ==========================================
 const DEFAULT_PRODUCTS = [
   {
-    "id": 1,
-    "name": "iPhone 16 Pro Max 256GB",
-    "slug": "iphone-16-pro-max-256gb",
-    "category_id": 1,
-    "category_name": "Điện thoại",
-    "brand_id": 1,
-    "brand_name": "Apple",
-    "price": 34990000,
-    "original_price": 37990000,
-    "stock": 25,
-    "rating": 4.95,
-    "review_count": 142,
-    "view_count": 1850,
-    "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80"
+    id: 1,
+    name: 'iPhone 16 Pro Max 256GB',
+    category_id: 1,
+    category_name: 'Điện thoại',
+    brand_id: 1,
+    brand_name: 'Apple',
+    price: 34990000,
+    original_price: 37990000,
+    stock: 25,
+    rating: 4.9,
+    review_count: 142,
+    image: '/assets/images/iphone-16-pro-max-256gb.png',
+    images: [
+      '/assets/images/iphone-16-pro-max-256gb.png'
     ],
     "ram": "8GB",
     "rom": "256GB",
@@ -100,22 +110,20 @@ const DEFAULT_PRODUCTS = [
     "created_at": "2026-09-20 00:00:00"
   },
   {
-    "id": 2,
-    "name": "iPhone 16 128GB",
-    "slug": "iphone-16-128gb",
-    "category_id": 1,
-    "category_name": "Điện thoại",
-    "brand_id": 1,
-    "brand_name": "Apple",
-    "price": 21990000,
-    "original_price": 23990000,
-    "stock": 35,
-    "rating": 4.88,
-    "review_count": 89,
-    "view_count": 1200,
-    "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80"
+    id: 2,
+    name: 'Samsung Galaxy S24 Ultra 5G 12GB/256GB',
+    category_id: 1,
+    category_name: 'Điện thoại',
+    brand_id: 2,
+    brand_name: 'Samsung',
+    price: 29990000,
+    original_price: 33990000,
+    stock: 18,
+    rating: 4.8,
+    review_count: 98,
+    image: '/assets/images/samsung-galaxy-s24-ultra.png',
+    images: [
+      '/assets/images/samsung-galaxy-s24-ultra.png'
     ],
     "ram": "8GB",
     "rom": "128GB",
@@ -128,22 +136,20 @@ const DEFAULT_PRODUCTS = [
     "created_at": "2026-09-22 00:00:00"
   },
   {
-    "id": 3,
-    "name": "iPhone 15 Pro 128GB",
-    "slug": "iphone-15-pro-128gb",
-    "category_id": 1,
-    "category_name": "Điện thoại",
-    "brand_id": 1,
-    "brand_name": "Apple",
-    "price": 24990000,
-    "original_price": 28990000,
-    "stock": 18,
-    "rating": 4.85,
-    "review_count": 110,
-    "view_count": 950,
-    "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80"
+    id: 3,
+    name: 'MacBook Pro 14 M3 Pro 18GB/512GB Space Black',
+    category_id: 2,
+    category_name: 'Laptop',
+    brand_id: 1,
+    brand_name: 'Apple',
+    price: 49990000,
+    original_price: 52990000,
+    stock: 12,
+    rating: 5.0,
+    review_count: 64,
+    image: '/assets/images/macbook-pro-14-m3-pro.png',
+    images: [
+      '/assets/images/macbook-pro-14-m3-pro.png'
     ],
     "ram": "8GB",
     "rom": "128GB",
@@ -156,22 +162,20 @@ const DEFAULT_PRODUCTS = [
     "created_at": "2026-08-10 00:00:00"
   },
   {
-    "id": 4,
-    "name": "Samsung Galaxy S24 Ultra 5G 12GB/256GB",
-    "slug": "samsung-galaxy-s24-ultra",
-    "category_id": 1,
-    "category_name": "Điện thoại",
-    "brand_id": 2,
-    "brand_name": "Samsung",
-    "price": 29990000,
-    "original_price": 33990000,
-    "stock": 20,
-    "rating": 4.9,
-    "review_count": 105,
-    "view_count": 1600,
-    "image": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop&q=80"
+    id: 4,
+    name: 'Laptop ASUS ROG Zephyrus G16 OLED RTX 4070',
+    category_id: 2,
+    category_name: 'Laptop',
+    brand_id: 4,
+    brand_name: 'ASUS',
+    price: 59990000,
+    original_price: 64990000,
+    stock: 8,
+    rating: 4.9,
+    review_count: 31,
+    image: '/assets/images/asus-rog-zephyrus-g16-oled.png',
+    images: [
+      '/assets/images/asus-rog-zephyrus-g16-oled.png'
     ],
     "ram": "12GB",
     "rom": "256GB",
@@ -184,22 +188,20 @@ const DEFAULT_PRODUCTS = [
     "created_at": "2026-08-15 00:00:00"
   },
   {
-    "id": 5,
-    "name": "Samsung Galaxy S24+ 12GB/256GB",
-    "slug": "samsung-galaxy-s24-plus",
-    "category_id": 1,
-    "category_name": "Điện thoại",
-    "brand_id": 2,
-    "brand_name": "Samsung",
-    "price": 21490000,
-    "original_price": 26990000,
-    "stock": 22,
-    "rating": 4.82,
-    "review_count": 64,
-    "view_count": 820,
-    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80"
+    id: 5,
+    name: 'iPad Air 6 M2 11 inch 128GB Wi-Fi',
+    category_id: 3,
+    category_name: 'Tablet',
+    brand_id: 1,
+    brand_name: 'Apple',
+    price: 16490000,
+    original_price: 17990000,
+    stock: 20,
+    rating: 4.7,
+    review_count: 54,
+    image: '/assets/images/ipad-air-6-m2-11-inch.png',
+    images: [
+      '/assets/images/ipad-air-6-m2-11-inch.png'
     ],
     "ram": "12GB",
     "rom": "256GB",
@@ -212,22 +214,20 @@ const DEFAULT_PRODUCTS = [
     "created_at": "2026-07-20 00:00:00"
   },
   {
-    "id": 6,
-    "name": "Samsung Galaxy Z Fold6 5G 256GB",
-    "slug": "samsung-galaxy-z-fold6",
-    "category_id": 1,
-    "category_name": "Điện thoại",
-    "brand_id": 2,
-    "brand_name": "Samsung",
-    "price": 41990000,
-    "original_price": 43990000,
-    "stock": 12,
-    "rating": 4.87,
-    "review_count": 45,
-    "view_count": 980,
-    "image": "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=800&auto=format&fit=crop&q=80"
+    id: 6,
+    name: 'Tai nghe Sony WH-1000XM5 Chống Ồn',
+    category_id: 4,
+    category_name: 'Âm thanh',
+    brand_id: 5,
+    brand_name: 'Sony',
+    price: 7490000,
+    original_price: 8990000,
+    stock: 35,
+    rating: 4.9,
+    review_count: 180,
+    image: '/assets/images/sony-wh-1000xm5.png',
+    images: [
+      '/assets/images/sony-wh-1000xm5.png'
     ],
     "ram": "12GB",
     "rom": "256GB",
@@ -240,22 +240,20 @@ const DEFAULT_PRODUCTS = [
     "created_at": "2026-08-01 00:00:00"
   },
   {
-    "id": 7,
-    "name": "Xiaomi 14 Ultra 5G 16GB/512GB Leica",
-    "slug": "xiaomi-14-ultra",
-    "category_id": 1,
-    "category_name": "Điện thoại",
-    "brand_id": 3,
-    "brand_name": "Xiaomi",
-    "price": 28990000,
-    "original_price": 32990000,
-    "stock": 15,
-    "rating": 4.89,
-    "review_count": 78,
-    "view_count": 1100,
-    "image": "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=800&auto=format&fit=crop&q=80"
+    id: 7,
+    name: 'Apple Watch Ultra 2 GPS + Cellular 49mm',
+    category_id: 5,
+    category_name: 'Smartwatch',
+    brand_id: 1,
+    brand_name: 'Apple',
+    price: 20990000,
+    original_price: 22990000,
+    stock: 14,
+    rating: 4.9,
+    review_count: 42,
+    image: '/assets/images/apple-watch-ultra-2.png',
+    images: [
+      '/assets/images/apple-watch-ultra-2.png'
     ],
     "ram": "16GB",
     "rom": "512GB",
@@ -268,22 +266,20 @@ const DEFAULT_PRODUCTS = [
     "created_at": "2026-06-15 00:00:00"
   },
   {
-    "id": 8,
-    "name": "Xiaomi 14T Pro 5G 12GB/512GB",
-    "slug": "xiaomi-14t-pro",
-    "category_id": 1,
-    "category_name": "Điện thoại",
-    "brand_id": 3,
-    "brand_name": "Xiaomi",
-    "price": 16990000,
-    "original_price": 17990000,
-    "stock": 30,
-    "rating": 4.8,
-    "review_count": 52,
-    "view_count": 750,
-    "image": "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80"
+    id: 8,
+    name: 'Củ sạc nhanh Anker 65W GaNPrime 3 cổng',
+    category_id: 6,
+    category_name: 'Phụ kiện',
+    brand_id: 6,
+    brand_name: 'Anker',
+    price: 890000,
+    original_price: 1200000,
+    stock: 50,
+    rating: 4.8,
+    review_count: 215,
+    image: '/assets/images/cu-sac-anker-65w-ganprime.png',
+    images: [
+      '/assets/images/cu-sac-anker-65w-ganprime.png'
     ],
     "ram": "12GB",
     "rom": "512GB",
@@ -2371,12 +2367,12 @@ const DEFAULT_PRODUCTS = [
 ];
 
 const DEFAULT_CATEGORIES = [
-  { id: 1, name: 'Điện thoại', icon: '📱', slug: 'dien-thoai', product_count: 17 },
-  { id: 2, name: 'Laptop', icon: '💻', slug: 'laptop', product_count: 18 },
-  { id: 3, name: 'Tablet', icon: '📋', slug: 'tablet', product_count: 12 },
-  { id: 4, name: 'Âm thanh', icon: '🎧', slug: 'am-thanh', product_count: 16 },
-  { id: 5, name: 'Smartwatch', icon: '⌚', slug: 'smartwatch', product_count: 9 },
-  { id: 6, name: 'Phụ kiện chính hãng', icon: '🔌', slug: 'phu-kien', product_count: 10 }
+  { id: 1, name: 'Điện thoại', icon: 'category-phone', slug: 'dien-thoai', product_count: 28 },
+  { id: 2, name: 'Laptop', icon: 'category-laptop', slug: 'laptop', product_count: 20 },
+  { id: 3, name: 'Tablet', icon: 'category-tablet', slug: 'tablet', product_count: 14 },
+  { id: 4, name: 'Âm thanh', icon: 'category-audio', slug: 'am-thanh', product_count: 16 },
+  { id: 5, name: 'Smartwatch', icon: '⌚', slug: 'smartwatch', product_count: 12 },
+  { id: 6, name: 'Phụ kiện', icon: 'category-accessory', slug: 'phu-kien', product_count: 35 }
 ];
 
 const DEFAULT_BRANDS = [
@@ -2485,7 +2481,32 @@ class ApiClient {
     const raw = localStorage.getItem(API_CONFIG.storageKeys.user);
     if (!raw) return null;
     try {
-      return JSON.parse(raw);
+      const user = JSON.parse(raw);
+      if (user) {
+        let changed = false;
+        ['name', 'address'].forEach(key => {
+          if (typeof user[key] === 'string' && user[key].includes('?')) {
+            const healed = user[key]
+              .replace(/Tu\?+n\s*Ki\?+t/gi, 'Tuấn Kiệt')
+              .replace(/H\?+u\s*Nam/gi, 'Hữu Nam')
+              .replace(/Th\?+nh\s*Trung/gi, 'Thành Trung')
+              .replace(/Kh\?+ch\s*h\?+ng/gi, 'Khách hàng')
+              .replace(/Nguy\?+n\s*V\?+n\s*C\?+/gi, 'Nguyễn Văn Cừ')
+              .replace(/Qu\?+n\s*5/gi, 'Quận 5')
+              .replace(/C\?+ch\s*M\?+ng\s*Th\?+ng\s*8/gi, 'Cách Mạng Tháng 8')
+              .replace(/Ph\?+ng\s*7/gi, 'Phường 7')
+              .replace(/Qu\?+n\s*10/gi, 'Quận 10');
+            if (healed !== user[key]) {
+              user[key] = healed;
+              changed = true;
+            }
+          }
+        });
+        if (changed) {
+          localStorage.setItem(API_CONFIG.storageKeys.user, JSON.stringify(user));
+        }
+      }
+      return user;
     } catch (e) {
       return null;
     }
@@ -2746,8 +2767,8 @@ class ApiClient {
         stock: parseInt(body.stock, 10) || 10,
         rating: 5.0,
         review_count: 0,
-        image: body.image || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80',
-        images: body.images || [body.image || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80'],
+        image: body.image || '/assets/images/iphone-16-128gb.png',
+        images: body.images || [body.image || '/assets/images/iphone-16-128gb.png'],
         ram: body.ram || '8GB',
         rom: body.rom || '128GB',
         chipset: body.chipset || '',
@@ -3537,7 +3558,11 @@ window.toggleWishlist = async function(productId, btn) {
     const res = await api.wishlist.toggle(productId);
     if (btn) {
       btn.classList.toggle('active', res.active);
-      btn.style.color = res.active ? '#d70018' : '#94a3b8';
+      if (typeof TechIcons !== 'undefined') {
+        btn.innerHTML = TechIcons.render(res.active ? 'heart-filled' : 'heart', { size: 18 });
+      } else {
+        btn.style.color = res.active ? '#d70018' : '#94a3b8';
+      }
     }
     showToast(res.active ? 'Đã thêm vào danh sách yêu thích!' : 'Đã bỏ khỏi danh sách yêu thích!', 'info');
   } catch (err) {
@@ -3563,16 +3588,37 @@ function setupUserDropdown() {
     const roleEl = document.getElementById('dropdown-role');
     if (nameEl) nameEl.textContent = user.name;
     if (roleEl) roleEl.textContent = user.role === 'admin' ? 'Quản trị viên' : 'Khách hàng';
+
+    // Asynchronously refresh user profile from backend to ensure latest DB synchronization
+    if (api.isLoggedIn()) {
+      api.auth.me().then(res => {
+        if (res && res.success && res.data) {
+          const freshUser = res.data;
+          api.setAuthTokens(null, null, freshUser);
+          if (nameEl) nameEl.textContent = freshUser.name;
+          if (roleEl) roleEl.textContent = freshUser.role === 'admin' ? 'Quản trị viên' : 'Khách hàng';
+        }
+      }).catch(() => {});
+    }
     
     // Show admin link if admin
+    // Hiển thị liên kết Quản trị trong User Dropdown để kiểm tra phân quyền RBAC
     const adminLink = document.getElementById('dropdown-admin-link');
-    if (adminLink) adminLink.style.display = api.isAdmin() ? 'flex' : 'none';
+    if (adminLink) adminLink.style.display = 'flex';
+
+    document.querySelectorAll('.topbar-admin-link, #topbar-admin-link').forEach(el => {
+      el.style.display = api.isAdmin() ? 'inline-flex' : 'none';
+    });
 
     const loginLinks = document.querySelectorAll('.guest-only');
     loginLinks.forEach(el => el.style.display = 'none');
     const userLinks = document.querySelectorAll('.auth-only');
     userLinks.forEach(el => el.style.display = 'flex');
   } else {
+    document.querySelectorAll('.topbar-admin-link, #topbar-admin-link').forEach(el => {
+      el.style.display = 'none';
+    });
+
     const loginLinks = document.querySelectorAll('.guest-only');
     loginLinks.forEach(el => el.style.display = 'flex');
     const userLinks = document.querySelectorAll('.auth-only');
@@ -3663,8 +3709,110 @@ function initAmbientAurora() {
   document.body.prepend(aurora);
 }
 
+// ===================================================
+// HAMBURGER MENU & MOBILE NAVIGATION DRAWER
+// ===================================================
+function toggleMobileDrawer() {
+  const drawer = document.getElementById('mobile-drawer');
+  const overlay = document.getElementById('mobile-drawer-overlay');
+  if (drawer && overlay) {
+    const isActive = drawer.classList.contains('active');
+    if (isActive) {
+      drawer.classList.remove('active');
+      overlay.classList.remove('active');
+    } else {
+      drawer.classList.add('active');
+      overlay.classList.add('active');
+    }
+  }
+}
+window.toggleMobileDrawer = toggleMobileDrawer;
+
+function initMobileDrawer() {
+  const headerContainer = document.querySelector('.header-container');
+  if (headerContainer && !document.getElementById('btn-hamburger-menu')) {
+    const btn = document.createElement('button');
+    btn.id = 'btn-hamburger-menu';
+    btn.className = 'btn-hamburger';
+    btn.setAttribute('aria-label', 'Mở menu điều hướng');
+    btn.onclick = toggleMobileDrawer;
+    btn.innerHTML = `
+      <svg class="tech-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    `;
+    headerContainer.prepend(btn);
+  }
+
+  if (!document.getElementById('mobile-drawer')) {
+    const overlay = document.createElement('div');
+    overlay.id = 'mobile-drawer-overlay';
+    overlay.className = 'mobile-drawer-overlay';
+    overlay.onclick = toggleMobileDrawer;
+
+    const drawer = document.createElement('aside');
+    drawer.id = 'mobile-drawer';
+    drawer.className = 'mobile-drawer';
+    drawer.innerHTML = `
+      <div class="drawer-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 18px; font-weight: 900; letter-spacing: -0.5px;">TechStore</span>
+          <span class="logo-badge" style="font-size: 11px; padding: 2px 6px;">REST</span>
+        </div>
+        <button class="drawer-close-btn" onclick="toggleMobileDrawer()">&times;</button>
+      </div>
+      <nav class="drawer-nav">
+        <a href="/pages/index.html" class="drawer-link">
+          <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Trang chủ</span>
+        </a>
+        <a href="/pages/products.html" class="drawer-link">
+          <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>Tất cả sản phẩm</span>
+        </a>
+        <a href="/pages/cart.html" class="drawer-link">
+          <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h2l2.2 10.3a2 2 0 002 1.7h8.8a2 2 0 002-1.6L21.5 7H6"/><circle cx="9.5" cy="19.5" r="1.5"/><circle cx="17.5" cy="19.5" r="1.5"/></svg>
+          <span>Giỏ hàng</span>
+        </a>
+        <a href="/pages/account.html#orders" class="drawer-link" id="drawer-orders-link">
+          <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 4.8v8.4l-9 4.8-9-4.8V7.8L12 3z"/><path d="M12 3v9.6M21 7.8l-9 4.8M3 7.8l9 4.8"/></svg>
+          <span>Lịch sử đơn hàng</span>
+        </a>
+        <a href="/pages/account.html" class="drawer-link">
+          <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 19.5a7 7 0 0114 0"/></svg>
+          <span>Hồ sơ tài khoản</span>
+        </a>
+      </nav>
+    `;
+    document.body.appendChild(overlay);
+    document.body.appendChild(drawer);
+  }
+}
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initAmbientAurora);
+  document.addEventListener('DOMContentLoaded', () => {
+    initAmbientAurora();
+    initMobileDrawer();
+  });
 } else {
   initAmbientAurora();
+  initMobileDrawer();
 }
+
+// Tự động nạp bộ thử nghiệm kiểm thử bảo mật T73 khi phát hiện cờ ?demo=1 hoặc sessionStorage
+(function() {
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('demo') || urlParams.has('test') || sessionStorage.getItem('techstore_demo_mode') === '1') {
+      sessionStorage.setItem('techstore_demo_mode', '1');
+      if (!document.getElementById('techstore-demo-suite-script')) {
+        const script = document.createElement('script');
+        script.id = 'techstore-demo-suite-script';
+        script.src = '/assets/js/demo-test-suite.js';
+        document.head.appendChild(script);
+      }
+    }
+  } catch (e) {}
+})();

@@ -28,6 +28,7 @@ require_once __DIR__ . '/controllers/PaymentController.php';
 require_once __DIR__ . '/controllers/ReviewWishlistController.php';
 require_once __DIR__ . '/controllers/RecommendationController.php';
 require_once __DIR__ . '/controllers/AdminController.php';
+require_once __DIR__ . '/controllers/BenchmarkController.php';
 
 use Api\Services\JwtService;
 use Api\Helpers\Response;
@@ -48,6 +49,7 @@ use Api\Controllers\PaymentController;
 use Api\Controllers\ReviewWishlistController;
 use Api\Controllers\RecommendationController;
 use Api\Controllers\AdminController;
+use Api\Controllers\BenchmarkController;
 
 // 3. Xử lý CORS Preflight và Đăng ký ErrorHandler chuẩn JSON
 CorsMiddleware::handle();
@@ -345,6 +347,17 @@ if (preg_match('#^/products/(\d+)/recommendations$#', $subPath, $m) && $reqMetho
 
 if ($subPath === '/recommendations/me' && $reqMethod === 'GET') {
     RecommendationController::forMe();
+}
+
+// -------------------------------------------------------------------------
+// 11. BENCHMARK ARCHITECTURAL COMPARISON (REST vs GraphQL vs SOAP - Task T72)
+// -------------------------------------------------------------------------
+if ($subPath === '/graphql' && ($reqMethod === 'POST' || $reqMethod === 'GET')) {
+    BenchmarkController::graphql($body);
+}
+
+if ($subPath === '/soap' && ($reqMethod === 'POST' || $reqMethod === 'GET')) {
+    BenchmarkController::soap();
 }
 
 // -------------------------------------------------------------------------

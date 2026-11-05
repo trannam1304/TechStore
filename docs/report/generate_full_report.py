@@ -532,14 +532,14 @@ def build_report():
         "Để chứng minh các nhận định lý thuyết trên bằng số liệu định lượng, nhóm đã thực hiện một phép đo thực nghiệm độc lập: "
         "Cùng thực hiện tác vụ lấy danh sách 10 sản phẩm (kèm tên danh mục, tên hãng, giá và ảnh đại diện). Kết quả đo lường ghi nhận:"
     )
-    add_bullet("Kịch bản RESTful API (TechStore): ", "Endpoint `GET /api/v1/products?limit=10`. Kích thước phản hồi: **3.8 KB** (JSON tinh gọn). "
-               "Thời gian phản hồi trung bình: **22.5 ms**. Tận dụng được tiêu đề `Cache-Control: public, max-age=300`, các lần gọi lại tiếp theo của trình duyệt đạt **0 ms** (lấy từ Memory Cache).")
-    add_bullet("Kịch bản mô phỏng GraphQL: ", "Endpoint `POST /graphql` với câu truy vấn tường minh `{ products(limit:10) { id name price brand { name } } }`. "
-               "Kích thước phản hồi: **2.1 KB** (giảm 44% dung lượng nhờ loại bỏ các trường thông số chi tiết). Tuy nhiên, do thực hiện qua POST, trình duyệt không thể cache tự nhiên, "
-               "thời gian xử lý tại backend tăng nhẹ lên **31.2 ms** do phải trải qua giai đoạn phân tích cây cú pháp AST (Abstract Syntax Tree) và kích hoạt các hàm Resolver.")
-    add_bullet("Kịch bản mô phỏng SOAP/XML: ", "Endpoint `POST /ws/products` với phong bì SOAP XML bao bọc Envelope, Header và Body. "
-               "Kích thước phản hồi: **11.4 KB** (gấp 3.0 lần so với REST và gấp 5.4 lần so với GraphQL do các thẻ đóng/mở XML và khai báo namespace). "
-               "Thời gian phân tích cú pháp DOM trên máy khách tăng thêm 15ms.")
+    add_bullet("Kịch bản RESTful API (TechStore): ", "Endpoint `GET /api/v1/products?limit=10`. Kích thước phản hồi: **14.0 KB** (JSON chuẩn Level 3 HATEOAS, siêu dữ liệu phân trang và liên kết trạng thái). "
+               "Thời gian phản hồi trung bình: **21.9 ms**. Đặc biệt, khi tận dụng tiêu đề `Cache-Control: public, max-age=300` kết hợp `ETag` (`If-None-Match`), máy chủ phản hồi mã `304 Not Modified` với kích thước **0 bytes**, giúp trình duyệt tải từ bộ nhớ tức thì **0 ms**.")
+    add_bullet("Kịch bản đối chứng GraphQL: ", "Endpoint `POST /api/v1/graphql` với câu truy vấn tường minh `{ products(limit: 10) { id name price original_price thumbnail_url category { name } brand { name } } }`. "
+               "Kích thước phản hồi: **3.65 KB** (giảm 74% dung lượng nhờ khả năng chọn lọc trường - Field Selection). Khi client chỉ cần 3 trường ID, Name, Price, dung lượng giảm đến **89.1%** (chỉ còn 1.56 KB). "
+               "Thời gian xử lý tại backend: **20.6 ms**. Tuy nhiên, do thực hiện qua phương thức POST, yêu cầu không tận dụng được cơ chế HTTP Cache tự nhiên của trình duyệt và Reverse Proxy trung gian.")
+    add_bullet("Kịch bản đối chứng SOAP 1.1: ", "Endpoint `POST /api/v1/soap` với phong bì SOAP XML bao bọc `soapenv:Envelope`, `soapenv:Header` và `soapenv:Body`. "
+               "Kích thước phản hồi: **8.0 KB** (dư thừa dung lượng đáng kể do các thẻ đóng/mở XML và khai báo namespace). "
+               "Thời gian phản hồi trung bình: **29.2 ms** do chi phí phân tích cú pháp XML và xây dựng cây tài liệu DOM.")
     add_p(
         "Kết luận thực nghiệm: Đối với một website thương mại điện tử như TechStore – nơi mà tính năng duyệt danh mục sản phẩm diễn ra với tần suất áp đảo và yêu cầu tận dụng "
         "tối đa khả năng lưu bộ đệm của mạng CDN/Trình duyệt – kiến trúc RESTful API là sự lựa chọn tối ưu vượt trội về mặt hiệu năng tổng thể, chi phí hạ tầng và tính đơn giản trong bảo trì."
