@@ -27,7 +27,60 @@
 </head>
 <body>
 
-  <div class="admin-layout">
+  <!-- Màn hình cảnh báo phân quyền RBAC Guard (HTTP 403 Forbidden) cho Khách hàng -->
+  <div id="rbac-forbidden-screen" style="display: none; min-height: 100vh; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #0f172a 100%); color: #ffffff; padding: 24px;">
+    <div style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1.5px solid rgba(239, 68, 68, 0.4); border-radius: 24px; padding: 36px 32px; max-width: 540px; width: 100%; text-align: center; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.1);">
+      <div style="width: 76px; height: 76px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); border: 2px solid #ef4444; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 18px; box-shadow: 0 0 35px rgba(239, 68, 68, 0.45);">
+        <svg class="tech-icon" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L4 5.5v6.2c0 5.3 3.4 10.2 8 11.3 4.6-1.1 8-6 8-11.3V5.5L12 2z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <circle cx="12" cy="16.5" r="1" fill="#ef4444"/>
+        </svg>
+      </div>
+      
+      <div style="display: inline-block; background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid #ef4444; padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: 0.8px; margin-bottom: 12px; text-transform: uppercase;">
+        MÃ BẢO MẬT: HTTP 403 FORBIDDEN (RBAC GUARD)
+      </div>
+      
+      <h2 style="font-size: 22px; font-weight: 900; color: #ffffff; margin-bottom: 10px; letter-spacing: -0.3px;">
+        TRUY CẬP BỊ TỪ CHỐI
+      </h2>
+      
+      <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6; margin-bottom: 22px;">
+        Cơ chế phân quyền theo vai trò (Role-Based Access Control) phát hiện tài khoản hiện tại không có quyền hạn Quản trị viên (Admin) để xem dữ liệu quản trị doanh thu.
+      </p>
+
+      <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 14px 18px; text-align: left; margin-bottom: 26px; font-size: 13px;">
+        <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+          <span style="color: #94a3b8;">Tài khoản đăng nhập:</span>
+          <span style="color: #38bdf8; font-weight: 700;" id="forbidden-user-email">user@techstore.local</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+          <span style="color: #94a3b8;">Vai trò hiện tại:</span>
+          <span style="color: #fbbf24; font-weight: 800;" id="forbidden-user-role">customer (Khách hàng)</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+          <span style="color: #94a3b8;">Yêu cầu phân quyền:</span>
+          <span style="color: #ef4444; font-weight: 800;">admin (Quản trị viên)</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 6px 0;">
+          <span style="color: #94a3b8;">Tiêu chuẩn bảo mật:</span>
+          <span style="color: #34d399; font-weight: 700;">OWASP API05:2023 - BFLA Guard</span>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <a href="/pages/index.html" id="btn-forbidden-home" class="btn btn-outline" style="border-color: #38bdf8; color: #38bdf8; padding: 9px 18px; font-size: 13px; font-weight: 700; border-radius: 30px;">
+          ← Quay lại trang chủ
+        </a>
+        <a href="/pages/cart.html" id="btn-forbidden-cart" class="btn btn-primary" style="background: linear-gradient(135deg, #d70018, #ff007a); border: none; padding: 9px 20px; font-size: 13px; font-weight: 700; border-radius: 30px; box-shadow: 0 4px 14px rgba(215, 0, 24, 0.4);">
+          Xem giỏ hàng →
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-layout" id="admin-main-layout">
     <!-- Sidebar -->
     <aside class="admin-sidebar" id="admin-sidebar">
       <div class="sidebar-brand">
@@ -259,12 +312,23 @@
   <script src="/assets/js/api.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      // 1. Auth Guard (role == admin)
+      // 1. Auth Guard (RBAC: role == admin)
       if (!api.isAdmin()) {
-        showToast('Bạn không có quyền truy cập trang quản trị! Vui lòng đăng nhập với tài khoản Admin.', 'danger');
-        setTimeout(() => {
-          window.location.href = '/pages/login.html';
-        }, 1200);
+        const layoutEl = document.getElementById('admin-main-layout');
+        if (layoutEl) layoutEl.style.display = 'none';
+
+        const forbiddenEl = document.getElementById('rbac-forbidden-screen');
+        if (forbiddenEl) {
+          forbiddenEl.style.display = 'flex';
+          const u = api.getCurrentUser();
+          if (u) {
+            const em = document.getElementById('forbidden-user-email');
+            const ro = document.getElementById('forbidden-user-role');
+            if (em) em.textContent = u.email || 'user@techstore.local';
+            if (ro) ro.textContent = (u.role || 'customer') + ' (Khách hàng)';
+          }
+        }
+        showToast('Truy cập bị từ chối (403 Forbidden): Yêu cầu quyền Quản trị viên (Admin)', 'danger');
         return;
       }
 

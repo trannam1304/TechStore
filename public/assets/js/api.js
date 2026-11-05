@@ -3602,8 +3602,9 @@ function setupUserDropdown() {
     }
     
     // Show admin link if admin
+    // Hiển thị liên kết Quản trị trong User Dropdown để kiểm tra phân quyền RBAC
     const adminLink = document.getElementById('dropdown-admin-link');
-    if (adminLink) adminLink.style.display = api.isAdmin() ? 'flex' : 'none';
+    if (adminLink) adminLink.style.display = 'flex';
 
     document.querySelectorAll('.topbar-admin-link, #topbar-admin-link').forEach(el => {
       el.style.display = api.isAdmin() ? 'inline-flex' : 'none';

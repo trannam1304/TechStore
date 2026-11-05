@@ -329,15 +329,21 @@ def main():
         time.sleep(3.5)
 
         # ---------------------------------------------------------------------
-        # BƯỚC 4: Khách hàng cố tình vào trang Admin (Test RBAC 403)
+        # BƯỚC 4: Khách hàng cố tình vào trang Admin (Trực quan hóa Phân quyền RBAC 403)
         # ---------------------------------------------------------------------
-        print("[Bước 4/8] Khách hàng thử vào Quản trị -> Chặn quyền RBAC (403)...")
+        print("\n[Bước 4/8] Khách hàng bấm menu 'Trang Quản Trị' -> Chặn phân quyền RBAC (403)...")
         inject_human_cursor(driver_web)
         show_banner(driver_web, "BƯỚC 4: PHÂN QUYỀN RBAC - CHẶN CUSTOMER TRUY CẬP ADMIN (403)")
+        time.sleep(1.2)
 
-        # Thử mở trang admin
-        driver_web.get(f"{BASE_URL}/admin/index.html")
+        # 1. Chuột lướt vào mục 'Trang Quản Trị' trên màn hình và click
+        print("[*] Chuột bấm vào liên kết 'Trang Quản Trị'...")
+        driver_web.execute_script("window.humanClick('#nav-tab-admin-test, #topbar-admin-link, #dropdown-admin-link, a[href*=\"admin\"]');")
+        time.sleep(2.5)
         inject_human_cursor(driver_web)
+
+        # 2. Bảng cảnh báo bảo mật 403 RBAC GUARD hiển thị trực quan, tĩnh lặng và rõ ràng
+        show_banner(driver_web, "TRUY CẬP BỊ TỪ CHỐI: HTTP 403 FORBIDDEN (RBAC GUARD)")
 
         trigger_inspector(driver_api, {
             "name": "12.5 [403 Forbidden] GET /admin/stats (Chặn quyền RBAC)",
@@ -365,16 +371,12 @@ def main():
         # ---------------------------------------------------------------------
         # BƯỚC 5: Xem giỏ hàng & Chống lỗ hổng IDOR khi hủy đơn hàng
         # ---------------------------------------------------------------------
-        print("[Bước 5/8] Chuột lướt bấm nút 'Giỏ hàng' trên Header -> Chống IDOR (403)...")
-        driver_web.get(f"{BASE_URL}/pages/index.html")
+        print("\n[Bước 5/8] Chuột bấm nút 'Xem giỏ hàng' trên bảng 403 để tiếp tục mua sắm...")
+        # 3. Chuột bấm nút 'Xem giỏ hàng' ngay trên bảng thông báo 403 Forbidden
+        driver_web.execute_script("window.humanClick('#btn-forbidden-cart, #btn-forbidden-home');")
+        time.sleep(2.5)
         inject_human_cursor(driver_web)
-        time.sleep(1.2)
         show_banner(driver_web, "BƯỚC 5: CHỐNG LỖ HỔNG IDOR KHI HỦY ĐƠN HÀNG (403)")
-
-        # Chuột bấm vào nút 'Giỏ hàng' trên thanh header
-        driver_web.execute_script("window.humanClick('a[href=\"/pages/cart.html\"], a[href*=\"cart\"].header-action-btn');")
-        time.sleep(2.0)
-        inject_human_cursor(driver_web)
 
         trigger_inspector(driver_api, {
             "name": "12.6 [403 Forbidden] POST /orders/1055/cancel (Chống lỗ hổng IDOR)",
