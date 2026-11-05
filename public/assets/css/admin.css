@@ -209,6 +209,23 @@
   }
 }
 
+@media (max-width: 992px) {
+  .admin-topbar {
+    height: 52px;
+    padding: 0 var(--space-4);
+  }
+  .admin-content-area {
+    padding: var(--space-4);
+  }
+  .stat-card {
+    padding: var(--space-3) var(--space-4);
+  }
+  .stats-grid {
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+}
+
 @media (max-width: 600px) {
   .stats-grid {
     grid-template-columns: 1fr;

@@ -149,7 +149,7 @@ def show_banner(driver, text):
     if (!b) {{
         b = document.createElement('div');
         b.id = 'demo-step-banner';
-        b.style.cssText = 'position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:999999;background:#0f172a;color:#38bdf8;padding:10px 24px;border-radius:30px;font-size:14px;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,0.5);border:2px solid #38bdf8;pointer-events:none;font-family:Segoe UI, sans-serif;letter-spacing:0.5px;';
+        b.style.cssText = 'position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:999999;background:rgba(15,23,42,0.92);color:#38bdf8;padding:9px 24px;border-radius:30px;font-size:13px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,0.6);border:1.5px solid rgba(56,189,248,0.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);pointer-events:none;font-family:Segoe UI, sans-serif;letter-spacing:0.4px;max-width:88%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
         document.body.appendChild(b);
     }}
     b.innerText = "{text}";

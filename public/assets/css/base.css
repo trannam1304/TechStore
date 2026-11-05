@@ -1510,6 +1510,9 @@ main {
 
 /* Tablet & Half-screen Desktop (<= 992px) */
 @media (max-width: 992px) {
+  html {
+    font-size: 14px; /* Tự động co tỷ lệ rem toàn trang gọn gàng hơn 12.5% */
+  }
   .topbar-welcome {
     display: none !important;
   }
@@ -1521,23 +1524,65 @@ main {
   }
   .header-action-btn {
     padding: var(--space-2);
-    min-width: 38px;
-    height: 38px;
+    min-width: 36px;
+    height: 36px;
     justify-content: center;
   }
   .header-action-btn span:not(.badge-pill):not(.cart-badge) {
     display: none;
   }
   .header-search {
-    max-width: 420px;
+    max-width: 380px;
+  }
+  .hero-slider-wrap,
+  .hero-slides-track {
+    min-height: 250px !important;
+  }
+  .hero-slide {
+    padding: var(--space-4) var(--space-5) !important;
+  }
+  .hero-title {
+    font-size: 1.55rem !important;
+    margin-bottom: 4px !important;
+  }
+  .hero-subtitle {
+    font-size: 0.85rem !important;
+    margin-bottom: var(--space-3) !important;
+  }
+  .hero-slide .btn-lg {
+    padding: 7px 14px !important;
+    font-size: 0.85rem !important;
+  }
+  .side-banner-card {
+    padding: var(--space-3) !important;
+    height: auto !important;
+  }
+  .side-banner-img {
+    width: 60px !important;
+    height: 60px !important;
+  }
+  .benefits-row {
+    margin-bottom: var(--space-5) !important;
+  }
+  .benefit-item {
+    padding: var(--space-3) !important;
+  }
+  .benefit-icon-wrap {
+    width: 38px !important;
+    height: 38px !important;
+  }
+  .flash-sale-box {
+    padding: var(--space-4) !important;
+    margin-bottom: var(--space-5) !important;
   }
   .section-header {
     flex-wrap: wrap;
-    gap: var(--space-3);
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
   }
   .footer-grid {
     grid-template-columns: 1fr 1fr;
-    gap: var(--space-6);
+    gap: var(--space-5);
   }
 }
 
@@ -1551,6 +1596,9 @@ main {
 
 /* Small Tablets & Standard Split-Screen 50:50 (<= 768px) */
 @media (max-width: 768px) {
+  html {
+    font-size: 13.5px; /* Co gọn tỷ lệ nửa màn hình 15.6% */
+  }
   .container {
     padding-left: var(--space-3);
     padding-right: var(--space-3);
@@ -1559,9 +1607,15 @@ main {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-3);
   }
+  .product-card {
+    padding: var(--space-3);
+  }
+  .product-thumb-wrap {
+    margin-bottom: var(--space-2);
+  }
   .product-card-actions {
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
   }
   .product-card-actions .btn {
     font-size: var(--font-size-xs);
@@ -1569,9 +1623,6 @@ main {
   }
   .price-current {
     font-size: var(--font-size-sm);
-  }
-  .product-card {
-    padding: var(--space-3);
   }
 }
 

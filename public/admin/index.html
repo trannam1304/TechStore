@@ -321,11 +321,14 @@
         if (forbiddenEl) {
           forbiddenEl.style.display = 'flex';
           const u = api.getCurrentUser();
+          const em = document.getElementById('forbidden-user-email');
+          const ro = document.getElementById('forbidden-user-role');
           if (u) {
-            const em = document.getElementById('forbidden-user-email');
-            const ro = document.getElementById('forbidden-user-role');
             if (em) em.textContent = u.email || 'user@techstore.local';
             if (ro) ro.textContent = (u.role || 'customer') + ' (Khách hàng)';
+          } else {
+            if (em) em.textContent = 'Chưa đăng nhập (Khách vãng lai)';
+            if (ro) ro.textContent = 'guest (Chưa xác thực)';
           }
         }
         showToast('Truy cập bị từ chối (403 Forbidden): Yêu cầu quyền Quản trị viên (Admin)', 'danger');
