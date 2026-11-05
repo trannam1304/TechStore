@@ -251,11 +251,23 @@
   <!-- Top Bar -->
   <div class="topbar">
     <div class="container">
-      <div>TechStore - Điện thoại, Laptop, Phụ kiện công nghệ chính hãng</div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <svg class="tech-icon tech-icon-primary" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 5.5v6.2c0 5.3 3.4 10.2 8 11.3 4.6-1.1 8-6 8-11.3V5.5L12 2z" stroke-linejoin="round" fill="currentColor" fill-opacity="0.15"/><path d="M8.5 11.8l2.3 2.3 4.7-4.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>TechStore - Điện thoại, Laptop, Phụ kiện công nghệ chính hãng</span>
+      </div>
       <div class="topbar-links">
-        <a href="/pages/account.html">Tra cứu đơn hàng</a>
-        <a href="tel:18006018">Hotline: 1800.6018</a>
-        <a href="/admin/index.html" style="color: var(--color-primary); font-weight: 600;">Trang Quản Trị</a>
+        <a href="/pages/account.html" style="display: inline-flex; align-items: center; gap: 6px;">
+          <svg class="tech-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 4.8v8.4l-9 4.8-9-4.8V7.8L12 3z" stroke-linejoin="round"/><path d="M12 3v9.6M21 7.8l-9 4.8M3 7.8l9 4.8" stroke-linejoin="round"/></svg>
+          Tra cứu đơn hàng
+        </a>
+        <a href="tel:18006018" style="display: inline-flex; align-items: center; gap: 6px;">
+          <svg class="tech-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke-linejoin="round"/><path d="M15 2a6 6 0 016 6M15 5a3 3 0 013 3" stroke-linecap="round"/></svg>
+          Hotline: 1800.6018
+        </a>
+        <a href="/admin/index.html" class="topbar-admin-link" id="topbar-admin-link" style="color: var(--color-primary); font-weight: 700; display: none; align-items: center; gap: 6px;">
+          <svg class="tech-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Trang Quản Trị
+        </a>
       </div>
     </div>
   </div>
@@ -263,13 +275,19 @@
   <!-- Main Header -->
   <header class="header-main">
     <div class="container header-container">
-      <a href="/pages/index.html" class="logo">TechStore <span class="logo-badge">REST</span></a>
+      <a href="/pages/index.html" class="logo">
+        <span class="logo-icon-wrap" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.4); box-shadow: 0 4px 14px rgba(0,0,0,0.2);">
+          <svg class="tech-icon" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" fill="#ffffff"/><path d="M2 17l10 5 10-5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12l10 5 10-5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span style="font-size: 22px; font-weight: 900; letter-spacing: -0.5px;">TechStore</span>
+        <span class="logo-badge">REST</span>
+      </a>
 
       <div class="header-search">
         <form id="global-search-form" class="search-box">
           <input type="text" id="global-search-input" class="search-input" placeholder="Tìm kiếm sản phẩm theo tên, hãng..." autocomplete="off">
           <button type="submit" class="search-btn" aria-label="Tìm kiếm">
-            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <svg class="tech-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21" stroke-width="2.2" stroke-linecap="round"/><path d="M8 11a3 3 0 013-3" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/></svg>
           </button>
         </form>
         <div id="search-suggestions" class="search-suggestions"></div>
@@ -277,19 +295,19 @@
 
       <div class="header-actions">
         <a href="/pages/account.html#wishlist" class="header-action-btn">
-          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+          <svg class="tech-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.36L4.32 12.7A5 5 0 0111.4 5.64l.6.61.6-.61a5 5 0 017.08 7.07L12 20.36z"/></svg>
           <span>Yêu thích</span>
         </a>
 
         <a href="/pages/cart.html" class="header-action-btn">
-          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          <svg class="tech-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.2 10.3a2 2 0 002 1.7h8.8a2 2 0 002-1.6L21.5 7H6"/><circle cx="9.5" cy="19.5" r="1.5" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.5" fill="currentColor"/></svg>
           <span>Giỏ hàng</span>
           <span class="badge-pill cart-badge" style="display: none;">0</span>
         </a>
 
         <div class="user-menu-wrapper">
           <button id="user-menu-btn" class="header-action-btn">
-            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            <svg class="tech-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M5 19.5a7 7 0 0114 0"/></svg>
             <span>Tài khoản</span>
           </button>
           
@@ -298,13 +316,31 @@
               <div id="dropdown-name" class="dropdown-user-name">Khách hàng</div>
               <div id="dropdown-role" class="dropdown-user-role">Thành viên</div>
             </div>
-            <a href="/pages/login.html" class="guest-only">🔑 Đăng nhập</a>
-            <a href="/pages/register.html" class="guest-only">📝 Đăng ký tài khoản</a>
-            <a href="/pages/account.html" class="auth-only" style="display: none;">👤 Hồ sơ cá nhân</a>
-            <a href="/pages/account.html#orders" class="auth-only" style="display: none;">📦 Đơn hàng của tôi</a>
-            <a href="/admin/index.html" id="dropdown-admin-link" style="display: none; color: var(--color-primary); font-weight: 600;">⚙️ Quản trị hệ thống</a>
+            <a href="/pages/login.html" class="guest-only">
+              <svg class="tech-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="12" r="5"/><circle cx="8" cy="12" r="2" fill="currentColor"/><path d="M13 12h8v3h-2v2h-2v-2h-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Đăng nhập</span>
+            </a>
+            <a href="/pages/register.html" class="guest-only">
+              <svg class="tech-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="8" r="4"/><path d="M3 19.5a7 7 0 0112.5-3.5" stroke-linecap="round"/><path d="M19 8v6M16 11h6" stroke-linecap="round"/></svg>
+              <span>Đăng ký tài khoản</span>
+            </a>
+            <a href="/pages/account.html" class="auth-only" style="display: none;">
+              <svg class="tech-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 19.5a7 7 0 0114 0" stroke-linecap="round"/></svg>
+              <span>Hồ sơ cá nhân</span>
+            </a>
+            <a href="/pages/account.html#orders" class="auth-only" style="display: none;">
+              <svg class="tech-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 4.8v8.4l-9 4.8-9-4.8V7.8L12 3z" stroke-linejoin="round"/><path d="M12 3v9.6M21 7.8l-9 4.8M3 7.8l9 4.8" stroke-linejoin="round"/></svg>
+              <span>Đơn hàng của tôi</span>
+            </a>
+            <a href="/admin/index.html" id="dropdown-admin-link" style="display: none; color: var(--color-primary); font-weight: 600;">
+              <svg class="tech-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+              <span>Quản trị hệ thống</span>
+            </a>
             <div class="divider auth-only" style="display: none;"></div>
-            <button id="btn-logout" class="auth-only" style="display: none; color: var(--color-danger);">🚪 Đăng xuất</button>
+            <button id="btn-logout" class="auth-only" style="display: none; color: var(--color-danger);">
+              <svg class="tech-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Đăng xuất</span>
+            </button>
           </div>
         </div>
       </div>
@@ -336,9 +372,15 @@
         <div class="detail-meta-row">
           <span>Hãng: <strong id="detail-brand" style="color: var(--color-dark);">Apple</strong></span>
           <span>•</span>
-          <span style="color: #f59e0b;">★ <strong id="detail-rating">4.9</strong> (<span id="detail-review-count">142</span> đánh giá)</span>
+          <span style="color: #f59e0b; display: inline-flex; align-items: center; gap: 4px;">
+            <svg class="tech-icon tech-icon-gold" width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <strong id="detail-rating">4.9</strong> (<span id="detail-review-count">142</span> đánh giá)
+          </span>
           <span>•</span>
-          <span style="color: var(--color-success); font-weight: 600;">✓ Còn hàng trong kho</span>
+          <span style="color: var(--color-success); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+            <svg class="tech-icon tech-icon-green" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Còn hàng trong kho
+          </span>
         </div>
 
         <div class="detail-price-box">
@@ -362,25 +404,42 @@
 
         <!-- Special Perks -->
         <div class="promo-perks">
-          <h6>🎁 Ưu đãi độc quyền TechStore:</h6>
+          <h6 style="display: flex; align-items: center; gap: 6px;">
+            <svg class="tech-icon tech-icon-primary" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8a3 3 0 013-3h12a3 3 0 013 3v2a2 2 0 000 4v2a3 3 0 01-3 3H6a3 3 0 01-3-3v-2a2 2 0 000-4V8z" stroke-linejoin="round"/><path d="M9 12h.01M15 12h.01M12 9v6" stroke-linecap="round"/></svg>
+            Ưu đãi độc quyền TechStore:
+          </h6>
           <ul>
-            <li>✓ Giảm thêm <strong>50.000đ</strong> khi thanh toán chuyển khoản qua <strong>VietQR</strong></li>
-            <li>✓ Tặng gói bảo hành VIP 1 đổi 1 trong 12 tháng</li>
-            <li>✓ Miễn phí giao hàng hỏa tốc trong 2 giờ nội thành</li>
-            <li>✓ Hỗ trợ trả góp 0% lãi suất qua thẻ tín dụng</li>
+            <li style="display: flex; align-items: center; gap: 6px;">
+              <svg class="tech-icon tech-icon-green" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Giảm thêm <strong>50.000đ</strong> khi thanh toán chuyển khoản qua <strong>VietQR</strong></span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 6px;">
+              <svg class="tech-icon tech-icon-green" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Tặng gói bảo hành VIP 1 đổi 1 trong 12 tháng</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 6px;">
+              <svg class="tech-icon tech-icon-green" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Miễn phí giao hàng hỏa tốc trong 2 giờ nội thành</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 6px;">
+              <svg class="tech-icon tech-icon-green" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Hỗ trợ trả góp 0% lãi suất qua thẻ tín dụng</span>
+            </li>
           </ul>
         </div>
 
         <!-- Action Buttons -->
         <div style="display: flex; gap: var(--space-3); margin-top: var(--space-4);">
-          <button class="btn btn-primary btn-lg" style="flex: 2; font-size: 16px; font-weight: 800;" id="btn-buy-now">
-            ⚡ MUA NGAY (Giao tận nơi hoặc nhận tại cửa hàng)
+          <button class="btn btn-primary btn-lg" style="flex: 2; font-size: 16px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px;" id="btn-buy-now">
+            <svg class="tech-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" stroke-linejoin="round" fill="currentColor" fill-opacity="0.3"/></svg>
+            MUA NGAY (Giao tận nơi hoặc nhận tại shop)
           </button>
-          <button class="btn btn-outline-primary btn-lg" style="flex: 1; font-weight: 700;" id="btn-add-cart">
-            🛒 Thêm giỏ hàng
+          <button class="btn btn-outline-primary btn-lg" style="flex: 1; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px;" id="btn-add-cart">
+            <svg class="tech-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h2l2.2 10.3a2 2 0 002 1.7h8.8a2 2 0 002-1.6L21.5 7H6"/><circle cx="9.5" cy="19.5" r="1.5" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.5" fill="currentColor"/><path d="M12 9v4M10 11h4" stroke-linecap="round"/></svg>
+            Thêm giỏ hàng
           </button>
-          <button class="btn btn-outline" style="width: 50px; padding: 0;" onclick="toggleWishlist(currentProduct.id, this)">
-            ❤️
+          <button class="btn btn-outline" style="width: 50px; padding: 0; display: flex; align-items: center; justify-content: center;" onclick="toggleWishlist(currentProduct.id, this)" id="btn-detail-wishlist">
+            <svg class="tech-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20.36L4.32 12.7A5 5 0 0111.4 5.64l.6.61.6-.61a5 5 0 017.08 7.07L12 20.36z"/></svg>
           </button>
         </div>
       </div>
@@ -414,10 +473,16 @@
     <div id="tab-content-reviews" class="card" style="padding: 24px; display: none;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
         <div>
-          <h3 style="font-size: 24px; font-weight: 900; color: #f59e0b; margin: 0;">★ <span id="review-avg-rating">4.9</span> / 5</h3>
+          <h3 style="font-size: 24px; font-weight: 900; color: #f59e0b; margin: 0; display: flex; align-items: center; gap: 6px;">
+            <svg class="tech-icon tech-icon-gold" width="22" height="22" viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <span id="review-avg-rating">4.9</span> / 5
+          </h3>
           <p style="font-size: 13px; color: var(--color-gray); margin: 0;">Dựa trên 142 đánh giá từ khách hàng đã mua sản phẩm</p>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="toggleReviewForm()">✍️ Viết đánh giá của bạn</button>
+        <button class="btn btn-primary btn-sm" onclick="toggleReviewForm()" style="display: flex; align-items: center; gap: 6px;">
+          <svg class="tech-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Viết đánh giá của bạn</span>
+        </button>
       </div>
 
       <!-- Add Review Form -->
@@ -426,11 +491,11 @@
         <div class="form-group">
           <label class="form-label">Chọn số sao đánh giá:</label>
           <select id="review-rating-select" class="form-select" style="max-width: 200px;">
-            <option value="5">⭐⭐⭐⭐⭐ (Rất hài lòng)</option>
-            <option value="4">⭐⭐⭐⭐ (Hài lòng)</option>
-            <option value="3">⭐⭐⭐ (Bình thường)</option>
-            <option value="2">⭐⭐ (Chưa hài lòng)</option>
-            <option value="1">⭐ (Kém)</option>
+            <option value="5">★★★★★ (Rất hài lòng)</option>
+            <option value="4">★★★★ (Hài lòng)</option>
+            <option value="3">★★★ (Bình thường)</option>
+            <option value="2">★★ (Chưa hài lòng)</option>
+            <option value="1">★ (Kém)</option>
           </select>
         </div>
         <div class="form-group">
@@ -456,6 +521,7 @@
   </footer>
 
   <!-- Scripts -->
+  <script src="/assets/js/icons.js"></script>
   <script src="/assets/js/api.js"></script>
   <script src="/assets/js/recommend.js"></script>
   <script>
@@ -819,10 +885,10 @@
       container.innerHTML = reviews.map(r => `
         <div style="border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-            <div style="font-weight: 700; color: #1e293b;">${r.user_name} <span style="font-size: 11px; background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; margin-left: 6px;">✓ Đã mua hàng</span></div>
+            <div style="font-weight: 700; color: #1e293b;">${r.user_name} <span style="font-size: 11px; background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; margin-left: 6px; display: inline-flex; align-items: center; gap: 3px;">${TechIcons.render('check', { size: 12 })} Đã mua hàng</span></div>
             <div style="font-size: 12px; color: #94a3b8;">${r.created_at}</div>
           </div>
-          <div style="color: #f59e0b; font-size: 13px; margin-bottom: 6px;">${'★'.repeat(r.rating || 5)}</div>
+          <div style="color: #f59e0b; font-size: 13px; margin-bottom: 6px; display: flex; gap: 2px;">${Array(r.rating || 5).fill(TechIcons.render('star-filled', { size: 14 })).join('')}</div>
           <p style="font-size: 14px; color: #475569; margin: 0; line-height: 1.5;">${r.comment}</p>
         </div>
       `).join('');

@@ -93,14 +93,18 @@ class RecommendComponent {
         return '🎁 Phụ kiện khuyên dùng';
       };
 
+      const iconPkg = typeof TechIcons !== 'undefined' ? TechIcons.render('package', { size: 20, className: 'tech-icon-primary' }) : '';
+      const iconBolt = typeof TechIcons !== 'undefined' ? TechIcons.render('bolt', { size: 16 }) : '<svg class="tech-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>';
+
       container.innerHTML = `
         <div class="bought-together-card" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border: 1.5px solid rgba(226, 232, 240, 0.9); border-radius: var(--radius-xl); padding: 24px; margin-top: 32px; box-shadow: 0 16px 40px -10px rgba(215, 0, 24, 0.12); position: relative; overflow: hidden;">
           <div style="font-size: 18px; font-weight: 800; color: #1e293b; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
             <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="color: #d70018;">🛍️ Thường được mua cùng</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px; color: #d70018;">${iconPkg} Thường được mua cùng</span>
               <span style="font-size: 12px; background: linear-gradient(135deg, #fee2e2, #fce7f3); color: #d70018; padding: 3px 10px; border-radius: var(--radius-full); font-weight: 800; border: 1px solid rgba(215, 0, 24, 0.2);">Tiết kiệm combo 8%</span>
             </div>
             <span style="font-size: 12px; color: #64748b; font-weight: 500;">✓ Tương thích 100% với thiết bị của bạn</span>
+          </div>
           </div>
 
           <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;">
@@ -135,8 +139,10 @@ class RecommendComponent {
               <div style="font-size: 12px; color: #16a34a; font-weight: 700; margin-bottom: 14px;" id="combo-savings-text">
                 Tiết kiệm được 0₫ khi mua combo!
               </div>
-              <button class="btn btn-primary btn-block btn-lg" id="btn-buy-combo" style="font-weight: 800; font-size: 15px; box-shadow: 0 4px 14px rgba(215, 0, 24, 0.35);">
-                ⚡ Mua các sản phẩm đã chọn
+              <button class="btn btn-primary btn-block btn-lg" id="btn-buy-combo" style="font-weight: 800; font-size: 15px; box-shadow: 0 4px 14px rgba(215, 0, 24, 0.35); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                ${iconBolt} Mua các sản phẩm đã chọn
+              </button>
+            </div>
               </button>
             </div>
           </div>
@@ -321,13 +327,19 @@ class RecommendComponent {
   static renderCarousel(container, title, products, uniqueId) {
     if (!products || !products.length) return;
 
+    const prevIcon = typeof TechIcons !== 'undefined' ? TechIcons.render('chevron-left', { size: 16 }) : '<svg class="tech-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>';
+    const nextIcon = typeof TechIcons !== 'undefined' ? TechIcons.render('chevron-right', { size: 16 }) : '<svg class="tech-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>';
+    const heartIcon = typeof TechIcons !== 'undefined' ? TechIcons.render('heart', { size: 18 }) : '<svg class="tech-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20.36L4.32 12.7A5 5 0 0111.4 5.64l.6.61.6-.61a5 5 0 017.08 7.07L12 20.36z"/></svg>';
+    const starIcon = typeof TechIcons !== 'undefined' ? TechIcons.render('star-filled', { size: 14 }) : '<svg class="tech-icon" width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+    const cartIcon = typeof TechIcons !== 'undefined' ? TechIcons.render('cart-plus', { size: 16 }) : '<svg class="tech-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h2l2.2 10.3a2 2 0 002 1.7h8.8a2 2 0 002-1.6L21.5 7H6"/><circle cx="9.5" cy="19.5" r="1.5"/><circle cx="17.5" cy="19.5" r="1.5"/></svg>';
+
     container.innerHTML = `
       <div class="recommend-carousel-wrapper" style="margin: 36px 0;">
         <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
           <h3 class="section-title" style="margin: 0;">${title}</h3>
           <div class="carousel-nav" style="display: flex; gap: 8px;">
-            <button class="btn btn-outline btn-sm" id="${uniqueId}-prev" aria-label="Previous">◀</button>
-            <button class="btn btn-outline btn-sm" id="${uniqueId}-next" aria-label="Next">▶</button>
+            <button class="btn btn-outline btn-sm" id="${uniqueId}-prev" aria-label="Previous" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; padding: 0;">${prevIcon}</button>
+            <button class="btn btn-outline btn-sm" id="${uniqueId}-next" aria-label="Next" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; padding: 0;">${nextIcon}</button>
           </div>
         </div>
 
@@ -339,7 +351,7 @@ class RecommendComponent {
                   ${p.original_price > p.price ? `<span class="badge-discount">-${Math.round((1 - p.price/p.original_price)*100)}%</span>` : ''}
                   <span class="badge-installment">Trả góp 0%</span>
                 </div>
-                <button class="btn-wishlist" onclick="toggleWishlist(${p.id}, this)">❤️</button>
+                <button class="btn-wishlist" onclick="toggleWishlist(${p.id}, this)">${heartIcon}</button>
                 <a href="/pages/product-detail.html?id=${p.id}" class="product-thumb-wrap">
                   <img src="${p.image}" class="product-thumb" alt="${p.name}" loading="lazy">
                 </a>
@@ -350,12 +362,12 @@ class RecommendComponent {
                   <span class="price-current">${formatVND(p.price)}</span>
                   ${p.original_price > p.price ? `<span class="price-original">${formatVND(p.original_price)}</span>` : ''}
                 </div>
-                <div class="product-rating">
-                  ★ ${p.rating || 5.0} <span class="rating-count">(${p.review_count || 12})</span>
+                <div class="product-rating" style="display: flex; align-items: center; gap: 4px;">
+                  ${starIcon} <span>${p.rating || 5.0}</span> <span class="rating-count">(${p.review_count || 12})</span>
                 </div>
                 <div class="product-card-actions">
-                  <button class="btn btn-outline-primary btn-sm btn-block" onclick="quickAddToCart(${p.id})">
-                    🛒 Thêm giỏ
+                  <button class="btn btn-outline-primary btn-sm btn-block" onclick="quickAddToCart(${p.id})" style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    ${cartIcon} <span>Thêm giỏ</span>
                   </button>
                 </div>
               </div>

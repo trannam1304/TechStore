@@ -1,32 +1,29 @@
-# Environment variables
+# Environment Configuration
 .env
 .env.local
-.env.*.local
 
 # Dependency directories
 vendor/
 node_modules/
 
-# Uploads & Temp files
-public/uploads/
-uploads/
-storage/
-logs/
+# Logs and databases
 *.log
+*.sqlite
 
-# Operating System files
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# IDE & Editor files
+# IDE & OS files
 .vscode/
 .idea/
 *.sublime-project
 *.sublime-workspace
-*.suo
-*.ntvs*
-*.njsproj
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
 
 # Test & Coverage reports
 coverage/
@@ -34,3 +31,7 @@ coverage/
 
 # External / unrelated project folders
 PROJECT-Mid-final/
+
+# Python cache
+__pycache__/
+*.pyc

@@ -153,6 +153,83 @@ main {
 }
 
 /* ===================================================
+   SYNCHRONIZED TECH ICONS SYSTEM
+   =================================================== */
+.tech-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: -0.16em;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast), color var(--transition-fast), filter var(--transition-fast);
+}
+
+.tech-icon svg {
+  display: block;
+}
+
+.tech-icon-xs { width: 14px; height: 14px; }
+.tech-icon-sm { width: 18px; height: 18px; }
+.tech-icon-md { width: 22px; height: 22px; }
+.tech-icon-lg { width: 26px; height: 26px; }
+.tech-icon-xl { width: 34px; height: 34px; }
+.tech-icon-2xl { width: 48px; height: 48px; }
+
+.tech-icon-primary { color: var(--color-primary); }
+.tech-icon-secondary { color: var(--color-secondary); }
+.tech-icon-gold { color: #f59e0b; }
+.tech-icon-green { color: #10b981; }
+.tech-icon-purple { color: #8b5cf6; }
+
+.tech-icon-glow {
+  filter: drop-shadow(0 2px 10px rgba(215, 0, 24, 0.45));
+}
+
+.tech-icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(215, 0, 24, 0.1), rgba(255, 0, 122, 0.08));
+  color: var(--color-primary);
+  border: 1px solid rgba(215, 0, 24, 0.18);
+  box-shadow: 0 4px 14px rgba(215, 0, 24, 0.08);
+  transition: all var(--transition-normal);
+  flex-shrink: 0;
+}
+
+.tech-icon-badge:hover {
+  transform: translateY(-2px) scale(1.05);
+  background: linear-gradient(135deg, var(--color-primary), #ff007a);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(215, 0, 24, 0.3);
+}
+
+.benefit-icon-wrap {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-xl);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(215, 0, 24, 0.1), rgba(121, 40, 202, 0.08));
+  color: var(--color-primary);
+  border: 1px solid rgba(215, 0, 24, 0.2);
+  box-shadow: 0 6px 18px rgba(215, 0, 24, 0.12);
+  transition: all var(--transition-normal);
+  flex-shrink: 0;
+}
+
+.benefit-item:hover .benefit-icon-wrap {
+  transform: scale(1.1) rotate(-4deg);
+  background: linear-gradient(135deg, var(--color-primary), #ff007a);
+  color: #ffffff;
+  box-shadow: 0 10px 25px rgba(215, 0, 24, 0.35);
+}
+
+/* ===================================================
    TOP BAR & MAIN HEADER (Glassmorphism & Gradient)
    =================================================== */
 .topbar {
