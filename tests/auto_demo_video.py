@@ -1,7 +1,7 @@
 """
 TechStore - Kịch bản Video Demo Tự động ĐỒNG BỘ 100% (Selenium Two-Screen Lockstep)
 Tự động mở 2 cửa sổ Chrome chia đôi màn hình 50:50 chính xác:
-  - CỬA SỔ TRÁI (50%): Giao diện TechStore (Khách hàng & Quản trị)
+  - CỬA SỔ TRÁI (50%): Giao diện TechStore với CON TRỎ CHUỘT ẢO LƯỚT & CLICK TRỰC QUAN
   - CỬA SỔ PHẢI (50%): Bảng điều khiển API Live Telemetry (Hiển thị mã 401, 403, 200, JWT & JSON)
 Đếm ngược 10 giây trước khi bắt đầu để người dùng bật phần mềm quay màn hình.
 """
@@ -21,7 +21,6 @@ def get_screen_work_area():
             user32.SetProcessDPIAware()
 
         rect = wintypes.RECT()
-        # SPI_GETWORKAREA = 0x0030 (lấy diện tích làm việc trừ Taskbar)
         user32.SystemParametersInfoW(0x0030, 0, ctypes.byref(rect), 0)
         work_x = rect.left
         work_y = rect.top
@@ -32,13 +31,11 @@ def get_screen_work_area():
         return 0, 0, 1920, 1040
 
 def snap_window(driver, target_x, target_y, target_w, target_h):
-    # 1. Gọi lệnh chuẩn của Selenium
     try:
         driver.set_window_rect(x=target_x, y=target_y, width=target_w, height=target_h)
     except Exception:
         pass
 
-    # 2. Ép vị trí qua Windows API (SetWindowPos) để đảm bảo chia đôi 50:50 tuyệt đối
     try:
         import ctypes
         user32 = ctypes.windll.user32
@@ -48,10 +45,103 @@ def snap_window(driver, target_x, target_y, target_w, target_h):
         time.sleep(0.2)
         hwnd = user32.FindWindowW(None, unique_marker)
         if hwnd:
-            # 0x0044 = SWP_SHOWWINDOW (0x0040) | SWP_NOZORDER (0x0004)
             user32.SetWindowPos(hwnd, 0, int(target_x), int(target_y), int(target_w), int(target_h), 0x0044)
         if old_title:
             driver.execute_script(f"document.title = '{old_title}';")
+    except Exception:
+        pass
+
+def inject_human_cursor(driver):
+    js = """
+    if (!document.getElementById('demo-cursor-style')) {
+        let style = document.createElement('style');
+        style.id = 'demo-cursor-style';
+        style.innerHTML = `
+            @keyframes ripple-anim {
+                0% { transform: scale(0.6); opacity: 1; }
+                100% { transform: scale(2.2); opacity: 0; }
+            }
+            #demo-virtual-cursor {
+                position: fixed;
+                width: 26px;
+                height: 26px;
+                z-index: 99999999;
+                pointer-events: none;
+                transition: top 0.55s cubic-bezier(0.25, 1, 0.5, 1), left 0.55s cubic-bezier(0.25, 1, 0.5, 1);
+                filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    if (!document.getElementById('demo-virtual-cursor')) {
+        let cursor = document.createElement('div');
+        cursor.id = 'demo-virtual-cursor';
+        cursor.style.top = '120px';
+        cursor.style.left = '120px';
+        cursor.innerHTML = `
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                <path d="M5.5 3.2L18.8 12.3C19.7 12.9 19.3 14.3 18.2 14.3H12.9L10.2 20.6C9.8 21.5 8.5 21.6 7.9 20.8L5.2 17.2L2.1 19.4C1.2 20 0 19.3 0 18.2V4.5C0 3.4 1.3 2.8 2.2 3.5L5.5 3.2Z" fill="#d70018" stroke="#ffffff" stroke-width="1.8"/>
+            </svg>
+        `;
+        document.body.appendChild(cursor);
+    }
+
+    window.humanClick = function(selector, doneCallback) {
+        let el = document.querySelector(selector);
+        let cursor = document.getElementById('demo-virtual-cursor');
+        if (!el || !cursor) { if (doneCallback) doneCallback(); return; }
+
+        let rect = el.getBoundingClientRect();
+        let targetX = rect.left + rect.width / 2;
+        let targetY = rect.top + rect.height / 2;
+
+        cursor.style.left = targetX + 'px';
+        cursor.style.top = targetY + 'px';
+
+        setTimeout(() => {
+            let ripple = document.createElement('div');
+            ripple.style.cssText = `position:fixed;left:${targetX - 16}px;top:${targetY - 16}px;width:32px;height:32px;border-radius:50%;background:rgba(215,0,24,0.4);border:2px solid #d70018;z-index:99999998;pointer-events:none;animation:ripple-anim 0.45s ease-out;`;
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 450);
+
+            el.click();
+            if (doneCallback) doneCallback();
+        }, 580);
+    };
+
+    window.humanType = function(selector, text, doneCallback) {
+        let el = document.querySelector(selector);
+        let cursor = document.getElementById('demo-virtual-cursor');
+        if (!el || !cursor) { if (doneCallback) doneCallback(); return; }
+
+        let rect = el.getBoundingClientRect();
+        let targetX = rect.left + 20;
+        let targetY = rect.top + rect.height / 2;
+
+        cursor.style.left = targetX + 'px';
+        cursor.style.top = targetY + 'px';
+
+        setTimeout(() => {
+            el.focus();
+            el.value = '';
+            let i = 0;
+            let timer = setInterval(() => {
+                if (i < text.length) {
+                    el.value += text[i];
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                    i++;
+                } else {
+                    clearInterval(timer);
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                    if (doneCallback) doneCallback();
+                }
+            }, 45);
+        }, 580);
+    };
+    """
+    try:
+        driver.execute_script(js)
     except Exception:
         pass
 
@@ -80,15 +170,15 @@ def trigger_inspector(driver_inspector, step_data):
 
 def main():
     print("=" * 75)
-    print(" TECHSTORE - TỰ ĐỘNG ĐỒNG BỘ HAI NỬA MÀN HÌNH (CHIA ĐÔI 50:50)")
+    print(" TECHSTORE - TỰ ĐỘNG ĐỒNG BỘ HAI NỬA MÀN HÌNH (CÓ CON TRỎ CHUỘT THAO TÁC)")
     print("=" * 75)
 
     work_x, work_y, work_w, work_h = get_screen_work_area()
     half_w = work_w // 2
 
     print(f"[*] Diện tích màn hình khả dụng (Work Area): {work_w} x {work_h}")
-    print(f"[*] Cửa sổ 1 (Giao diện Web Khách & Admin): x={work_x}, y={work_y}, width={half_w}, height={work_h}")
-    print(f"[*] Cửa sổ 2 (Bảng điều khiển API Live):     x={work_x + half_w}, y={work_y}, width={half_w}, height={work_h}")
+    print(f"[*] Cửa sổ 1 (Trái 50% - Giao diện Web): x={work_x}, y={work_y}, width={half_w}, height={work_h}")
+    print(f"[*] Cửa sổ 2 (Phải 50% - API Inspector): x={work_x + half_w}, y={work_y}, width={half_w}, height={work_h}")
     print("=" * 75)
 
     # ĐẾM NGƯỢC 10 GIÂY
@@ -131,11 +221,16 @@ def main():
         snap_window(driver_api, work_x + half_w, work_y, half_w, work_h)
         time.sleep(1.5)
 
+        inject_human_cursor(driver_web)
+
         # ---------------------------------------------------------------------
         # BƯỚC 1: Khách hàng truy cập trang chủ TechStore
         # ---------------------------------------------------------------------
-        print("\n[Bước 1/7] Khách hàng mở trang chủ -> API tải danh sách sản phẩm...")
+        print("\n[Bước 1/7] Khách hàng mở trang chủ -> Di chuyển chuột duyệt giao diện...")
         show_banner(driver_web, "BƯỚC 1: TRANG CHỦ TECHSTORE (RESTful API LEVEL 3)")
+        
+        # Con trỏ chuột lướt vào ô tìm kiếm
+        driver_web.execute_script("window.humanClick('#global-search-input');")
 
         trigger_inspector(driver_api, {
             "name": "12.0 [200 OK] GET /products?limit=10 (ETag, Cache-Control & HATEOAS)",
@@ -162,14 +257,21 @@ def main():
                 }
             }
         })
-        time.sleep(4.0)
+        time.sleep(3.5)
 
         # ---------------------------------------------------------------------
         # BƯỚC 2: Cố tình truy cập trang Admin khi chưa đăng nhập
         # ---------------------------------------------------------------------
-        print("[Bước 2/7] Khách cố vào /admin/ -> Chặn truy cập không Token (401)...")
-        driver_web.get(f"{BASE_URL}/admin/index.html")
+        print("[Bước 2/7] Chuột di chuyển vào Menu Tài khoản -> Thử vào Quản trị...")
         show_banner(driver_web, "BƯỚC 2: CHẶN TRUY CẬP /admin/ CHƯA ĐĂNG NHẬP (401)")
+        
+        # Chuột bấm menu tài khoản
+        driver_web.execute_script("window.humanClick('#user-menu-btn');")
+        time.sleep(1.2)
+
+        # Thử mở trực tiếp trang admin
+        driver_web.get(f"{BASE_URL}/admin/index.html")
+        inject_human_cursor(driver_web)
 
         trigger_inspector(driver_api, {
             "name": "12.1 [401 Unauthorized] GET /auth/me (Thiếu Header Authorization)",
@@ -195,13 +297,24 @@ def main():
         time.sleep(4.0)
 
         # ---------------------------------------------------------------------
-        # BƯỚC 3: Đăng nhập Khách hàng & Cấp JWT
+        # BƯỚC 3: Đăng nhập Khách hàng & Gõ thông tin tài khoản
         # ---------------------------------------------------------------------
-        print("[Bước 3/7] Đăng nhập Khách hàng -> Cấp Access Token + Refresh Token (200)...")
+        print("[Bước 3/7] Mở form Đăng nhập -> Chuột bấm ô Email, Mật khẩu và gõ thông tin...")
         driver_web.get(f"{BASE_URL}/pages/login.html")
+        inject_human_cursor(driver_web)
         time.sleep(1)
         show_banner(driver_web, "BƯỚC 3: ĐĂNG NHẬP KHÁCH HÀNG & CẤP TOKEN JWT")
-        driver_web.execute_script("fillAndLogin('user@techstore.local', 'User@123');")
+
+        # Con trỏ chuột lướt vào ô Email và gõ từng ký tự
+        driver_web.execute_script("window.humanType('#login-email', 'user@techstore.local');")
+        time.sleep(1.5)
+
+        # Con trỏ chuột lướt vào ô Mật khẩu và gõ
+        driver_web.execute_script("window.humanType('#login-password', 'User@123');")
+        time.sleep(1.5)
+
+        # Con trỏ chuột di chuyển vào nút Đăng Nhập và click
+        driver_web.execute_script("window.humanClick('#btn-login-submit');")
 
         trigger_inspector(driver_api, {
             "name": "12.4 [200 OK] POST /auth/login (Cấp JWT Access + Refresh Token)",
@@ -230,6 +343,7 @@ def main():
         # ---------------------------------------------------------------------
         print("[Bước 4/7] Khách hàng cố vào lại /admin/ -> Chặn quyền RBAC (403)...")
         driver_web.get(f"{BASE_URL}/admin/index.html")
+        inject_human_cursor(driver_web)
         show_banner(driver_web, "BƯỚC 4: PHÂN QUYỀN RBAC - CHẶN CUSTOMER TRUY CẬP ADMIN (403)")
 
         trigger_inspector(driver_api, {
@@ -256,11 +370,16 @@ def main():
         time.sleep(4.0)
 
         # ---------------------------------------------------------------------
-        # BƯỚC 5: Chống lỗ hổng IDOR khi hủy đơn hàng
+        # BƯỚC 5: Xem giỏ hàng & Chống lỗ hổng IDOR khi hủy đơn hàng
         # ---------------------------------------------------------------------
-        print("[Bước 5/7] Khách hàng B cố tình hủy đơn hàng của Khách hàng A -> Chống IDOR (403)...")
+        print("[Bước 5/7] Chuột di chuyển mở Giỏ hàng -> Chống IDOR (403)...")
         driver_web.get(f"{BASE_URL}/pages/cart.html")
+        inject_human_cursor(driver_web)
         show_banner(driver_web, "BƯỚC 5: CHỐNG LỖ HỔNG IDOR KHI HỦY ĐƠN HÀNG (403)")
+
+        # Chuột bấm vào khu vực giỏ hàng
+        time.sleep(1.0)
+        driver_web.execute_script("window.humanClick('.cart-summary-card, .btn, a');")
 
         trigger_inspector(driver_api, {
             "name": "12.6 [403 Forbidden] POST /orders/1055/cancel (Chống lỗ hổng IDOR)",
@@ -313,15 +432,33 @@ def main():
         time.sleep(4.0)
 
         # ---------------------------------------------------------------------
-        # BƯỚC 7: Đăng xuất, Đăng nhập Admin & Nhật ký kiểm toán bất biến
+        # BƯỚC 7: Đăng xuất, Đăng nhập Admin & Bảng điều khiển Quản trị
         # ---------------------------------------------------------------------
-        print("[Bước 7/7] Đăng nhập Admin & Bảng điều khiển KPI + Audit Logs...")
+        print("[Bước 7/7] Đăng nhập Admin -> Mở Dashboard Quản trị & Audit Logs...")
         driver_web.get(f"{BASE_URL}/pages/login.html")
+        inject_human_cursor(driver_web)
         time.sleep(1)
-        driver_web.execute_script("fillAndLogin('admin@techstore.local', 'Admin@123');")
-        time.sleep(2)
+
+        # Con trỏ chuột lướt vào ô Email và gõ admin@techstore.local
+        driver_web.execute_script("window.humanType('#login-email', 'admin@techstore.local');")
+        time.sleep(1.2)
+
+        # Con trỏ chuột lướt vào ô Mật khẩu và gõ Admin@123
+        driver_web.execute_script("window.humanType('#login-password', 'Admin@123');")
+        time.sleep(1.2)
+
+        # Con trỏ chuột bấm nút Đăng Nhập
+        driver_web.execute_script("window.humanClick('#btn-login-submit');")
+        time.sleep(2.0)
+
+        # Vào trang Admin
         driver_web.get(f"{BASE_URL}/admin/index.html")
+        inject_human_cursor(driver_web)
         show_banner(driver_web, "BƯỚC 7: BẢNG ĐIỀU KHIỂN QUẢN TRỊ ADMIN (BIỂU ĐỒ KPI 7 NGÀY)")
+
+        # Di chuyển chuột quanh bảng KPI
+        time.sleep(1.0)
+        driver_web.execute_script("window.humanClick('.stat-card, .chart-card, h2');")
 
         trigger_inspector(driver_api, {
             "name": "12.9 [200 OK] GET /admin/audit-logs (Nhật ký kiểm toán bất biến)",
@@ -346,10 +483,14 @@ def main():
         })
         time.sleep(4.5)
 
-        # Xem trang Đơn hàng
+        # Chuột bấm sang menu Đơn hàng
+        print("[*] Di chuyển chuột mở menu Đơn hàng Quản trị...")
         driver_web.get(f"{BASE_URL}/admin/orders.html")
+        inject_human_cursor(driver_web)
         show_banner(driver_web, "QUẢN TRỊ ĐƠN HÀNG & TRẠNG THÁI THANH TOÁN (100% TEST PASS)")
-        time.sleep(4.0)
+        time.sleep(1.0)
+        driver_web.execute_script("window.humanClick('.table, tr, .btn');")
+        time.sleep(3.5)
 
         show_banner(driver_web, "HOÀN TẤT KỊCH BẢN DEMO THÀNH CÔNG")
         print("\n" + "=" * 75)
