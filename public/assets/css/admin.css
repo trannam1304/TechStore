@@ -138,13 +138,26 @@
   color: var(--color-gray-dark);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 992px) and (min-width: 701px) {
+  .admin-sidebar {
+    width: 210px;
+    padding: var(--space-4) var(--space-2);
+  }
+  .sidebar-link {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 700px) {
   .btn-sidebar-toggle {
     display: block;
   }
   .admin-sidebar {
     position: fixed;
     transform: translateX(-100%);
+    width: 260px;
+    z-index: 1000;
   }
   .admin-sidebar.open {
     transform: translateX(0);

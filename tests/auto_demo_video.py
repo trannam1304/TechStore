@@ -3,7 +3,7 @@ TechStore - Kịch bản Video Demo Tự động ĐỒNG BỘ 100% (Selenium Two
 Tự động mở 2 cửa sổ Chrome chia đôi màn hình 50:50 CHÍNH XÁC THEO TỶ LỆ MÀN HÌNH MÁY BẠN:
   - CỬA SỔ TRÁI (50%): Giao diện TechStore với CON TRỎ CHUỘT LƯỚT CHẬM, CLICK & GÕ PHÍM CHÂN THẬT
   - CỬA SỔ PHẢI (50%): Bảng điều khiển API Live Telemetry (Hiển thị mã 401, 403, 200, JWT & JSON)
-Toàn bộ điều hướng (Đăng nhập, Giỏ hàng, Đăng xuất, Admin) đều do chuột click vào menu, không bị giật trang.
+ĐẶC BIỆT: Vào tận giao diện Hồ sơ Tài khoản (account.html) để di chuột bấm nút ĐĂNG XUẤT.
 """
 
 import sys
@@ -27,19 +27,13 @@ def configure_windows_50_50(driver_web, driver_api):
 
     half_w = avail_w // 2
 
-    print(f"[*] Màn hình khả dụng ghi nhận từ Chrome: {avail_w} x {avail_h} (Khung: x={avail_x}, y={avail_y})")
-    print(f"[*] Cửa sổ Trái (Web): x={avail_x}, y={avail_y}, width={half_w}, height={avail_h}")
-    print(f"[*] Cửa sổ Phải (API): x={avail_x + half_w}, y={avail_y}, width={half_w}, height={avail_h}")
+    print(f"[*] Màn hình khả dụng ghi nhận từ Chrome: {avail_w} x {avail_h}")
+    print(f"[*] Căn chỉnh Cửa sổ Trái: x={avail_x}, y={avail_y}, width={half_w}, height={avail_h}")
+    print(f"[*] Căn chỉnh Cửa sổ Phải: x={avail_x + half_w}, y={avail_y}, width={half_w}, height={avail_h}")
 
     # Áp dụng tỷ lệ 50:50 chính xác
     driver_web.set_window_rect(x=avail_x, y=avail_y, width=half_w, height=avail_h)
     driver_api.set_window_rect(x=avail_x + half_w, y=avail_y, width=half_w, height=avail_h)
-
-    # In ra xác nhận kích thước thực tế sau khi áp dụng
-    rw = driver_web.get_window_rect()
-    ra = driver_api.get_window_rect()
-    print(f"[*] Đã khóa vị trí Cửa sổ Trái: {rw}")
-    print(f"[*] Đã khóa vị trí Cửa sổ Phải: {ra}")
 
 def inject_human_cursor(driver):
     js = """
@@ -77,29 +71,34 @@ def inject_human_cursor(driver):
         document.body.appendChild(cursor);
     }
 
-    // Hàm di chuột chậm rãi và click
+    // Hàm di chuột chậm rãi và click chuẩn xác (tự cuộn phần tử vào khung nhìn)
     window.humanClick = function(selector, doneCallback) {
         let el = document.querySelector(selector);
         let cursor = document.getElementById('demo-virtual-cursor');
         if (!el || !cursor) { if (doneCallback) doneCallback(); return; }
 
-        let rect = el.getBoundingClientRect();
-        let targetX = rect.left + rect.width / 2;
-        let targetY = rect.top + rect.height / 2;
+        try {
+            el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+        } catch (e) {}
 
-        cursor.style.left = targetX + 'px';
-        cursor.style.top = targetY + 'px';
-
-        // Lướt trong 1.1s -> Dừng 0.3s hover -> Click ripple
         setTimeout(() => {
-            let ripple = document.createElement('div');
-            ripple.style.cssText = `position:fixed;left:${targetX - 18}px;top:${targetY - 18}px;width:36px;height:36px;border-radius:50%;background:rgba(215,0,24,0.4);border:2px solid #d70018;z-index:99999998;pointer-events:none;animation:ripple-anim 0.5s ease-out;`;
-            document.body.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 500);
+            let rect = el.getBoundingClientRect();
+            let targetX = Math.max(10, Math.min(window.innerWidth - 30, rect.left + rect.width / 2));
+            let targetY = Math.max(10, Math.min(window.innerHeight - 30, rect.top + rect.height / 2));
 
-            el.click();
-            if (doneCallback) doneCallback();
-        }, 1150);
+            cursor.style.left = targetX + 'px';
+            cursor.style.top = targetY + 'px';
+
+            setTimeout(() => {
+                let ripple = document.createElement('div');
+                ripple.style.cssText = `position:fixed;left:${targetX - 18}px;top:${targetY - 18}px;width:36px;height:36px;border-radius:50%;background:rgba(215,0,24,0.4);border:2px solid #d70018;z-index:99999998;pointer-events:none;animation:ripple-anim 0.5s ease-out;`;
+                document.body.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 500);
+
+                el.click();
+                if (doneCallback) doneCallback();
+            }, 1200);
+        }, 300);
     };
 
     // Hàm di chuột và gõ phím từng chữ tự nhiên
@@ -108,29 +107,35 @@ def inject_human_cursor(driver):
         let cursor = document.getElementById('demo-virtual-cursor');
         if (!el || !cursor) { if (doneCallback) doneCallback(); return; }
 
-        let rect = el.getBoundingClientRect();
-        let targetX = rect.left + 24;
-        let targetY = rect.top + rect.height / 2;
-
-        cursor.style.left = targetX + 'px';
-        cursor.style.top = targetY + 'px';
+        try {
+            el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+        } catch (e) {}
 
         setTimeout(() => {
-            el.focus();
-            el.value = '';
-            let i = 0;
-            let timer = setInterval(() => {
-                if (i < text.length) {
-                    el.value += text[i];
-                    el.dispatchEvent(new Event('input', { bubbles: true }));
-                    i++;
-                } else {
-                    clearInterval(timer);
-                    el.dispatchEvent(new Event('change', { bubbles: true }));
-                    if (doneCallback) doneCallback();
-                }
-            }, 75);
-        }, 1150);
+            let rect = el.getBoundingClientRect();
+            let targetX = Math.max(10, Math.min(window.innerWidth - 30, rect.left + 24));
+            let targetY = Math.max(10, Math.min(window.innerHeight - 30, rect.top + rect.height / 2));
+
+            cursor.style.left = targetX + 'px';
+            cursor.style.top = targetY + 'px';
+
+            setTimeout(() => {
+                el.focus();
+                el.value = '';
+                let i = 0;
+                let timer = setInterval(() => {
+                    if (i < text.length) {
+                        el.value += text[i];
+                        el.dispatchEvent(new Event('input', { bubbles: true }));
+                        i++;
+                    } else {
+                        clearInterval(timer);
+                        el.dispatchEvent(new Event('change', { bubbles: true }));
+                        if (doneCallback) doneCallback();
+                    }
+                }, 85);
+            }, 1200);
+        }, 300);
     };
     """
     try:
@@ -175,13 +180,11 @@ def main():
 
     from selenium import webdriver
 
-    # 1. Khởi động Cửa sổ 1 (Bên trái: Web UI)
     options_left = webdriver.ChromeOptions()
     options_left.add_experimental_option("excludeSwitches", ["enable-automation"])
     options_left.add_experimental_option('useAutomationExtension', False)
     driver_web = webdriver.Chrome(options=options_left)
 
-    # 2. Khởi động Cửa sổ 2 (Bên phải: API Live Inspector)
     options_right = webdriver.ChromeOptions()
     options_right.add_experimental_option("excludeSwitches", ["enable-automation"])
     options_right.add_experimental_option('useAutomationExtension', False)
@@ -326,15 +329,11 @@ def main():
         time.sleep(3.5)
 
         # ---------------------------------------------------------------------
-        # BƯỚC 4: Khách hàng cố tình bấm vào trang Admin (Test RBAC 403)
+        # BƯỚC 4: Khách hàng cố tình vào trang Admin (Test RBAC 403)
         # ---------------------------------------------------------------------
-        print("[Bước 4/8] Khách hàng bấm menu cố vào Quản trị -> Chặn quyền RBAC (403)...")
+        print("[Bước 4/8] Khách hàng thử vào Quản trị -> Chặn quyền RBAC (403)...")
         inject_human_cursor(driver_web)
         show_banner(driver_web, "BƯỚC 4: PHÂN QUYỀN RBAC - CHẶN CUSTOMER TRUY CẬP ADMIN (403)")
-
-        # Chuột bấm menu tài khoản
-        driver_web.execute_script("window.humanClick('#user-menu-btn');")
-        time.sleep(1.8)
 
         # Thử mở trang admin
         driver_web.get(f"{BASE_URL}/admin/index.html")
@@ -401,19 +400,29 @@ def main():
         time.sleep(4.0)
 
         # ---------------------------------------------------------------------
-        # BƯỚC 6: Đăng xuất Khách hàng (Chuột bấm menu -> bấm Đăng xuất)
+        # BƯỚC 6: VÀO GIAO DIỆN TÀI KHOẢN (ACCOUNT.HTML) & BẤM ĐĂNG XUẤT
         # ---------------------------------------------------------------------
-        print("[Bước 6/8] Chuột bấm menu Tài khoản -> Bấm nút 'Đăng xuất'...")
-        show_banner(driver_web, "BƯỚC 6: CHUỘT BẤM MENU ĐĂNG XUẤT KHÁCH HÀNG")
+        print("\n[Bước 6/8] Chuột bấm mở menu -> Chọn 'Hồ sơ cá nhân' (account.html)...")
+        show_banner(driver_web, "BƯỚC 6: VÀO TRANG TÀI KHOẢN (HỒ SƠ CÁ NHÂN)")
 
-        # Chuột bấm vào menu tài khoản
+        # 1. Chuột lướt lên bấm menu Tài khoản trên Header
         driver_web.execute_script("window.humanClick('#user-menu-btn');")
         time.sleep(1.8)
 
-        # Chuột trượt xuống bấm vào nút Đăng xuất (#btn-logout)
-        driver_web.execute_script("window.humanClick('#btn-logout');")
-        time.sleep(2.0)
+        # 2. Chuột trượt xuống bấm vào dòng 'Hồ sơ cá nhân' (href='/pages/account.html')
+        print("[*] Chuột bấm vào liên kết 'Hồ sơ cá nhân' để mở trang tài khoản...")
+        driver_web.execute_script("window.humanClick('a[href=\"/pages/account.html\"], a[href*=\"account\"]');")
+        time.sleep(2.2)
         inject_human_cursor(driver_web)
+
+        # 3. Hiển thị thông tin hồ sơ tài khoản khách hàng trên trang account.html
+        show_banner(driver_web, "GIAO DIỆN HỒ SƠ TÀI KHOẢN KHÁCH HÀNG & BẤM ĐĂNG XUẤT")
+        time.sleep(2.0)
+
+        # 4. Chuột lướt sang thanh sidebar bên trái của trang tài khoản, trỏ vào nút ĐĂNG XUẤT
+        print("[*] Chuột lướt vào nút 'Đăng xuất' trên sidebar của trang tài khoản và click...")
+        driver_web.execute_script("window.humanClick('.account-nav-item[onclick*=\"handleLogout\"], .account-nav-item:last-child');")
+        time.sleep(2.2)
 
         trigger_inspector(driver_api, {
             "name": "12.8 [200 OK] POST /auth/refresh (Cơ chế Refresh Token Rotation)",
@@ -439,10 +448,9 @@ def main():
         # ---------------------------------------------------------------------
         # BƯỚC 7: Đăng nhập Admin & Bảng điều khiển Quản trị
         # ---------------------------------------------------------------------
-        print("[Bước 7/8] Chuột bấm Đăng nhập -> Gõ tài khoản Quản trị viên Admin...")
-        driver_web.get(f"{BASE_URL}/pages/login.html")
+        print("[Bước 7/8] Đăng xuất thành công, form Đăng nhập hiện ra -> Gõ tài khoản Admin...")
         inject_human_cursor(driver_web)
-        time.sleep(1.2)
+        time.sleep(1.0)
         show_banner(driver_web, "BƯỚC 7: ĐĂNG NHẬP ADMIN & BẢNG ĐIỀU KHIỂN KPI DOANH THU")
 
         # Con trỏ chuột lướt vào ô Email và gõ admin@techstore.local

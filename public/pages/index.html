@@ -17,6 +17,19 @@
       .hero-section {
         grid-template-columns: 1fr;
       }
+      .hero-side-banners {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-3);
+      }
+      .side-banner-card {
+        height: auto;
+      }
+    }
+    @media (max-width: 576px) {
+      .hero-side-banners {
+        grid-template-columns: 1fr;
+      }
     }
 
     .hero-badge {
@@ -148,9 +161,15 @@
       gap: var(--space-4);
       margin-bottom: var(--space-8);
     }
-    @media (max-width: 800px) {
+    @media (max-width: 992px) {
       .benefits-row {
         grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-3);
+      }
+    }
+    @media (max-width: 480px) {
+      .benefits-row {
+        grid-template-columns: 1fr;
       }
     }
     .benefit-item {
@@ -216,7 +235,7 @@
   <!-- Top Bar -->
   <div class="topbar">
     <div class="container">
-      <div style="display: flex; align-items: center; gap: 8px;">
+      <div class="topbar-welcome" style="display: flex; align-items: center; gap: 8px;">
         <svg class="tech-icon tech-icon-primary" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 5.5v6.2c0 5.3 3.4 10.2 8 11.3 4.6-1.1 8-6 8-11.3V5.5L12 2z" stroke-linejoin="round" fill="currentColor" fill-opacity="0.15"/><path d="M8.5 11.8l2.3 2.3 4.7-4.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>Chào mừng bạn đến với TechStore – Hệ thống bán lẻ công nghệ chính hãng hàng đầu</span>
       </div>
