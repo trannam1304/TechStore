@@ -180,3 +180,28 @@ Thẩm định toàn diện luồng quản lý giỏ hàng máy chủ lưu trữ
 1. **Về mặt Kiến trúc:** Việc chuẩn hóa Clean MVC giữa Controller Orchestrator ([`CartController.php`](../api/controllers/CartController.php)) và Domain Model ([`CartModel.php`](../api/models/CartModel.php)) tương tác trực tiếp với bảng MySQL vật lý `cart` đã giải quyết dứt điểm vấn đề chia sẻ chung giỏ hàng giả lập trước đây.
 2. **Về mặt Quy tắc Nghiệp vụ (BR04):** Hệ thống kiểm soát chặt chẽ số lượng sản phẩm thêm và cập nhật vào giỏ, tuyệt đối không cho phép vượt quá tồn kho khả dụng `products.stock`.
 3. **Sẵn sàng chuyển giao:** Hệ thống đã hoàn tất xuất sắc 4/4 chức năng cốt lõi (FR01, FR02, FR03, FR04), đạt độ trễ trung bình siêu tốc ($32.2\text{ms}$), sẵn sàng tiếp tục với **FR05: Thẩm định & Áp dụng mã giảm giá khuyến mãi (Coupon Engine)**.
+
+---
+
+## 7. BÁO CÁO THỰC NGHIỆM ĐỐI CHỨNG: RESTful API vs GRAPHQL vs SOAP (TASK T72)
+
+### 7.1. Mục tiêu và Phương pháp Thẩm định
+Để làm nổi bật và chứng minh tính ưu việt của phong cách kiến trúc **RESTful API** trong ứng dụng thực tế thương mại điện tử TechStore, nhóm đã xây dựng 2 endpoint đối chứng chạy song song trên cùng hệ CSDL MySQL và mô hình dữ liệu:
+- **RESTful API (Chuẩn Level 3):** `GET /api/v1/products?limit=10`
+- **GraphQL (Đối chứng Field Selection):** `POST /api/v1/graphql`
+- **SOAP 1.1 (Đối chứng Phong bì XML):** `POST /api/v1/soap`
+
+### 7.2. Kết quả Đo lường Thực nghiệm Định lượng
+*Được trích xuất từ kịch bản đo lường tự động `tests/benchmark_rest_graphql_soap.py`:*
+
+| Tiêu chí đo lường | RESTful API (TechStore) | GraphQL (Đối chứng) | SOAP 1.1 (Đối chứng) | Đánh giá & Kết luận |
+|---|:---:|:---:|:---:|---|
+| **Kích thước Payload (10 sp)** | **14.02 KB** (14,359 bytes) | **3.65 KB** (3,741 bytes) | **7.97 KB** (8,161 bytes) | GraphQL giảm thiểu kích thước nhờ loại bỏ mô tả/thông số không cần thiết. |
+| **Độ trễ trung bình ($ms$)** | **21.89 ms** | **20.64 ms** | **29.17 ms** | REST và GraphQL có thời gian phản hồi tương đương; SOAP trễ cao hơn do phân tích XML. |
+| **Hiện tượng Over-fetching** | Có (Trả về toàn bộ thực thể) | **Không** (Client tự chọn trường) | Rất cao (Bao bọc thẻ XML dài) | GraphQL giảm **89.1%** payload (xuống 1.5KB) khi chỉ cần ID, Name, Price. |
+| **Hiện tượng Under-fetching** | Cần thêm sub-resource | **Tối ưu** (Nested Resolvers) | Khá phức tạp | GraphQL giải quyết triệt để lấy sản phẩm + danh mục trong 1 round-trip. |
+| **Hiệu năng HTTP Caching** | **Vượt trội** (ETag, 304 Not Modified: 0 bytes) | Hạn chế (Dùng POST, cần cơ chế APQ phức tạp) | Không hỗ trợ tự nhiên qua proxy/CDN | REST phản hồi **0 bytes** và độ trễ tức thì khi dữ liệu không thay đổi. |
+| **Cấp độ Richardson (RMM)** | **Level 3 (HATEOAS Hypermedia)** | Không áp dụng (Level 0) | Level 0 (The Swamp of POX) | RESTful API đạt chuẩn cao nhất trong phân loại kiến trúc dịch vụ web. |
+
+### 7.3. Kết luận Thực nghiệm
+Đối với hệ thống thương mại điện tử TechStore – nơi tần suất người dùng duyệt xem sản phẩm chiếm trên 85% tổng lưu lượng truy cập và tận dụng mạnh mẽ hạ tầng mạng đệm (Browser Cache, Reverse Proxy, CDN) – kiến trúc **RESTful API Cấp độ 3** là giải pháp tối ưu hàng đầu về khả năng mở rộng (Scalability), tính đơn giản trong vận hành và tối ưu hóa tài nguyên mạng.

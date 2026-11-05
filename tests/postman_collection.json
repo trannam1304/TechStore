@@ -1817,6 +1817,235 @@
           }
         }
       ]
+    },
+    {
+      "name": "11. Đối chứng REST vs GraphQL vs SOAP (Benchmark T72)",
+      "item": [
+        {
+          "name": "11.1 REST - GET 10 Products (Level 3 ETag, Cache-Control & HATEOAS)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Has ETag, Cache-Control and HATEOAS _links', function () {",
+                  "    pm.expect(pm.response.headers.has('ETag')).to.be.true;",
+                  "    pm.expect(pm.response.headers.get('Cache-Control')).to.include('max-age=300');",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('_links');",
+                  "    pm.environment.set('cached_etag', pm.response.headers.get('ETag'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products?limit=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "11.2 GraphQL - Field Selection (Chống Over-fetching: id, name, price)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Returns only requested fields (no description, no specs)', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('data');",
+                  "    pm.expect(jsonData.data.products).to.be.an('array');",
+                  "    const first = jsonData.data.products[0];",
+                  "    pm.expect(first).to.have.property('id');",
+                  "    pm.expect(first).to.have.property('name');",
+                  "    pm.expect(first).to.have.property('price');",
+                  "    pm.expect(first).to.not.have.property('description');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"{ products(limit: 10) { id name price } }\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/graphql",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            }
+          }
+        },
+        {
+          "name": "11.3 GraphQL - Nested Resolvers (Chống Under-fetching: Category & Brand)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Resolves nested category and brand objects in 1 round-trip', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.products).to.be.an('array');",
+                  "    const first = jsonData.data.products[0];",
+                  "    pm.expect(first).to.have.property('category');",
+                  "    pm.expect(first.category).to.have.property('name');",
+                  "    pm.expect(first).to.have.property('brand');",
+                  "    pm.expect(first.brand).to.have.property('name');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"{ products(limit: 5) { id name price category { name } brand { name } } }\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/graphql",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            }
+          }
+        },
+        {
+          "name": "11.4 GraphQL - Single Product Detail with Specs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Resolves product specs array', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.product).to.be.an('object');",
+                  "    pm.expect(jsonData.data.product.id).to.eql(1);",
+                  "    pm.expect(jsonData.data.product).to.have.property('specs');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"{ product(id: 1) { id name price specs { spec_key spec_value } } }\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/graphql",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
+            }
+          }
+        },
+        {
+          "name": "11.5 SOAP 1.1 - GetProducts XML Envelope",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Returns SOAP XML Envelope with products', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('text/xml');",
+                  "    pm.expect(pm.response.text()).to.include('<soapenv:Envelope');",
+                  "    pm.expect(pm.response.text()).to.include('<tech:GetProductsResponse>');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "text/xml; charset=utf-8"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tech=\"https://techstore.local/soap\">\n  <soapenv:Header/>\n  <soapenv:Body>\n    <tech:GetProductsRequest>\n      <tech:limit>10</tech:limit>\n    </tech:GetProductsRequest>\n  </soapenv:Body>\n</soapenv:Envelope>"
+            },
+            "url": {
+              "raw": "{{base_url}}/soap",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "soap"
+              ]
+            }
+          }
+        }
+      ]
     }
   ]
 }
