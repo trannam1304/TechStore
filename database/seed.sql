@@ -430,7 +430,8 @@ INSERT INTO `orders` (`id`, `order_code`, `user_id`, `customer_name`, `customer_
 (1027, 'TS-267678', 5, 'Trần Minh Hoàng', '0978112233', 'hoang.tran@gmail.com', '15 Lê Duẩn, Q1, TP.HCM', 'vietqr', 'paid', 'confirmed', 58480000, 500000, 0, 57980000, 'TECH10', 'Giao giờ hành chính, gọi trước khi giao cho khách (Trần Minh Hoàng)', '2026-10-19 14:10:00'),
 (1028, 'TS-278789', 2, 'Tuấn Kiệt', '0987654321', 'user@techstore.local', '123 Cách Mạng Tháng 8, Q10, TP.HCM', 'vietqr', 'paid', 'confirmed', 91280000, 1000000, 0, 90280000, 'APPLENEW', 'Giao giờ hành chính, gọi trước khi giao cho khách (Tuấn Kiệt)', '2026-10-20 09:30:00'),
 (1029, 'TS-289890', 7, 'Phạm Phương Mai', '0909887766', 'mai.pham@gmail.com', '254 Hoàng Văn Thụ, Tân Bình, TP.HCM', 'vietqr', 'pending', 'pending', 30480000, 50000, 0, 30430000, 'VIETQR50', 'Giao giờ hành chính, gọi trước khi giao cho khách (Phạm Phương Mai)', '2026-10-21 08:20:00'),
-(1030, 'TS-290901', NULL, 'Trương Minh Tuấn', '0988001122', 'tuan.truong@gmail.com', '102 Lê Văn Sỹ, Q3, TP.HCM', 'cod', 'pending', 'cancelled', 76990000, 0, 0, 76990000, NULL, 'Khách yêu cầu hủy đơn do đổi ý', '2026-10-21 11:45:00');
+(1030, 'TS-290901', NULL, 'Trương Minh Tuấn', '0988001122', 'tuan.truong@gmail.com', '102 Lê Văn Sỹ, Q3, TP.HCM', 'cod', 'pending', 'cancelled', 76990000, 0, 0, 76990000, NULL, 'Khách yêu cầu hủy đơn do đổi ý', '2026-10-21 11:45:00'),
+(1055, 'TS-999055', 7, 'Phạm Phương Mai', '0909887766', 'mai.pham@gmail.com', '254 Hoàng Văn Thụ, Tân Bình, TP.HCM', 'vietqr', 'pending', 'pending', 15000000, 0, 0, 15000000, NULL, 'Đơn hàng thử nghiệm kiểm soát đối tượng (IDOR)', '2026-10-25 10:00:00');
 
 -- -----------------------------------------------------------------------------
 -- 9. DỮ LIỆU SEED CHO BẢNG order_items (Mặt hàng chi tiết trong đơn)

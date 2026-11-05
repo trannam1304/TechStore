@@ -39,6 +39,10 @@ def configure_windows_50_50(driver_web, driver_api):
     driver_api.set_window_rect(x=avail_x + half_w, y=avail_y, width=half_w, height=avail_h)
 
 def inject_human_cursor(driver):
+    try:
+        driver.execute_script("sessionStorage.setItem('techstore_demo_mode', '1');")
+    except Exception:
+        pass
     js = """
     if (!document.getElementById('demo-cursor-style')) {
         let style = document.createElement('style');
@@ -237,8 +241,8 @@ def main():
     BASE_URL = "http://localhost:8000"
 
     try:
-        # Load trang ban đầu
-        driver_web.get(f"{BASE_URL}/pages/index.html")
+        # Load trang ban đầu kèm cờ demo=1 để kích hoạt bộ test suite riêng
+        driver_web.get(f"{BASE_URL}/pages/index.html?demo=1")
         driver_api.get(f"{BASE_URL}/pages/api-live.html")
         time.sleep(1.0)
 
