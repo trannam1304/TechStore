@@ -558,17 +558,31 @@ def main():
         time.sleep(4.5)
 
         # ---------------------------------------------------------------------
-        # BƯỚC 8: Chuột bấm sang menu Đơn hàng Quản trị
+        # BƯỚC 8: Mở Menu Hamburger Admin -> Bấm 'Đơn hàng & VietQR'
         # ---------------------------------------------------------------------
-        print("[Bước 8/8] Chuột lướt sang sidebar bấm menu 'Đơn hàng & VietQR'...")
-        show_banner(driver_web, "QUẢN TRỊ ĐƠN HÀNG & TRẠNG THÁI THANH TOÁN (100% TEST PASS)")
+        print("\n[Bước 8/8] Chuột lướt lên góc trên bên trái -> Bấm nút Hamburger Admin (#btn-admin-hamburger)...")
+        show_banner(driver_web, "BƯỚC 8: MỞ MENU HAMBURGER ADMIN -> CHỌN 'ĐƠN HÀNG & VIETQR'")
+        time.sleep(1.0)
 
-        # Chuột bấm menu Đơn hàng trên sidebar
-        wait_for_element(driver_web, 'a[href*="orders"]')
-        driver_web.execute_script("window.humanClick('a[href=\"/admin/orders.html\"], a[href*=\"orders\"].sidebar-link');")
+        # 1. Chuột lướt lên nút Hamburger của Admin Topbar và click
+        wait_for_element(driver_web, '#btn-admin-hamburger, .btn-sidebar-toggle')
+        driver_web.execute_script("window.humanClick('#btn-admin-hamburger, .btn-sidebar-toggle');")
+        time.sleep(2.0)
+
+        # 2. Sidebar trượt ra, chuột lướt xuống mục 'Đơn hàng & VietQR' (a[href*="orders"])
+        print("[*] Sidebar Admin mở ra -> Chuột lướt tới mục 'Đơn hàng & VietQR' và click...")
+        wait_for_element(driver_web, '#admin-sidebar a[href*="orders"], a[href*="orders"].sidebar-link')
+        driver_web.execute_script("window.humanClick('#admin-sidebar a[href*=\"orders\"], a[href*=\"orders\"].sidebar-link');")
+
+        # Đợi chuyển trang sang orders.html
         wait_for_url_contains(driver_web, "orders")
         time.sleep(1.5)
         inject_human_cursor(driver_web)
+
+        # 3. Giao diện Quản lý Đơn hàng hiển thị đầy đủ bảng danh sách và trạng thái VietQR
+        show_banner(driver_web, "QUẢN TRỊ ĐƠN HÀNG & TRẠNG THÁI THANH TOÁN (100% TEST PASS)")
+        time.sleep(1.0)
+        driver_web.execute_script("window.humanClick('#order-search-input, .admin-table tbody tr:first-child');")
         time.sleep(3.5)
 
         show_banner(driver_web, "HOÀN TẤT KỊCH BẢN DEMO THÀNH CÔNG (100% TEST PASS)")
