@@ -1386,6 +1386,271 @@ collection = {
                     }
                 }
             ]
+        },
+        # =========================================================================
+        # 12. DEMO BẢO MẬT & JWT (VIDEO DEMO 1.5 PHÚT - TASK T73)
+        # =========================================================================
+        {
+            "name": "12. Demo Bảo mật & JWT (Video Demo 1.5 phút)",
+            "item": [
+                {
+                    "name": "12.1 [401] Gọi API bảo vệ không có Token",
+                    "event": [{
+                        "listen": "test",
+                        "script": {
+                            "type": "text/javascript",
+                            "exec": [
+                                "pm.test('Mã trạng thái HTTP là 401 Unauthorized', function () {",
+                                "    pm.response.to.have.status(401);",
+                                "});",
+                                "pm.test('Chặn truy cập do thiếu Bearer Token', function () {",
+                                "    const jsonData = pm.response.json();",
+                                "    pm.expect(jsonData.success).to.be.false;",
+                                "    pm.expect(jsonData.error.code).to.eql('UNAUTHORIZED');",
+                                "});"
+                            ]
+                        }
+                    }],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {"raw": "{{base_url}}/auth/me", "host": ["{{base_url}}"], "path": ["auth", "me"]}
+                    }
+                },
+                {
+                    "name": "12.2 [401] Token bị can thiệp chữ ký (Tampered Signature)",
+                    "event": [{
+                        "listen": "test",
+                        "script": {
+                            "type": "text/javascript",
+                            "exec": [
+                                "pm.test('Mã trạng thái HTTP là 401 Unauthorized', function () {",
+                                "    pm.response.to.have.status(401);",
+                                "});",
+                                "pm.test('HMAC-SHA256 phát hiện chữ ký giả mạo', function () {",
+                                "    const jsonData = pm.response.json();",
+                                "    pm.expect(jsonData.success).to.be.false;",
+                                "});"
+                            ]
+                        }
+                    }],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {"key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXNlckB0ZWNoc3RvcmUubG9jYWwiLCJyb2xlIjoiY3VzdG9tZXIifQ.FAKE_SIGNATURE_TAMPERED_HASH"}
+                        ],
+                        "url": {"raw": "{{base_url}}/auth/me", "host": ["{{base_url}}"], "path": ["auth", "me"]}
+                    }
+                },
+                {
+                    "name": "12.3 [401] Token hết hạn (Expired Token)",
+                    "event": [{
+                        "listen": "test",
+                        "script": {
+                            "type": "text/javascript",
+                            "exec": [
+                                "pm.test('Mã trạng thái HTTP là 401 Unauthorized', function () {",
+                                "    pm.response.to.have.status(401);",
+                                "});",
+                                "pm.test('Từ chối token đã hết hạn truy cập', function () {",
+                                "    const jsonData = pm.response.json();",
+                                "    pm.expect(jsonData.success).to.be.false;",
+                                "});"
+                            ]
+                        }
+                    }],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {"key": "Authorization", "value": "Bearer eyJ0eXAiOiAiSldUIiwgImFsZyI6ICJIUzI1NiJ9.eyJzdWIiOiAyLCAiZW1haWwiOiAidXNlckB0ZWNoc3RvcmUubG9jYWwiLCAicm9sZSI6ICJjdXN0b21lciIsICJpYXQiOiAxNTAwMDAwMDAwLCAiZXhwIjogMTUwMDAwMzYwMH0.nULS3vo4nxa9hDuyDyw8Lg0SDRTfqDWWlrUcVEx0pT8"}
+                        ],
+                        "url": {"raw": "{{base_url}}/auth/me", "host": ["{{base_url}}"], "path": ["auth", "me"]}
+                    }
+                },
+                {
+                    "name": "12.4 [200] Đăng nhập Khách hàng & Cấp Access + Refresh Token",
+                    "event": [{
+                        "listen": "test",
+                        "script": {
+                            "type": "text/javascript",
+                            "exec": [
+                                "pm.test('Mã trạng thái HTTP là 200 OK', function () {",
+                                "    pm.response.to.have.status(200);",
+                                "});",
+                                "pm.test('Cấp thành công cặp JWT Token cho Khách hàng', function () {",
+                                "    const jsonData = pm.response.json();",
+                                "    pm.expect(jsonData.success).to.be.true;",
+                                "    pm.expect(jsonData.data).to.have.property('access_token');",
+                                "    pm.expect(jsonData.data).to.have.property('refresh_token');",
+                                "    pm.environment.set('demo_customer_token', jsonData.data.access_token);",
+                                "    pm.environment.set('demo_customer_refresh', jsonData.data.refresh_token);",
+                                "});"
+                            ]
+                        }
+                    }],
+                    "request": {
+                        "method": "POST",
+                        "header": [{"key": "Content-Type", "value": "application/json"}],
+                        "body": {
+                            "mode": "raw",
+                            "raw": json.dumps({"email": "user@techstore.local", "password": "User@123"}, indent=2)
+                        },
+                        "url": {"raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"]}
+                    }
+                },
+                {
+                    "name": "12.5 [403] Chặn quyền RBAC - Khách hàng gọi API Quản trị",
+                    "event": [{
+                        "listen": "test",
+                        "script": {
+                            "type": "text/javascript",
+                            "exec": [
+                                "pm.test('Mã trạng thái HTTP là 403 Forbidden', function () {",
+                                "    pm.response.to.have.status(403);",
+                                "});",
+                                "pm.test('Middleware phân quyền chặn tài khoản Customer', function () {",
+                                "    const jsonData = pm.response.json();",
+                                "    pm.expect(jsonData.success).to.be.false;",
+                                "    pm.expect(jsonData.error.code).to.eql('FORBIDDEN');",
+                                "});"
+                            ]
+                        }
+                    }],
+                    "request": {
+                        "method": "GET",
+                        "header": [{"key": "Authorization", "value": "Bearer {{demo_customer_token}}"}],
+                        "url": {"raw": "{{base_url}}/admin/stats", "host": ["{{base_url}}"], "path": ["admin", "stats"]}
+                    }
+                },
+                {
+                    "name": "12.6 [403] Chống lỗ hổng IDOR - Khách hàng B hủy đơn Khách hàng A",
+                    "event": [{
+                        "listen": "prerequest",
+                        "script": {
+                            "type": "text/javascript",
+                            "exec": [
+                                "pm.sendRequest({",
+                                "    url: pm.environment.get('base_url') + '/orders',",
+                                "    method: 'GET',",
+                                "    header: { 'Authorization': 'Bearer ' + pm.environment.get('admin_token') }",
+                                "}, function (err, res) {",
+                                "    if (!err && res.code === 200) {",
+                                "        const data = res.json().data;",
+                                "        const items = data.items || data;",
+                                "        const otherOrder = items.find(o => o.user_id !== 2);",
+                                "        if (otherOrder) {",
+                                "            pm.environment.set('idor_target_order_id', otherOrder.id);",
+                                "        } else {",
+                                "            pm.environment.set('idor_target_order_id', 1055);",
+                                "        }",
+                                "    } else {",
+                                "        pm.environment.set('idor_target_order_id', 1055);",
+                                "    }",
+                                "});"
+                            ]
+                        }
+                    }, {
+                        "listen": "test",
+                        "script": {
+                            "type": "text/javascript",
+                            "exec": [
+                                "pm.test('Mã trạng thái HTTP là 403 Forbidden', function () {",
+                                "    pm.response.to.have.status(403);",
+                                "});",
+                                "pm.test('Chống IDOR: Không được phép hủy đơn hàng của người khác', function () {",
+                                "    const jsonData = pm.response.json();",
+                                "    pm.expect(jsonData.success).to.be.false;",
+                                "    pm.expect(jsonData.error.code).to.eql('FORBIDDEN');",
+                                "});"
+                            ]
+                        }
+                    }],
+                    "request": {
+                        "method": "POST",
+                        "header": [{"key": "Authorization", "value": "Bearer {{demo_customer_token}}"}],
+                        "url": {"raw": "{{base_url}}/orders/{{idor_target_order_id}}/cancel", "host": ["{{base_url}}"], "path": ["orders", "{{idor_target_order_id}}", "cancel"]}
+                    }
+                },
+                {
+                    "name": "12.7 [401] Bảo mật Webhook VietQR - Chặn Webhook không có chữ ký HMAC",
+                    "event": [{
+                        "listen": "test",
+                        "script": {
+                            "type": "text/javascript",
+                            "exec": [
+                                "pm.test('Mã trạng thái HTTP là 401 Unauthorized', function () {",
+                                "    pm.response.to.have.status(401);",
+                                "});",
+                                "pm.test('Từ chối Webhook khi thiếu hoặc sai chữ ký HMAC', function () {",
+                                "    const jsonData = pm.response.json();",
+                                "    pm.expect(jsonData.success).to.be.false;",
+                                "});"
+                            ]
+                        }
+                    }],
+                    "request": {
+                        "method": "POST",
+                        "header": [{"key": "Content-Type", "value": "application/json"}],
+                        "body": {
+                            "mode": "raw",
+                            "raw": json.dumps({"order_id": 1, "status": "PAID"}, indent=2)
+                        },
+                        "url": {"raw": "{{base_url}}/payments/webhook", "host": ["{{base_url}}"], "path": ["payments", "webhook"]}
+                    }
+                },
+                {
+                    "name": "12.8 [200] Xoay vòng Refresh Token (RTR) & Gia hạn phiên",
+                    "event": [{
+                        "listen": "test",
+                        "script": {
+                            "type": "text/javascript",
+                            "exec": [
+                                "pm.test('Mã trạng thái HTTP là 200 OK', function () {",
+                                "    pm.response.to.have.status(200);",
+                                "});",
+                                "pm.test('Tự động cấp Access Token mới qua cơ chế RTR', function () {",
+                                "    const jsonData = pm.response.json();",
+                                "    pm.expect(jsonData.success).to.be.true;",
+                                "    pm.expect(jsonData.data).to.have.property('access_token');",
+                                "});"
+                            ]
+                        }
+                    }],
+                    "request": {
+                        "method": "POST",
+                        "header": [{"key": "Content-Type", "value": "application/json"}],
+                        "body": {
+                            "mode": "raw",
+                            "raw": json.dumps({"refresh_token": "{{demo_customer_refresh}}"}, indent=2)
+                        },
+                        "url": {"raw": "{{base_url}}/auth/refresh", "host": ["{{base_url}}"], "path": ["auth", "refresh"]}
+                    }
+                },
+                {
+                    "name": "12.9 [200] Quản trị viên truy vấn Nhật ký kiểm toán bất biến (Audit Logs)",
+                    "event": [{
+                        "listen": "test",
+                        "script": {
+                            "type": "text/javascript",
+                            "exec": [
+                                "pm.test('Mã trạng thái HTTP là 200 OK', function () {",
+                                "    pm.response.to.have.status(200);",
+                                "});",
+                                "pm.test('Trả về danh sách Audit Logs ghi vết hệ thống', function () {",
+                                "    const jsonData = pm.response.json();",
+                                "    pm.expect(jsonData.success).to.be.true;",
+                                "    pm.expect(jsonData.data).to.be.an('array');",
+                                "});"
+                            ]
+                        }
+                    }],
+                    "request": {
+                        "method": "GET",
+                        "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}],
+                        "url": {"raw": "{{base_url}}/admin/audit-logs", "host": ["{{base_url}}"], "path": ["admin", "audit-logs"]}
+                    }
+                }
+            ]
         }
     ]
 }

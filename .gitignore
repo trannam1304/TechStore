@@ -35,3 +35,7 @@ PROJECT-Mid-final/
 # Python cache
 __pycache__/
 *.pyc
+
+# Postman desktop local workspace cache
+.postman/
+postman/

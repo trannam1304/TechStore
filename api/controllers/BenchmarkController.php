@@ -464,3 +464,4 @@ class BenchmarkController extends BaseController {
         return $xml;
     }
 }
+
