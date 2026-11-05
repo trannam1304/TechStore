@@ -14,8 +14,11 @@ echo     sẽ chạy đồng bộ 100%% hoàn toàn tự động!
 echo.
 echo [3] Bạn hãy chuẩn bị sẵn phần mềm quay màn hình (OBS hoặc Win + Alt + R).
 echo.
+echo ===> Sau khi bấm phím bất kỳ, hệ thống sẽ ĐẾM NGƯỢC 10 GIÂY trước khi mở trình duyệt! <===
+echo.
 pause
 python tests/auto_demo_video.py
 echo.
 echo Đã hoàn tất kịch bản quay video demo!
 pause
+

@@ -1,26 +1,59 @@
 """
 TechStore - Kịch bản Video Demo Tự động ĐỒNG BỘ 100% (Selenium Two-Screen Lockstep)
-Tự động mở 2 cửa sổ Chrome chia đôi màn hình:
-  - CỬA SỔ TRÁI: Giao diện TechStore (Khách hàng & Quản trị)
-  - CỬA SỔ PHẢI: Bảng điều khiển API Live Telemetry (Hiển thị mã 401, 403, 200, JWT & JSON)
-Bạn chỉ việc chạy: python tests/auto_demo_video.py và bấm Quay màn hình!
+Tự động mở 2 cửa sổ Chrome chia đôi màn hình 50:50 chính xác:
+  - CỬA SỔ TRÁI (50%): Giao diện TechStore (Khách hàng & Quản trị)
+  - CỬA SỔ PHẢI (50%): Bảng điều khiển API Live Telemetry (Hiển thị mã 401, 403, 200, JWT & JSON)
+Đếm ngược 10 giây trước khi bắt đầu để người dùng bật phần mềm quay màn hình.
 """
 
 import sys
 import time
 import json
-import urllib.request
 
-def get_screen_resolution():
+def get_screen_work_area():
+    try:
+        import ctypes
+        from ctypes import wintypes
+        user32 = ctypes.windll.user32
+        try:
+            ctypes.windll.shcore.SetProcessDpiAwareness(2)
+        except Exception:
+            user32.SetProcessDPIAware()
+
+        rect = wintypes.RECT()
+        # SPI_GETWORKAREA = 0x0030 (lấy diện tích làm việc trừ Taskbar)
+        user32.SystemParametersInfoW(0x0030, 0, ctypes.byref(rect), 0)
+        work_x = rect.left
+        work_y = rect.top
+        work_w = rect.right - rect.left
+        work_h = rect.bottom - rect.top
+        return work_x, work_y, work_w, work_h
+    except Exception:
+        return 0, 0, 1920, 1040
+
+def snap_window(driver, target_x, target_y, target_w, target_h):
+    # 1. Gọi lệnh chuẩn của Selenium
+    try:
+        driver.set_window_rect(x=target_x, y=target_y, width=target_w, height=target_h)
+    except Exception:
+        pass
+
+    # 2. Ép vị trí qua Windows API (SetWindowPos) để đảm bảo chia đôi 50:50 tuyệt đối
     try:
         import ctypes
         user32 = ctypes.windll.user32
-        user32.SetProcessDPIAware()
-        sw = user32.GetSystemMetrics(0)
-        sh = user32.GetSystemMetrics(1)
-        return sw, sh
+        unique_marker = f"__SNAP_TECHSTORE_{target_x}_{int(time.time()*1000)}__"
+        old_title = driver.title
+        driver.execute_script(f"document.title = '{unique_marker}';")
+        time.sleep(0.2)
+        hwnd = user32.FindWindowW(None, unique_marker)
+        if hwnd:
+            # 0x0044 = SWP_SHOWWINDOW (0x0040) | SWP_NOZORDER (0x0004)
+            user32.SetWindowPos(hwnd, 0, int(target_x), int(target_y), int(target_w), int(target_h), 0x0044)
+        if old_title:
+            driver.execute_script(f"document.title = '{old_title}';")
     except Exception:
-        return 1920, 1080
+        pass
 
 def show_banner(driver, text):
     js = f"""
@@ -47,55 +80,61 @@ def trigger_inspector(driver_inspector, step_data):
 
 def main():
     print("=" * 75)
-    print(" TECHSTORE - TỰ ĐỘNG ĐỒNG BỘ HAI NỬA MÀN HÌNH (SPLIT-SCREEN DEMO)")
+    print(" TECHSTORE - TỰ ĐỘNG ĐỒNG BỘ HAI NỬA MÀN HÌNH (CHIA ĐÔI 50:50)")
     print("=" * 75)
 
-    sw, sh = get_screen_resolution()
-    half_w = sw // 2
-    print(f"[*] Độ phân giải màn hình: {sw}x{sh}")
-    print(f"[*] Cửa sổ 1 (Giao diện Khách & Admin): x=0, y=0, width={half_w}, height={sh}")
-    print(f"[*] Cửa sổ 2 (API Live Inspector):     x={half_w}, y=0, width={half_w}, height={sh}")
-    print("[*] Tự động khởi chạy hai cửa sổ sau 2 giây...\n")
-    time.sleep(2)
+    work_x, work_y, work_w, work_h = get_screen_work_area()
+    half_w = work_w // 2
+
+    print(f"[*] Diện tích màn hình khả dụng (Work Area): {work_w} x {work_h}")
+    print(f"[*] Cửa sổ 1 (Giao diện Web Khách & Admin): x={work_x}, y={work_y}, width={half_w}, height={work_h}")
+    print(f"[*] Cửa sổ 2 (Bảng điều khiển API Live):     x={work_x + half_w}, y={work_y}, width={half_w}, height={work_h}")
+    print("=" * 75)
+
+    # ĐẾM NGƯỢC 10 GIÂY
+    print("\n[CHUẨN BỊ] Hãy bật phần mềm quay màn hình ngay bây giờ (OBS hoặc Win + Alt + R)!")
+    for sec in range(10, 0, -1):
+        print(f"  >>> BẮT ĐẦU TỰ ĐỘNG SAU: {sec:2d} GIÂY... <<<", end="\r", flush=True)
+        time.sleep(1)
+    print("\n\n[BẮT ĐẦU] Đang khởi chạy 2 cửa sổ Chrome chia đôi màn hình 50:50...\n")
 
     from selenium import webdriver
 
-    options = webdriver.ChromeOptions()
-    options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    options.add_experimental_option('useAutomationExtension', False)
-
     # 1. Khởi động Cửa sổ 1 (Bên trái: Web UI)
-    print("[*] Đang mở Cửa sổ 1 (Giao diện Web)...")
+    print("[*] Đang mở Cửa sổ 1 (Trái 50%: Giao diện Web)...")
     options_left = webdriver.ChromeOptions()
     options_left.add_experimental_option("excludeSwitches", ["enable-automation"])
     options_left.add_experimental_option('useAutomationExtension', False)
-    options_left.add_argument(f"--window-size={half_w},{sh}")
-    options_left.add_argument("--window-position=0,0")
+    options_left.add_argument(f"--window-size={half_w},{work_h}")
+    options_left.add_argument(f"--window-position={work_x},{work_y}")
     driver_web = webdriver.Chrome(options=options_left)
-    driver_web.set_window_rect(x=0, y=0, width=half_w, height=sh)
 
     # 2. Khởi động Cửa sổ 2 (Bên phải: API Live Inspector)
-    print("[*] Đang mở Cửa sổ 2 (API Live Inspector)...")
+    print("[*] Đang mở Cửa sổ 2 (Phải 50%: API Live Inspector)...")
     options_right = webdriver.ChromeOptions()
     options_right.add_experimental_option("excludeSwitches", ["enable-automation"])
     options_right.add_experimental_option('useAutomationExtension', False)
-    options_right.add_argument(f"--window-size={half_w},{sh}")
-    options_right.add_argument(f"--window-position={half_w},0")
+    options_right.add_argument(f"--window-size={half_w},{work_h}")
+    options_right.add_argument(f"--window-position={work_x + half_w},{work_y}")
     driver_api = webdriver.Chrome(options=options_right)
-    driver_api.set_window_rect(x=half_w, y=0, width=half_w, height=sh)
 
     BASE_URL = "http://localhost:8000"
 
     try:
         # Load trang ban đầu
+        driver_web.get(f"{BASE_URL}/pages/index.html")
         driver_api.get(f"{BASE_URL}/pages/api-live.html")
+
+        # Căn chỉnh vị trí 50:50 chính xác sau khi trình duyệt đã tải xong
         time.sleep(1)
+        snap_window(driver_web, work_x, work_y, half_w, work_h)
+        snap_window(driver_api, work_x + half_w, work_y, half_w, work_h)
+        time.sleep(1.5)
 
         # ---------------------------------------------------------------------
         # BƯỚC 1: Khách hàng truy cập trang chủ TechStore
         # ---------------------------------------------------------------------
         print("\n[Bước 1/7] Khách hàng mở trang chủ -> API tải danh sách sản phẩm...")
-        driver_web.get(f"{BASE_URL}/pages/index.html")
         show_banner(driver_web, "BƯỚC 1: TRANG CHỦ TECHSTORE (RESTful API LEVEL 3)")
 
         trigger_inspector(driver_api, {
@@ -123,7 +162,7 @@ def main():
                 }
             }
         })
-        time.sleep(3.5)
+        time.sleep(4.0)
 
         # ---------------------------------------------------------------------
         # BƯỚC 2: Cố tình truy cập trang Admin khi chưa đăng nhập
@@ -140,7 +179,7 @@ def main():
             "statusText": "Unauthorized",
             "time": "14.2 ms",
             "size": "486 B",
-            "securityNote": "OWASP API02: Broken Authentication - Hệ thống từ chối mọi request không có Bearer token.",
+            "securityNote": "OWASP API02: Broken Authentication - Hệ thống từ chối mọi request không có Bearer token trong Header.",
             "reqHeaders": {
                 "Authorization": "[Chưa truyền Header Token]"
             },
@@ -153,7 +192,7 @@ def main():
                 "error": {"code": "UNAUTHORIZED"}
             }
         })
-        time.sleep(3.5)
+        time.sleep(4.0)
 
         # ---------------------------------------------------------------------
         # BƯỚC 3: Đăng nhập Khách hàng & Cấp JWT
@@ -172,7 +211,7 @@ def main():
             "statusText": "OK",
             "time": "58.4 ms",
             "size": "1.05 KB",
-            "securityNote": "Mật khẩu băm an toàn bằng PASSWORD_BCRYPT. Access Token ký bằng HMAC-SHA256 (hạn 1h), Refresh Token lưu bảo mật trong MySQL (hạn 7 ngày).",
+            "securityNote": "Mật khẩu băm an toàn bằng PASSWORD_BCRYPT. Access Token ký bằng HMAC-SHA256 (hạn 1h), Refresh Token lưu an toàn trong MySQL (hạn 7 ngày).",
             "reqHeaders": {"Content-Type": "application/json"},
             "resBody": {
                 "success": True,
@@ -184,7 +223,7 @@ def main():
                 }
             }
         })
-        time.sleep(3.5)
+        time.sleep(4.0)
 
         # ---------------------------------------------------------------------
         # BƯỚC 4: Khách hàng cố tình vào lại trang Admin -> Chặn quyền RBAC (403)
@@ -214,7 +253,7 @@ def main():
                 "error": {"code": "FORBIDDEN"}
             }
         })
-        time.sleep(3.5)
+        time.sleep(4.0)
 
         # ---------------------------------------------------------------------
         # BƯỚC 5: Chống lỗ hổng IDOR khi hủy đơn hàng
@@ -244,7 +283,7 @@ def main():
                 "error": {"code": "FORBIDDEN"}
             }
         })
-        time.sleep(3.5)
+        time.sleep(4.0)
 
         # ---------------------------------------------------------------------
         # BƯỚC 6: Gia hạn phiên làm việc qua Refresh Token Rotation (RTR)
@@ -271,7 +310,7 @@ def main():
                 }
             }
         })
-        time.sleep(3.5)
+        time.sleep(4.0)
 
         # ---------------------------------------------------------------------
         # BƯỚC 7: Đăng xuất, Đăng nhập Admin & Nhật ký kiểm toán bất biến
@@ -305,12 +344,12 @@ def main():
                 ]
             }
         })
-        time.sleep(4.0)
+        time.sleep(4.5)
 
         # Xem trang Đơn hàng
         driver_web.get(f"{BASE_URL}/admin/orders.html")
         show_banner(driver_web, "QUẢN TRỊ ĐƠN HÀNG & TRẠNG THÁI THANH TOÁN (100% TEST PASS)")
-        time.sleep(3.5)
+        time.sleep(4.0)
 
         show_banner(driver_web, "HOÀN TẤT KỊCH BẢN DEMO THÀNH CÔNG")
         print("\n" + "=" * 75)
