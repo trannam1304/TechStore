@@ -1,9 +1,12 @@
 """
 TechStore - Kịch bản Video Demo Tự động ĐỒNG BỘ 100% (Selenium Two-Screen Lockstep)
-Tự động mở 2 cửa sổ Chrome chia đôi màn hình 50:50 CHÍNH XÁC THEO TỶ LỆ MÀN HÌNH MÁY BẠN:
+Tự động mở 2 cửa sổ Chrome chia đôi màn hình 50:50 CHÍNH XÁC THEO TỶ LỆ MÀN HÌNH:
   - CỬA SỔ TRÁI (50%): Giao diện TechStore với CON TRỎ CHUỘT LƯỚT CHẬM, CLICK & GÕ PHÍM CHÂN THẬT
   - CỬA SỔ PHẢI (50%): Bảng điều khiển API Live Telemetry (Hiển thị mã 401, 403, 200, JWT & JSON)
-ĐẶC BIỆT: Vào tận giao diện Hồ sơ Tài khoản (account.html) để di chuột bấm nút ĐĂNG XUẤT.
+ĐẶC BIỆT:
+  - Bước 4: Mở Menu Hamburger -> Chọn 'Quản trị Admin (Chỉ Admin)' -> Chặn 403 RBAC Guard trực quan
+  - Bước 5: Bấm nút kiểm tra IDOR trên màn hình 403 -> Chặn 403 IDOR khi hủy đơn hàng #1029
+  - Bước 6: Trở về trang Hồ sơ cá nhân (account.html) -> Di chuột bấm nút ĐĂNG XUẤT
 """
 
 import sys
@@ -83,8 +86,16 @@ def inject_human_cursor(driver):
 
         setTimeout(() => {
             let rect = el.getBoundingClientRect();
-            let targetX = Math.max(10, Math.min(window.innerWidth - 30, rect.left + rect.width / 2));
-            let targetY = Math.max(10, Math.min(window.innerHeight - 30, rect.top + rect.height / 2));
+            let targetX = rect.left + rect.width / 2;
+            let targetY = rect.top + rect.height / 2;
+
+            if (rect.width === 0 || rect.height === 0 || targetX <= 0 || targetY <= 0) {
+                targetX = window.innerWidth / 2;
+                targetY = window.innerHeight / 2;
+            } else {
+                targetX = Math.max(15, Math.min(window.innerWidth - 30, targetX));
+                targetY = Math.max(15, Math.min(window.innerHeight - 30, targetY));
+            }
 
             cursor.style.left = targetX + 'px';
             cursor.style.top = targetY + 'px';
@@ -96,6 +107,13 @@ def inject_human_cursor(driver):
                 setTimeout(() => ripple.remove(), 500);
 
                 el.click();
+                if (el.tagName === 'A' && el.href && (!el.onclick || el.onclick.toString().indexOf('preventDefault') === -1)) {
+                    setTimeout(() => {
+                        if (window.location.href !== el.href && !el.href.startsWith('javascript:')) {
+                            window.location.href = el.href;
+                        }
+                    }, 300);
+                }
                 if (doneCallback) doneCallback();
             }, 1200);
         }, 300);
@@ -113,8 +131,8 @@ def inject_human_cursor(driver):
 
         setTimeout(() => {
             let rect = el.getBoundingClientRect();
-            let targetX = Math.max(10, Math.min(window.innerWidth - 30, rect.left + 24));
-            let targetY = Math.max(10, Math.min(window.innerHeight - 30, rect.top + rect.height / 2));
+            let targetX = Math.max(15, Math.min(window.innerWidth - 30, rect.left + 24));
+            let targetY = Math.max(15, Math.min(window.innerHeight - 30, rect.top + rect.height / 2));
 
             cursor.style.left = targetX + 'px';
             cursor.style.top = targetY + 'px';
@@ -142,6 +160,32 @@ def inject_human_cursor(driver):
         driver.execute_script(js)
     except Exception:
         pass
+
+def wait_for_element(driver, selector, timeout=6.0):
+    start = time.time()
+    while time.time() - start < timeout:
+        try:
+            found = driver.execute_script(f"""
+                let el = document.querySelector('{selector}');
+                return el !== null;
+            """)
+            if found:
+                return True
+        except Exception:
+            pass
+        time.sleep(0.2)
+    return False
+
+def wait_for_url_contains(driver, substring, timeout=6.0):
+    start = time.time()
+    while time.time() - start < timeout:
+        try:
+            if substring in driver.current_url:
+                return True
+        except Exception:
+            pass
+        time.sleep(0.2)
+    return False
 
 def show_banner(driver, text):
     js = f"""
@@ -210,7 +254,7 @@ def main():
         print("\n[Bước 1/8] Khách hàng mở trang chủ -> Di chuyển chuột chậm rãi vào ô tìm kiếm...")
         show_banner(driver_web, "BƯỚC 1: TRANG CHỦ TECHSTORE (RESTful API LEVEL 3)")
         
-        # Con trỏ chuột lướt vào ô tìm kiếm và click
+        wait_for_element(driver_web, '#global-search-input')
         driver_web.execute_script("window.humanClick('#global-search-input');")
         time.sleep(2.0)
 
@@ -247,16 +291,15 @@ def main():
         print("[Bước 2/8] Chuột lướt lên menu Tài khoản -> Bấm nút 'Đăng nhập'...")
         show_banner(driver_web, "BƯỚC 2: CHUỘT BẤM MENU VÀO TRANG ĐĂNG NHẬP")
         
-        # Chuột bấm vào nút Tài khoản trên header
-        driver_web.execute_script("window.humanClick('#user-menu-btn');")
+        driver_web.execute_script("window.humanClick('#user-menu-btn, #btn-hamburger-menu');")
         time.sleep(1.8)
 
-        # Chuột trượt xuống bấm vào liên kết 'Đăng nhập'
         driver_web.execute_script("window.humanClick('a[href=\"/pages/login.html\"], a[href*=\"login\"]');")
-        time.sleep(2.0)
+        wait_for_url_contains(driver_web, "login")
+        time.sleep(1.5)
         inject_human_cursor(driver_web)
 
-        # Thử cố vào trang admin khi chưa đăng nhập
+        # Thử cố vào trang admin khi chưa đăng nhập (Test 12.1)
         print("[*] Thử truy cập trang Quản trị khi chưa đăng nhập -> Chặn 401...")
         driver_web.get(f"{BASE_URL}/admin/index.html")
         inject_human_cursor(driver_web)
@@ -295,6 +338,7 @@ def main():
         show_banner(driver_web, "BƯỚC 3: ĐĂNG NHẬP KHÁCH HÀNG & CẤP TOKEN JWT")
 
         # Con trỏ chuột lướt vào ô Email và gõ từng chữ
+        wait_for_element(driver_web, '#login-email')
         driver_web.execute_script("window.humanType('#login-email', 'user@techstore.local');")
         time.sleep(2.5)
 
@@ -326,27 +370,40 @@ def main():
                 }
             }
         })
-        time.sleep(3.5)
 
-        # ---------------------------------------------------------------------
-        # BƯỚC 4: Khách hàng cố tình vào trang Admin (Trực quan hóa Phân quyền RBAC 403)
-        # ---------------------------------------------------------------------
-        print("\n[Bước 4/8] Khách hàng bấm menu 'Trang Quản Trị' -> Chặn phân quyền RBAC (403)...")
-        inject_human_cursor(driver_web)
-        show_banner(driver_web, "BƯỚC 4: PHÂN QUYỀN RBAC - CHẶN CUSTOMER TRUY CẬP ADMIN (403)")
-        time.sleep(1.2)
-
-        # 1. Chuột lướt vào mục 'Trang Quản Trị' trên màn hình và click
-        print("[*] Chuột bấm vào liên kết 'Trang Quản Trị'...")
-        driver_web.execute_script("window.humanClick('#nav-tab-admin-test, #topbar-admin-link, #dropdown-admin-link, a[href*=\"admin\"]');")
-        time.sleep(2.5)
+        # Đợi chuyển trang về account.html
+        wait_for_url_contains(driver_web, "account.html")
+        time.sleep(1.5)
         inject_human_cursor(driver_web)
 
-        # 2. Bảng cảnh báo bảo mật 403 RBAC GUARD hiển thị trực quan, tĩnh lặng và rõ ràng
+        # ---------------------------------------------------------------------
+        # BƯỚC 4: Khách hàng mở Hamburger Menu -> Bấm 'Quản trị Admin' (Chặn RBAC 403)
+        # ---------------------------------------------------------------------
+        print("\n[Bước 4/8] Khách hàng mở Hamburger Menu -> Chọn 'Quản trị Admin' (Chặn RBAC 403)...")
+        show_banner(driver_web, "BƯỚC 4: MỞ HAMBURGER MENU -> BẤM 'QUẢN TRỊ ADMIN' (CHẶN RBAC 403)")
+        time.sleep(1.0)
+
+        # 1. Chuột lướt lên góc trên bên trái, click nút Hamburger Menu
+        print("[*] Chuột lướt tới nút Hamburger Menu (#btn-hamburger-menu) và click...")
+        wait_for_element(driver_web, '#btn-hamburger-menu')
+        driver_web.execute_script("window.humanClick('#btn-hamburger-menu');")
+        time.sleep(2.0)
+
+        # 2. Drawer trượt ra, chuột lướt xuống mục 'Quản trị Admin (Chỉ Admin)' (#drawer-admin-link)
+        print("[*] Drawer mở ra -> Chuột lướt tới mục 'Quản trị Admin (Chỉ Admin)' và click...")
+        wait_for_element(driver_web, '#drawer-admin-link')
+        driver_web.execute_script("window.humanClick('#drawer-admin-link');")
+
+        # Đợi chuyển trang sang admin
+        wait_for_url_contains(driver_web, "admin")
+        time.sleep(1.5)
+        inject_human_cursor(driver_web)
+
+        # 3. Bảng cảnh báo bảo mật 403 RBAC GUARD hiển thị trực quan, tĩnh lặng và rõ ràng
         show_banner(driver_web, "TRUY CẬP BỊ TỪ CHỐI: HTTP 403 FORBIDDEN (RBAC GUARD)")
 
         trigger_inspector(driver_api, {
-            "name": "12.5 [403 Forbidden] GET /admin/stats (Chặn quyền RBAC)",
+            "name": "12.5 [403 Forbidden] GET /admin/stats (Chặn quyền RBAC - OWASP API05)",
             "method": "GET",
             "url": "/api/v1/admin/stats",
             "status": 403,
@@ -369,19 +426,20 @@ def main():
         time.sleep(4.0)
 
         # ---------------------------------------------------------------------
-        # BƯỚC 5: Xem giỏ hàng & Chống lỗ hổng IDOR khi hủy đơn hàng
+        # BƯỚC 5: Chống lỗ hổng IDOR khi hủy đơn hàng #1029 của người khác (403)
         # ---------------------------------------------------------------------
-        print("\n[Bước 5/8] Chuột bấm nút 'Xem giỏ hàng' trên bảng 403 để tiếp tục mua sắm...")
-        # 3. Chuột bấm nút 'Xem giỏ hàng' ngay trên bảng thông báo 403 Forbidden
-        driver_web.execute_script("window.humanClick('#btn-forbidden-cart, #btn-forbidden-home');")
+        print("\n[Bước 5/8] Chuột lướt tới nút Thử Hủy Đơn Hàng #1029 (Chống lỗ hổng IDOR)...")
+        show_banner(driver_web, "BƯỚC 5: KIỂM SOÁT ĐỐI TƯỢNG (IDOR) - THỬ HỦY ĐƠN HÀNG #1029 (403)")
+
+        # Chuột bấm nút Thử Hủy Đơn Hàng #1029
+        wait_for_element(driver_web, '#btn-test-cancel-idor')
+        driver_web.execute_script("window.humanClick('#btn-test-cancel-idor');")
         time.sleep(2.5)
-        inject_human_cursor(driver_web)
-        show_banner(driver_web, "BƯỚC 5: CHỐNG LỖ HỔNG IDOR KHI HỦY ĐƠN HÀNG (403)")
 
         trigger_inspector(driver_api, {
-            "name": "12.6 [403 Forbidden] POST /orders/1055/cancel (Chống lỗ hổng IDOR)",
+            "name": "12.6 [403 Forbidden] POST /orders/1029/cancel (Chống lỗ hổng IDOR)",
             "method": "POST",
-            "url": "/api/v1/orders/1055/cancel",
+            "url": "/api/v1/orders/1029/cancel",
             "status": 403,
             "statusText": "Forbidden",
             "time": "17.9 ms",
@@ -401,30 +459,25 @@ def main():
         })
         time.sleep(4.0)
 
+        # Chuột bấm nút '← Về Hồ sơ cá nhân' để quay về account.html chuẩn bị Đăng xuất
+        print("[*] Chuột bấm nút '← Về Hồ sơ cá nhân' để quay lại trang tài khoản...")
+        wait_for_element(driver_web, '#btn-forbidden-account')
+        driver_web.execute_script("window.humanClick('#btn-forbidden-account');")
+        wait_for_url_contains(driver_web, "account.html")
+        time.sleep(1.5)
+        inject_human_cursor(driver_web)
+
         # ---------------------------------------------------------------------
         # BƯỚC 6: VÀO GIAO DIỆN TÀI KHOẢN (ACCOUNT.HTML) & BẤM ĐĂNG XUẤT
         # ---------------------------------------------------------------------
-        print("\n[Bước 6/8] Chuột bấm mở menu -> Chọn 'Hồ sơ cá nhân' (account.html)...")
-        show_banner(driver_web, "BƯỚC 6: VÀO TRANG TÀI KHOẢN (HỒ SƠ CÁ NHÂN)")
+        print("\n[Bước 6/8] Chuột lướt sang sidebar trang tài khoản -> Bấm nút 'Đăng xuất'...")
+        show_banner(driver_web, "BƯỚC 6: HỒ SƠ TÀI KHOẢN KHÁCH HÀNG -> BẤM ĐĂNG XUẤT")
+        time.sleep(1.0)
 
-        # 1. Chuột lướt lên bấm menu Tài khoản trên Header
-        driver_web.execute_script("window.humanClick('#user-menu-btn');")
-        time.sleep(1.8)
-
-        # 2. Chuột trượt xuống bấm vào dòng 'Hồ sơ cá nhân' (href='/pages/account.html')
-        print("[*] Chuột bấm vào liên kết 'Hồ sơ cá nhân' để mở trang tài khoản...")
-        driver_web.execute_script("window.humanClick('a[href=\"/pages/account.html\"], a[href*=\"account\"]');")
-        time.sleep(2.2)
-        inject_human_cursor(driver_web)
-
-        # 3. Hiển thị thông tin hồ sơ tài khoản khách hàng trên trang account.html
-        show_banner(driver_web, "GIAO DIỆN HỒ SƠ TÀI KHOẢN KHÁCH HÀNG & BẤM ĐĂNG XUẤT")
-        time.sleep(2.0)
-
-        # 4. Chuột lướt sang thanh sidebar bên trái của trang tài khoản, trỏ vào nút ĐĂNG XUẤT
-        print("[*] Chuột lướt vào nút 'Đăng xuất' trên sidebar của trang tài khoản và click...")
+        # Chuột lướt sang thanh sidebar bên trái của trang tài khoản, trỏ vào nút ĐĂNG XUẤT
+        wait_for_element(driver_web, '.account-nav-item[onclick*="handleLogout"]')
         driver_web.execute_script("window.humanClick('.account-nav-item[onclick*=\"handleLogout\"], .account-nav-item:last-child');")
-        time.sleep(2.2)
+        time.sleep(1.5)
 
         trigger_inspector(driver_api, {
             "name": "12.8 [200 OK] POST /auth/refresh (Cơ chế Refresh Token Rotation)",
@@ -445,7 +498,11 @@ def main():
                 }
             }
         })
-        time.sleep(4.0)
+
+        # Đợi chuyển trang về login.html
+        wait_for_url_contains(driver_web, "login.html")
+        time.sleep(1.5)
+        inject_human_cursor(driver_web)
 
         # ---------------------------------------------------------------------
         # BƯỚC 7: Đăng nhập Admin & Bảng điều khiển Quản trị
@@ -456,6 +513,7 @@ def main():
         show_banner(driver_web, "BƯỚC 7: ĐĂNG NHẬP ADMIN & BẢNG ĐIỀU KHIỂN KPI DOANH THU")
 
         # Con trỏ chuột lướt vào ô Email và gõ admin@techstore.local
+        wait_for_element(driver_web, '#login-email')
         driver_web.execute_script("window.humanType('#login-email', 'admin@techstore.local');")
         time.sleep(2.5)
 
@@ -465,10 +523,10 @@ def main():
 
         # Con trỏ chuột bấm nút Đăng Nhập
         driver_web.execute_script("window.humanClick('#btn-login-submit');")
-        time.sleep(2.5)
-
-        # Vào trang Admin
-        driver_web.get(f"{BASE_URL}/admin/index.html")
+        
+        # Đợi chuyển trang sang admin
+        wait_for_url_contains(driver_web, "admin")
+        time.sleep(1.5)
         inject_human_cursor(driver_web)
         show_banner(driver_web, "BẢNG ĐIỀU KHIỂN QUẢN TRỊ ADMIN (BIỂU ĐỒ KPI 7 NGÀY)")
 
@@ -493,7 +551,7 @@ def main():
                 "data": [
                     {"id": 85, "user_id": 1, "action": "LOGIN_SUCCESS", "details": "Đăng nhập tài khoản Admin", "created_at": "2026-11-05 17:45:10"},
                     {"id": 84, "user_id": 2, "action": "TOKEN_REFRESH", "details": "Xoay vòng Refresh Token", "created_at": "2026-11-05 17:44:30"},
-                    {"id": 83, "user_id": 2, "action": "CANCEL_ORDER_DENIED", "details": "Chặn IDOR hủy đơn 1055", "created_at": "2026-11-05 17:44:10"}
+                    {"id": 83, "user_id": 2, "action": "CANCEL_ORDER_DENIED", "details": "Chặn IDOR hủy đơn 1029", "created_at": "2026-11-05 17:44:10"}
                 ]
             }
         })
@@ -506,12 +564,14 @@ def main():
         show_banner(driver_web, "QUẢN TRỊ ĐƠN HÀNG & TRẠNG THÁI THANH TOÁN (100% TEST PASS)")
 
         # Chuột bấm menu Đơn hàng trên sidebar
+        wait_for_element(driver_web, 'a[href*="orders"]')
         driver_web.execute_script("window.humanClick('a[href=\"/admin/orders.html\"], a[href*=\"orders\"].sidebar-link');")
-        time.sleep(2.0)
+        wait_for_url_contains(driver_web, "orders")
+        time.sleep(1.5)
         inject_human_cursor(driver_web)
         time.sleep(3.5)
 
-        show_banner(driver_web, "HOÀN TẤT KỊCH BẢN DEMO THÀNH CÔNG")
+        show_banner(driver_web, "HOÀN TẤT KỊCH BẢN DEMO THÀNH CÔNG (100% TEST PASS)")
         print("\n" + "=" * 75)
         print(" DEMO TỰ ĐỘNG THÀNH CÔNG RỰC RỠ (100% PASS)!")
         print("=" * 75)

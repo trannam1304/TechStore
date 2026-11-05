@@ -3709,8 +3709,100 @@ function initAmbientAurora() {
   document.body.prepend(aurora);
 }
 
+// ===================================================
+// HAMBURGER MENU & MOBILE NAVIGATION DRAWER
+// ===================================================
+function toggleMobileDrawer() {
+  const drawer = document.getElementById('mobile-drawer');
+  const overlay = document.getElementById('mobile-drawer-overlay');
+  if (drawer && overlay) {
+    const isActive = drawer.classList.contains('active');
+    if (isActive) {
+      drawer.classList.remove('active');
+      overlay.classList.remove('active');
+    } else {
+      drawer.classList.add('active');
+      overlay.classList.add('active');
+    }
+  }
+}
+window.toggleMobileDrawer = toggleMobileDrawer;
+
+function initMobileDrawer() {
+  const headerContainer = document.querySelector('.header-container');
+  if (headerContainer && !document.getElementById('btn-hamburger-menu')) {
+    const btn = document.createElement('button');
+    btn.id = 'btn-hamburger-menu';
+    btn.className = 'btn-hamburger';
+    btn.setAttribute('aria-label', 'Mở menu điều hướng');
+    btn.onclick = toggleMobileDrawer;
+    btn.innerHTML = `
+      <svg class="tech-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    `;
+    headerContainer.prepend(btn);
+  }
+
+  if (!document.getElementById('mobile-drawer')) {
+    const overlay = document.createElement('div');
+    overlay.id = 'mobile-drawer-overlay';
+    overlay.className = 'mobile-drawer-overlay';
+    overlay.onclick = toggleMobileDrawer;
+
+    const drawer = document.createElement('aside');
+    drawer.id = 'mobile-drawer';
+    drawer.className = 'mobile-drawer';
+    drawer.innerHTML = `
+      <div class="drawer-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 18px; font-weight: 900; letter-spacing: -0.5px;">TechStore</span>
+          <span class="logo-badge" style="font-size: 11px; padding: 2px 6px;">REST</span>
+        </div>
+        <button class="drawer-close-btn" onclick="toggleMobileDrawer()">&times;</button>
+      </div>
+      <nav class="drawer-nav">
+        <a href="/pages/index.html" class="drawer-link">
+          <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Trang chủ</span>
+        </a>
+        <a href="/pages/products.html" class="drawer-link">
+          <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>Tất cả sản phẩm</span>
+        </a>
+        <a href="/pages/cart.html" class="drawer-link">
+          <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h2l2.2 10.3a2 2 0 002 1.7h8.8a2 2 0 002-1.6L21.5 7H6"/><circle cx="9.5" cy="19.5" r="1.5"/><circle cx="17.5" cy="19.5" r="1.5"/></svg>
+          <span>Giỏ hàng</span>
+        </a>
+        <a href="/pages/account.html#orders" class="drawer-link" id="drawer-orders-link">
+          <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 4.8v8.4l-9 4.8-9-4.8V7.8L12 3z"/><path d="M12 3v9.6M21 7.8l-9 4.8M3 7.8l9 4.8"/></svg>
+          <span>Lịch sử đơn hàng</span>
+        </a>
+        <a href="/pages/account.html" class="drawer-link">
+          <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 19.5a7 7 0 0114 0"/></svg>
+          <span>Hồ sơ tài khoản</span>
+        </a>
+        <div class="drawer-divider"></div>
+        <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: #94a3b8; padding: 6px 12px; letter-spacing: 0.5px;">Bảo Mật & Phân Quyền</div>
+        <a href="/admin/index.html" id="drawer-admin-link" class="drawer-link drawer-admin-item">
+          <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          <span style="color: #ef4444; font-weight: 700;">Quản trị Admin (Chỉ Admin)</span>
+        </a>
+      </nav>
+    `;
+    document.body.appendChild(overlay);
+    document.body.appendChild(drawer);
+  }
+}
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initAmbientAurora);
+  document.addEventListener('DOMContentLoaded', () => {
+    initAmbientAurora();
+    initMobileDrawer();
+  });
 } else {
   initAmbientAurora();
+  initMobileDrawer();
 }

@@ -69,13 +69,28 @@
         </div>
       </div>
 
+      <div style="background: rgba(245, 158, 11, 0.12); border: 1.5px dashed rgba(245, 158, 11, 0.5); border-radius: 16px; padding: 14px 18px; margin-bottom: 22px; text-align: left;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+          <span style="color: #fbbf24; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Kiểm tra lỗ hổng IDOR (OWASP API01)</span>
+          <span style="background: #ef4444; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px;">BOLA GUARD</span>
+        </div>
+        <p style="font-size: 12px; color: #cbd5e1; line-height: 1.5; margin-bottom: 12px;">
+          Khách hàng (User #2) thử gửi request hủy <strong>Đơn hàng #1029</strong> thuộc sở hữu của khách hàng khác.
+        </p>
+        <button id="btn-test-cancel-idor" onclick="handleTestIdorCancel()" style="width: 100%; background: linear-gradient(135deg, #f59e0b, #d97706); color: #0f172a; font-weight: 800; font-size: 13px; padding: 10px 18px; border-radius: 24px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35); transition: all 0.25s ease;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          <span id="btn-test-cancel-idor-text">Thử Hủy Đơn Hàng #1029 Của Người Khác (POST /orders/1029/cancel)</span>
+        </button>
+      </div>
+
       <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-        <a href="/pages/index.html" id="btn-forbidden-home" class="btn btn-outline" style="border-color: #38bdf8; color: #38bdf8; padding: 9px 18px; font-size: 13px; font-weight: 700; border-radius: 30px;">
-          ← Quay lại trang chủ
+        <a href="/pages/account.html" id="btn-forbidden-account" class="btn btn-outline" style="border-color: #38bdf8; color: #38bdf8; padding: 9px 20px; font-size: 13px; font-weight: 700; border-radius: 30px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+          ← Về Hồ sơ cá nhân
         </a>
-        <a href="/pages/cart.html" id="btn-forbidden-cart" class="btn btn-primary" style="background: linear-gradient(135deg, #d70018, #ff007a); border: none; padding: 9px 20px; font-size: 13px; font-weight: 700; border-radius: 30px; box-shadow: 0 4px 14px rgba(215, 0, 24, 0.4);">
-          Xem giỏ hàng →
+        <a href="/pages/index.html" id="btn-forbidden-home" class="btn btn-outline" style="border-color: #64748b; color: #94a3b8; padding: 9px 18px; font-size: 13px; font-weight: 700; border-radius: 30px; text-decoration: none;">
+          Trang chủ
         </a>
+        <a href="/pages/cart.html" id="btn-forbidden-cart" style="display: none;">Giỏ hàng</a>
       </div>
     </div>
   </div>
@@ -386,6 +401,34 @@
         window.location.href = '/pages/login.html';
       });
     });
+
+    async function handleTestIdorCancel() {
+      const btn = document.getElementById('btn-test-cancel-idor');
+      const textSpan = document.getElementById('btn-test-cancel-idor-text');
+      if (btn) btn.disabled = true;
+      if (textSpan) textSpan.textContent = 'Đang gửi POST /api/v1/orders/1029/cancel...';
+
+      try {
+        const res = await api.orders.cancel(1029);
+        if (!res.success && (res.status === 403 || res.error?.code === 'FORBIDDEN')) {
+          showToast('CHẶN LỖ HỔNG IDOR (HTTP 403): Bạn không có quyền hủy đơn hàng của người khác!', 'danger');
+          if (btn) {
+            btn.style.background = '#ef4444';
+            btn.style.color = '#ffffff';
+          }
+          if (textSpan) {
+            textSpan.textContent = 'CHẶN THÀNH CÔNG: HTTP 403 FORBIDDEN (OWASP API01)';
+          }
+        } else {
+          showToast(res.message || 'Thao tác hoàn tất', 'warning');
+        }
+      } catch (err) {
+        showToast('Đã chặn request vi phạm quyền sở hữu đơn hàng (403)', 'danger');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+    window.handleTestIdorCancel = handleTestIdorCancel;
 
     function toggleSidebar() {
       document.getElementById('admin-sidebar').classList.toggle('open');
