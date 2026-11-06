@@ -105,7 +105,6 @@ class RecommendComponent {
             </div>
             <span style="font-size: 12px; color: #64748b; font-weight: 500;">✓ Tương thích 100% với thiết bị của bạn</span>
           </div>
-          </div>
 
           <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;">
             <!-- Main Product -->
@@ -141,8 +140,6 @@ class RecommendComponent {
               </div>
               <button class="btn btn-primary btn-block btn-lg" id="btn-buy-combo" style="font-weight: 800; font-size: 15px; box-shadow: 0 4px 14px rgba(215, 0, 24, 0.35); display: flex; align-items: center; justify-content: center; gap: 8px;">
                 ${iconBolt} Mua các sản phẩm đã chọn
-              </button>
-            </div>
               </button>
             </div>
           </div>

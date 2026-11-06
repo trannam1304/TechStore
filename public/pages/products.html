@@ -135,6 +135,33 @@
     .active-tag-close:hover {
       color: var(--color-danger);
     }
+
+    /* Responsive catalog grid */
+    #catalog-products-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+    }
+    @media (max-width: 1200px) {
+      #catalog-products-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 900px) {
+      #catalog-products-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
+      #catalog-products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-3);
+      }
+    }
+    @media (max-width: 360px) {
+      #catalog-products-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -366,7 +393,7 @@
         <div class="active-filters-bar" id="active-filters-bar" style="display: none;"></div>
 
         <!-- Product Grid -->
-        <div class="product-grid" id="catalog-products-grid" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="product-grid" id="catalog-products-grid">
           <!-- Rendered by JS -->
         </div>
 
@@ -722,7 +749,6 @@
 
           <div class="product-rating" style="display: flex; align-items: center; gap: 4px;">
             ${starIcon} <span>${p.rating || 5.0}</span> <span class="rating-count">(${p.review_count || p.reviews_count || 12})</span>
-          </div>
           </div>
 
           <div class="product-card-actions">
