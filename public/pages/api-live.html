@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -84,8 +85,17 @@
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(1.2); }
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(1.2);
+      }
     }
 
     /* Main Container (Split Columns) */
@@ -163,10 +173,25 @@
       text-transform: uppercase;
     }
 
-    .method-GET { background: #0284c7; color: #fff; }
-    .method-POST { background: #16a34a; color: #fff; }
-    .method-PUT { background: #d97706; color: #fff; }
-    .method-DELETE { background: #dc2626; color: #fff; }
+    .method-GET {
+      background: #0284c7;
+      color: #fff;
+    }
+
+    .method-POST {
+      background: #16a34a;
+      color: #fff;
+    }
+
+    .method-PUT {
+      background: #d97706;
+      color: #fff;
+    }
+
+    .method-DELETE {
+      background: #dc2626;
+      color: #fff;
+    }
 
     .status-badge {
       font-family: var(--font-mono);
@@ -176,10 +201,30 @@
       border-radius: 4px;
     }
 
-    .status-200, .status-201 { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
-    .status-401 { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
-    .status-403 { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
-    .status-404 { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid #94a3b8; }
+    .status-200,
+    .status-201 {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid #10b981;
+    }
+
+    .status-401 {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid #ef4444;
+    }
+
+    .status-403 {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid #f59e0b;
+    }
+
+    .status-404 {
+      background: rgba(148, 163, 184, 0.2);
+      color: #cbd5e1;
+      border: 1px solid #94a3b8;
+    }
 
     .item-title {
       font-size: 12px;
@@ -319,6 +364,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- Top Bar -->
@@ -326,7 +372,8 @@
     <div class="topbar-brand">
       <span>TechStore RESTful API</span>
       <span class="brand-badge">Live Inspector</span>
-      <span style="color: var(--text-muted); font-size: 12px; font-weight: normal;">| Topic 1: RESTful Architecture</span>
+      <span style="color: var(--text-muted); font-size: 12px; font-weight: normal;">| Topic 1: RESTful
+        Architecture</span>
     </div>
     <div class="topbar-status">
       <div class="status-dot"></div>
@@ -351,7 +398,8 @@
     <div class="detail-pane" id="detail-pane">
       <div class="detail-banner">
         <span class="detail-banner-icon">ℹ</span>
-        <span class="detail-banner-text" id="detail-banner-text">Hệ thống sẵn sàng tiếp nhận tiến trình kiểm thử bảo mật.</span>
+        <span class="detail-banner-text" id="detail-banner-text">Hệ thống sẵn sàng tiếp nhận tiến trình kiểm thử bảo
+          mật.</span>
       </div>
 
       <div class="endpoint-card">
@@ -395,7 +443,7 @@
   <script>
     const requests = [];
 
-    window.triggerApiStep = function(step) {
+    window.triggerApiStep = function (step) {
       requests.push(step);
       renderList();
       selectStep(requests.length - 1);
@@ -462,16 +510,16 @@
       alert.innerHTML = `<strong>Tiêu chuẩn Kiến trúc & Bảo mật:</strong> ${req.securityNote || 'Chuẩn xác thực RESTful API'}`;
 
       // Headers
-      document.getElementById('detail-req-headers').innerText = typeof req.reqHeaders === 'string' 
-        ? req.reqHeaders 
+      document.getElementById('detail-req-headers').innerText = typeof req.reqHeaders === 'string'
+        ? req.reqHeaders
         : JSON.stringify(req.reqHeaders, null, 2);
 
       // Response
-      document.getElementById('detail-res-body').innerText = typeof req.resBody === 'string' 
-        ? req.resBody 
+      document.getElementById('detail-res-body').innerText = typeof req.resBody === 'string'
+        ? req.resBody
         : JSON.stringify(req.resBody, null, 2);
     }
   </script>
 </body>
-</html>
 
+</html>

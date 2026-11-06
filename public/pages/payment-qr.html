@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,11 +22,34 @@
       background: #f8fafc;
       padding: 16px;
       border-radius: var(--radius-lg);
-      display: inline-block;
+      display: block;
+      width: fit-content;
+      margin: var(--space-4) auto 12px auto;
       border: 2px dashed #cbd5e1;
-      margin: var(--space-4) 0;
       position: relative;
     }
+
+    .qr-countdown-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 8px 0 18px 0;
+    }
+
+    .qr-countdown-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--color-primary);
+      background: rgba(215, 0, 24, 0.06);
+      border: 1px solid rgba(215, 0, 24, 0.15);
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 2px 6px rgba(215, 0, 24, 0.05);
+    }
+
     .qr-img {
       width: 260px;
       height: 260px;
@@ -47,10 +71,12 @@
       background-color: #fef3c7;
       color: #92400e;
     }
+
     .polling-status.paid {
       background-color: #dcfce7;
       color: #166534;
     }
+
     .pulse-dot {
       width: 8px;
       height: 8px;
@@ -58,14 +84,27 @@
       background: #d97706;
       animation: pulse 1.5s infinite;
     }
+
     .polling-status.paid .pulse-dot {
       background: #16a34a;
       animation: none;
     }
+
     @keyframes pulse {
-      0% { transform: scale(0.9); opacity: 0.7; }
-      50% { transform: scale(1.4); opacity: 1; }
-      100% { transform: scale(0.9); opacity: 0.7; }
+      0% {
+        transform: scale(0.9);
+        opacity: 0.7;
+      }
+
+      50% {
+        transform: scale(1.4);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(0.9);
+        opacity: 0.7;
+      }
     }
 
     /* Bank Info Table */
@@ -78,6 +117,7 @@
       margin: var(--space-4) 0;
       font-size: var(--font-size-sm);
     }
+
     .bank-info-row {
       display: flex;
       justify-content: space-between;
@@ -85,12 +125,15 @@
       padding: 8px 0;
       border-bottom: 1px solid #e2e8f0;
     }
+
     .bank-info-row:last-child {
       border-bottom: none;
     }
+
     .bank-label {
       color: var(--color-gray);
     }
+
     .bank-value {
       font-weight: var(--font-weight-bold);
       color: var(--color-dark);
@@ -98,6 +141,7 @@
       align-items: center;
       gap: 6px;
     }
+
     .copy-btn {
       font-size: 11px;
       background: #e2e8f0;
@@ -106,6 +150,7 @@
       cursor: pointer;
       color: var(--color-dark);
     }
+
     .copy-btn:hover {
       background: var(--color-primary);
       color: white;
@@ -116,17 +161,27 @@
       display: none;
       animation: fadeIn 0.4s ease;
     }
+
     .success-checkmark {
       font-size: 64px;
       color: var(--color-success);
       margin-bottom: 16px;
     }
+
     @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
   </style>
 </head>
+
 <body>
 
   <!-- Top Bar -->
@@ -135,7 +190,13 @@
       <div>Cổng thanh toán tự động VietQR - TechStore</div>
       <div class="topbar-links">
         <a href="tel:18006018">
-          <svg class="tech-icon tech-icon-xs" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M15 2a6 6 0 016 6M15 5a3 3 0 013 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg class="tech-icon tech-icon-xs" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"
+              stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+            <path d="M15 2a6 6 0 016 6M15 5a3 3 0 013 3" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" />
+          </svg>
           Hotline hỗ trợ kỹ thuật: 1800.6018
         </a>
       </div>
@@ -148,14 +209,17 @@
       <a href="/pages/index.html" class="logo">
         <span class="logo-mark-wrap">
           <svg class="tech-icon tech-icon-lg logo-vector" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L2 7l10 5 10-5-10-5z" fill="#d70018"/>
-            <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 2L2 7l10 5 10-5-10-5z" fill="#d70018" />
+            <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
           </svg>
         </span>
         TechStore <span class="logo-badge">VietQR</span>
       </a>
-      <div style="font-size: 13px; color: rgba(255, 255, 255, 0.85); font-weight: 500;">Cổng thanh toán tự động thời gian thực</div>
+      <div style="font-size: 13px; color: rgba(255, 255, 255, 0.85); font-weight: 500;">Cổng thanh toán tự động thời
+        gian thực</div>
     </div>
   </header>
 
@@ -176,18 +240,30 @@
           Mở ứng dụng ngân hàng bất kỳ (App Mobile Banking) và quét mã bên dưới
         </p>
 
-        <!-- Countdown -->
-        <div style="font-size: 14px; font-weight: 700; color: var(--color-primary); margin-bottom: 16px; display: inline-flex; align-items: center; gap: 6px;">
-          <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <span>Mã QR hết hạn sau: <span id="qr-timer">14:59</span></span>
-        </div>
-
         <!-- QR Image -->
         <div class="qr-image-wrap">
           <img id="vietqr-image" class="qr-img" src="" alt="Mã VietQR thanh toán">
-          <div style="font-size: 11px; color: var(--color-gray); margin-top: 8px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px;">
-            <svg class="tech-icon tech-icon-xs text-primary" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="3" stroke="currentColor" stroke-width="2"/><rect x="6" y="7" width="4" height="4" rx="1" fill="currentColor"/><rect x="14" y="7" width="4" height="4" rx="1" fill="currentColor"/><rect x="6" y="13" width="4" height="4" rx="1" fill="currentColor"/><path d="M14 13h4v4h-4zM16 15h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <div
+            style="font-size: 11px; color: var(--color-gray); margin-top: 8px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <svg class="tech-icon tech-icon-xs text-primary" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="4" width="18" height="16" rx="3" stroke="currentColor" stroke-width="2" />
+              <rect x="6" y="7" width="4" height="4" rx="1" fill="currentColor" />
+              <rect x="14" y="7" width="4" height="4" rx="1" fill="currentColor" />
+              <rect x="6" y="13" width="4" height="4" rx="1" fill="currentColor" />
+              <path d="M14 13h4v4h-4zM16 15h2" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
             Chuẩn Napas 247 • VietQR
+          </div>
+        </div>
+
+        <!-- Countdown -->
+        <div class="qr-countdown-container">
+          <div class="qr-countdown-badge">
+            <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+              <path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <span>Mã QR hết hạn sau: <span id="qr-timer">14:59</span></span>
           </div>
         </div>
 
@@ -201,8 +277,13 @@
             <span class="bank-label">Số tài khoản:</span>
             <span class="bank-value">
               <span id="bank-account">0987654321</span>
-              <button class="copy-btn" onclick="copyToClipboard('bank-account')" style="display: inline-flex; align-items: center; gap: 3px;">
-                <svg class="tech-icon" style="width:11px;height:11px;" viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5 16H4a2 2 0 01-2-2V4a2 2 0 012-2h10a2 2 0 012 2v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <button class="copy-btn" onclick="copyToClipboard('bank-account')"
+                style="display: inline-flex; align-items: center; gap: 3px;">
+                <svg class="tech-icon" style="width:11px;height:11px;" viewBox="0 0 24 24" fill="none">
+                  <rect x="8" y="8" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2" />
+                  <path d="M5 16H4a2 2 0 01-2-2V4a2 2 0 012-2h10a2 2 0 012 2v1" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
+                </svg>
                 Sao chép
               </button>
             </span>
@@ -215,8 +296,13 @@
             <span class="bank-label">Số tiền:</span>
             <span class="bank-value">
               <span id="payment-amount" style="color: var(--color-primary); font-size: 16px;">0₫</span>
-              <button class="copy-btn" onclick="copyText(rawAmount)" style="display: inline-flex; align-items: center; gap: 3px;">
-                <svg class="tech-icon" style="width:11px;height:11px;" viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5 16H4a2 2 0 01-2-2V4a2 2 0 012-2h10a2 2 0 012 2v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <button class="copy-btn" onclick="copyText(rawAmount)"
+                style="display: inline-flex; align-items: center; gap: 3px;">
+                <svg class="tech-icon" style="width:11px;height:11px;" viewBox="0 0 24 24" fill="none">
+                  <rect x="8" y="8" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2" />
+                  <path d="M5 16H4a2 2 0 01-2-2V4a2 2 0 012-2h10a2 2 0 012 2v1" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
+                </svg>
                 Sao chép
               </button>
             </span>
@@ -225,8 +311,13 @@
             <span class="bank-label">Nội dung chuyển khoản:</span>
             <span class="bank-value">
               <span id="payment-code" style="color: #2563eb;">TS-1001</span>
-              <button class="copy-btn" onclick="copyToClipboard('payment-code')" style="display: inline-flex; align-items: center; gap: 3px;">
-                <svg class="tech-icon" style="width:11px;height:11px;" viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5 16H4a2 2 0 01-2-2V4a2 2 0 012-2h10a2 2 0 012 2v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <button class="copy-btn" onclick="copyToClipboard('payment-code')"
+                style="display: inline-flex; align-items: center; gap: 3px;">
+                <svg class="tech-icon" style="width:11px;height:11px;" viewBox="0 0 24 24" fill="none">
+                  <rect x="8" y="8" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2" />
+                  <path d="M5 16H4a2 2 0 01-2-2V4a2 2 0 012-2h10a2 2 0 012 2v1" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
+                </svg>
                 Sao chép
               </button>
             </span>
@@ -234,17 +325,29 @@
         </div>
 
         <div style="font-size: 12px; color: var(--color-gray); margin-bottom: 20px;">
-          Lưu ý: Vui lòng <strong>giữ nguyên nội dung chuyển khoản</strong> để hệ thống tự động ghi nhận đơn hàng sau 1-3 giây.
+          Lưu ý: Vui lòng <strong>giữ nguyên nội dung chuyển khoản</strong> để hệ thống tự động ghi nhận đơn hàng sau
+          1-3 giây.
         </div>
 
         <!-- Action / Demo simulation buttons -->
         <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-          <button class="btn btn-success btn-lg" id="btn-demo-pay" style="font-weight: 700; display: inline-flex; align-items: center; gap: 8px;">
-            <svg class="tech-icon tech-icon-md" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M8.5 12.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <button class="btn btn-success btn-lg" id="btn-demo-pay"
+            style="font-weight: 700; display: inline-flex; align-items: center; gap: 8px;">
+            <svg class="tech-icon tech-icon-md" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+              <path d="M8.5 12.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
             <span>Tôi đã chuyển khoản (Xác nhận nhanh Demo)</span>
           </button>
-          <a href="/pages/account.html#orders" class="btn btn-outline btn-lg" style="display: inline-flex; align-items: center; gap: 6px;">
-            <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 4.8v8.4l-9 4.8-9-4.8V7.8L12 3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 3v9.6M21 7.8l-9 4.8M3 7.8l9 4.8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          <a href="/pages/account.html#orders" class="btn btn-outline btn-lg"
+            style="display: inline-flex; align-items: center; gap: 6px;">
+            <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3l9 4.8v8.4l-9 4.8-9-4.8V7.8L12 3z" stroke="currentColor" stroke-width="2"
+                stroke-linejoin="round" />
+              <path d="M12 3v9.6M21 7.8l-9 4.8M3 7.8l9 4.8" stroke="currentColor" stroke-width="2"
+                stroke-linejoin="round" />
+            </svg>
             <span>Xem danh sách đơn</span>
           </a>
         </div>
@@ -253,21 +356,31 @@
       <!-- Payment Success View -->
       <div id="payment-success-view" class="payment-success-card" style="display: none;">
         <div class="success-checkmark" style="display: flex; justify-content: center; margin-bottom: 16px;">
-          <svg class="tech-icon tech-icon-glow" style="width: 72px; height: 72px; color: var(--color-success);" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.12"/>
-            <path d="M7.5 12.5l3 3 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg class="tech-icon tech-icon-glow" style="width: 72px; height: 72px; color: var(--color-success);"
+            viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="currentColor"
+              fill-opacity="0.12" />
+            <path d="M7.5 12.5l3 3 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+              stroke-linejoin="round" />
           </svg>
         </div>
         <h2 style="font-size: 24px; font-weight: 900; color: var(--color-success); margin-bottom: 8px;">
           Thanh toán thành công!
         </h2>
         <p style="font-size: 14px; color: var(--color-gray-dark); margin-bottom: 20px;">
-          Cảm ơn bạn! Đơn hàng <strong id="success-order-code"></strong> đã được xác nhận thanh toán qua VietQR. TechStore đang chuẩn bị hàng và sẽ giao sớm nhất!
+          Cảm ơn bạn! Đơn hàng <strong id="success-order-code"></strong> đã được xác nhận thanh toán qua VietQR.
+          TechStore đang chuẩn bị hàng và sẽ giao sớm nhất!
         </p>
 
         <div style="display: flex; gap: 12px; justify-content: center;">
-          <a href="/pages/account.html#orders" class="btn btn-primary btn-lg" style="display: inline-flex; align-items: center; gap: 6px;">
-            <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 4.8v8.4l-9 4.8-9-4.8V7.8L12 3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 3v9.6M21 7.8l-9 4.8M3 7.8l9 4.8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          <a href="/pages/account.html#orders" class="btn btn-primary btn-lg"
+            style="display: inline-flex; align-items: center; gap: 6px;">
+            <svg class="tech-icon tech-icon-sm" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3l9 4.8v8.4l-9 4.8-9-4.8V7.8L12 3z" stroke="currentColor" stroke-width="2"
+                stroke-linejoin="round" />
+              <path d="M12 3v9.6M21 7.8l-9 4.8M3 7.8l9 4.8" stroke="currentColor" stroke-width="2"
+                stroke-linejoin="round" />
+            </svg>
             <span>Xem chi tiết đơn hàng</span>
           </a>
           <a href="/pages/index.html" class="btn btn-outline btn-lg">Tiếp tục mua hàng</a>
@@ -281,7 +394,8 @@
           Mã thanh toán VietQR đã hết hạn!
         </h2>
         <p style="font-size: 14px; color: var(--color-gray-dark); margin-bottom: 20px;">
-          Thời hạn thanh toán 15 phút cho mã QR này đã kết thúc theo quy định bảo toàn tồn kho (BR05). Bạn có thể làm mới hoặc hủy đơn hàng.
+          Thời hạn thanh toán 15 phút cho mã QR này đã kết thúc theo quy định bảo toàn tồn kho (BR05). Bạn có thể làm
+          mới hoặc hủy đơn hàng.
         </p>
         <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
           <button class="btn btn-primary btn-lg" onclick="location.reload()">🔄 Tạo lại mã thanh toán</button>
@@ -294,7 +408,8 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container footer-bottom">
-      © 2026 TechStore Vietnam. Hệ thống thanh toán chuẩn VietQR phục vụ đồ án Topic 1: REST API (Tuấn Kiệt phụ trách Front-end).
+      © 2026 TechStore Vietnam. Hệ thống thanh toán chuẩn VietQR phục vụ đồ án Topic 1: REST API (Tuấn Kiệt phụ trách
+      Front-end).
     </div>
   </footer>
 
@@ -439,7 +554,7 @@
       try {
         await api.orders.cancel(currentOrderId);
         showToast('Đã hủy đơn hàng thành công!', 'info');
-      } catch (e) {}
+      } catch (e) { }
       setTimeout(() => {
         window.location.href = '/pages/account.html#orders';
       }, 600);
@@ -459,4 +574,5 @@
     }
   </script>
 </body>
+
 </html>
