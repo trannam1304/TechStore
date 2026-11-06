@@ -3365,7 +3365,7 @@ class ApiClient {
       }
       return { success: true, data: this.getCart() };
     },
-    addItem: async (productId, quantity = 1, variant = '') => {
+    addItem: async (productId, quantity = 1, variant = '', customPrice = null) => {
       productId = parseInt(productId, 10);
       quantity = Math.max(1, parseInt(quantity, 10) || 1);
       
@@ -3384,15 +3384,17 @@ class ApiClient {
 
       if (prod) {
         const targetVariant = variant || 'Mặc định';
+        const finalPrice = (customPrice && Number(customPrice) > 0) ? Number(customPrice) : prod.price;
         const existing = cart.items.find(i => i.product_id === prod.id && (i.variant || 'Mặc định') === targetVariant);
         if (existing) {
           existing.quantity += quantity;
+          existing.price = finalPrice;
         } else {
           cart.items.push({
             id: Date.now() + Math.floor(Math.random() * 100),
             product_id: prod.id,
             name: prod.name,
-            price: prod.price,
+            price: finalPrice,
             quantity: quantity,
             variant: targetVariant,
             image: prod.image
@@ -3404,7 +3406,11 @@ class ApiClient {
       // Chỉ gửi request lên server backend PHP nếu người dùng ĐÃ ĐĂNG NHẬP
       if (this.isLoggedIn()) {
         try {
-          const res = await this.request('/cart/items', { method: 'POST', body: JSON.stringify({ product_id: productId, quantity, variant }) });
+          const finalPrice = (customPrice && Number(customPrice) > 0) ? Number(customPrice) : (prod ? prod.price : null);
+          const res = await this.request('/cart/items', { 
+            method: 'POST', 
+            body: JSON.stringify({ product_id: productId, quantity, variant, price: finalPrice }) 
+          });
           if (res && res.success && res.data) {
             this.saveCart(res.data);
             return res;
@@ -3582,12 +3588,29 @@ function setupUserDropdown() {
   const userDropdown = document.getElementById('user-dropdown');
   if (!userMenuBtn || !userDropdown) return;
 
+  const updateAdminElements = (role) => {
+    const isAdmin = role === 'admin';
+    const adminLink = document.getElementById('dropdown-admin-link');
+    if (adminLink) {
+      adminLink.style.display = isAdmin ? 'flex' : 'none';
+    }
+    document.querySelectorAll('.topbar-admin-link, #topbar-admin-link').forEach(el => {
+      el.style.display = isAdmin ? 'inline-flex' : 'none';
+    });
+    document.querySelectorAll('.drawer-admin-item, #drawer-admin-link').forEach(el => {
+      el.style.display = isAdmin ? 'flex' : 'none';
+    });
+  };
+
   const user = api.getCurrentUser();
   if (user) {
     const nameEl = document.getElementById('dropdown-name');
     const roleEl = document.getElementById('dropdown-role');
     if (nameEl) nameEl.textContent = user.name;
     if (roleEl) roleEl.textContent = user.role === 'admin' ? 'Quản trị viên' : 'Khách hàng';
+
+    // Ẩn/hiện theo vai trò thực tế
+    updateAdminElements(user.role);
 
     // Asynchronously refresh user profile from backend to ensure latest DB synchronization
     if (api.isLoggedIn()) {
@@ -3597,27 +3620,20 @@ function setupUserDropdown() {
           api.setAuthTokens(null, null, freshUser);
           if (nameEl) nameEl.textContent = freshUser.name;
           if (roleEl) roleEl.textContent = freshUser.role === 'admin' ? 'Quản trị viên' : 'Khách hàng';
+          updateAdminElements(freshUser.role);
         }
       }).catch(() => {});
     }
-    
-    // Show admin link if admin
-    // Hiển thị liên kết Quản trị trong User Dropdown để kiểm tra phân quyền RBAC
-    const adminLink = document.getElementById('dropdown-admin-link');
-    if (adminLink) adminLink.style.display = 'flex';
-
-    document.querySelectorAll('.topbar-admin-link, #topbar-admin-link').forEach(el => {
-      el.style.display = api.isAdmin() ? 'inline-flex' : 'none';
-    });
 
     const loginLinks = document.querySelectorAll('.guest-only');
     loginLinks.forEach(el => el.style.display = 'none');
     const userLinks = document.querySelectorAll('.auth-only');
     userLinks.forEach(el => el.style.display = 'flex');
+
+    // Chắc chắn phần quản trị hệ thống bị ẩn hoàn toàn đối với tài khoản khách hàng
+    updateAdminElements(user.role);
   } else {
-    document.querySelectorAll('.topbar-admin-link, #topbar-admin-link').forEach(el => {
-      el.style.display = 'none';
-    });
+    updateAdminElements(null);
 
     const loginLinks = document.querySelectorAll('.guest-only');
     loginLinks.forEach(el => el.style.display = 'flex');
@@ -3816,3 +3832,24 @@ if (document.readyState === 'loading') {
     }
   } catch (e) {}
 })();
+
+// Cơ chế tự phục hồi đường dẫn ảnh (Image Path Auto-Healing)
+// Đảm bảo tương thích tuyệt đối cho cả Web Server (/assets/images/) lẫn mở file cục bộ (../assets/images/)
+window.addEventListener('error', function (e) {
+  if (e.target && e.target.tagName === 'IMG') {
+    const img = e.target;
+    if (img.dataset.autoHealed) return;
+    img.dataset.autoHealed = '1';
+
+    const rawSrc = img.getAttribute('src') || '';
+    if (rawSrc.startsWith('/assets/images/')) {
+      img.src = '../assets/images/' + rawSrc.replace('/assets/images/', '');
+    } else if (rawSrc.startsWith('../assets/images/')) {
+      img.src = '/assets/images/' + rawSrc.replace('../assets/images/', '');
+    } else if (rawSrc.startsWith('assets/images/')) {
+      img.src = '/assets/images/' + rawSrc.replace('assets/images/', '');
+    } else {
+      img.src = '/assets/images/iphone-16-128gb.png';
+    }
+  }
+}, true);
