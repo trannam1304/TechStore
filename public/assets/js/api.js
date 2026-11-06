@@ -305,10 +305,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.92,
     "review_count": 63,
     "view_count": 890,
-    "image": "https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/iphone-16-pro-max-256gb.png",
+    "images": ["/assets/images/iphone-16-pro-max-256gb.png"],
     "ram": "16GB",
     "rom": "512GB",
     "chipset": "Snapdragon 8 Gen 3",
@@ -333,10 +331,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.75,
     "review_count": 115,
     "view_count": 1400,
-    "image": "https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/iphone-16-128gb.png",
+    "images": ["/assets/images/iphone-16-128gb.png"],
     "ram": "8GB",
     "rom": "128GB",
     "chipset": "Exynos 1480 4nm",
@@ -361,10 +357,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.96,
     "review_count": 68,
     "view_count": 1500,
-    "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/iphone-15-pro-128gb.png",
+    "images": ["/assets/images/iphone-15-pro-128gb.png"],
     "ram": "18GB",
     "rom": "512GB SSD",
     "chipset": "Apple M3 Pro (11 CPU, 14 GPU)",
@@ -389,10 +383,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.88,
     "review_count": 92,
     "view_count": 1350,
-    "image": "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/samsung-galaxy-s24-ultra.png",
+    "images": ["/assets/images/samsung-galaxy-s24-ultra.png"],
     "ram": "8GB",
     "rom": "256GB SSD",
     "chipset": "Apple M3 (8 CPU, 8 GPU)",
@@ -417,10 +409,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.98,
     "review_count": 31,
     "view_count": 720,
-    "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/samsung-galaxy-s24-plus.png",
+    "images": ["/assets/images/samsung-galaxy-s24-plus.png"],
     "ram": "36GB",
     "rom": "1TB SSD",
     "chipset": "Apple M3 Max (14 CPU, 30 GPU)",
@@ -445,10 +435,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.91,
     "review_count": 45,
     "view_count": 1100,
-    "image": "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/samsung-galaxy-z-fold6.png",
+    "images": ["/assets/images/samsung-galaxy-z-fold6.png"],
     "ram": "32GB LPDDR5X",
     "rom": "1TB PCIe 4.0 SSD",
     "chipset": "Intel Core Ultra 9 185H",
@@ -473,10 +461,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.86,
     "review_count": 56,
     "view_count": 890,
-    "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/xiaomi-14-ultra.png",
+    "images": ["/assets/images/xiaomi-14-ultra.png"],
     "ram": "16GB LPDDR5X",
     "rom": "1TB NVMe SSD",
     "chipset": "Intel Core Ultra 7 155H tích hợp NPU AI",
@@ -501,10 +487,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.79,
     "review_count": 74,
     "view_count": 980,
-    "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/xiaomi-14t-pro.png",
+    "images": ["/assets/images/xiaomi-14t-pro.png"],
     "ram": "16GB DDR5",
     "rom": "512GB PCIe SSD",
     "chipset": "AMD Ryzen 7 7735HS",
@@ -529,10 +513,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.93,
     "review_count": 38,
     "view_count": 790,
-    "image": "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/asus-rog-phone-8-pro.png",
+    "images": ["/assets/images/asus-rog-phone-8-pro.png"],
     "ram": "32GB LPDDR5X",
     "rom": "1TB SSD",
     "chipset": "Intel Core Ultra 7 155H",
@@ -557,10 +539,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.95,
     "review_count": 27,
     "view_count": 650,
-    "image": "https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/samsung-galaxy-a55-5g.png",
+    "images": ["/assets/images/samsung-galaxy-a55-5g.png"],
     "ram": "32GB LPDDR5X",
     "rom": "1TB PCIe SSD",
     "chipset": "Intel Core Ultra 9 185H",
@@ -585,10 +565,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.76,
     "review_count": 85,
     "view_count": 1120,
-    "image": "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/macbook-pro-14-m3-pro.png",
+    "images": ["/assets/images/macbook-pro-14-m3-pro.png"],
     "ram": "16GB DDR5",
     "rom": "512GB SSD",
     "chipset": "Intel Core i5-1334U",
@@ -613,10 +591,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.82,
     "review_count": 49,
     "view_count": 710,
-    "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/macbook-air-13-m3.png",
+    "images": ["/assets/images/macbook-air-13-m3.png"],
     "ram": "32GB LPDDR5X",
     "rom": "1TB PCIe 4.0 SSD",
     "chipset": "AMD Ryzen 7 8845HS tích hợp Ryzen AI",
@@ -641,10 +617,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.97,
     "review_count": 72,
     "view_count": 1300,
-    "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/macbook-pro-16-m3-max.png",
+    "images": ["/assets/images/macbook-pro-16-m3-max.png"],
     "ram": "8GB",
     "rom": "256GB",
     "chipset": "Apple M4 9-core CPU, 10-core GPU",
@@ -669,10 +643,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.88,
     "review_count": 88,
     "view_count": 1420,
-    "image": "https://images.unsplash.com/photo-1561154464-82e9adf32764?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1561154464-82e9adf32764?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/asus-rog-zephyrus-g16-oled.png",
+    "images": ["/assets/images/asus-rog-zephyrus-g16-oled.png"],
     "ram": "8GB",
     "rom": "128GB",
     "chipset": "Apple M2 8-core CPU",
@@ -697,10 +669,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.81,
     "review_count": 130,
     "view_count": 1600,
-    "image": "https://images.unsplash.com/photo-1589739900243-4b52cd9b104e?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1589739900243-4b52cd9b104e?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/asus-zenbook-14-oled-ux3405.png",
+    "images": ["/assets/images/asus-zenbook-14-oled-ux3405.png"],
     "ram": "4GB",
     "rom": "64GB",
     "chipset": "Apple A14 Bionic",
@@ -725,10 +695,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.92,
     "review_count": 53,
     "view_count": 850,
-    "image": "https://images.unsplash.com/photo-1585792180666-f7547c6a28c5?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1585792180666-f7547c6a28c5?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/asus-tuf-gaming-a15.png",
+    "images": ["/assets/images/asus-tuf-gaming-a15.png"],
     "ram": "12GB",
     "rom": "256GB",
     "chipset": "Snapdragon 8 Gen 2 for Galaxy",
@@ -753,10 +721,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.79,
     "review_count": 67,
     "view_count": 920,
-    "image": "https://images.unsplash.com/photo-1527698266440-12104e498b76?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1527698266440-12104e498b76?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/dell-xps-14-9440.png",
+    "images": ["/assets/images/dell-xps-14-9440.png"],
     "ram": "6GB",
     "rom": "128GB",
     "chipset": "Exynos 1380",
@@ -781,10 +747,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.84,
     "review_count": 42,
     "view_count": 680,
-    "image": "https://images.unsplash.com/photo-1561154464-82e9adf32764?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1561154464-82e9adf32764?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/dell-xps-16-9640.png",
+    "images": ["/assets/images/dell-xps-16-9640.png"],
     "ram": "8GB",
     "rom": "256GB",
     "chipset": "Snapdragon 8 Gen 2",
@@ -809,10 +773,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.93,
     "review_count": 168,
     "view_count": 1950,
-    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/dell-inspiron-14-5440.png",
+    "images": ["/assets/images/dell-inspiron-14-5440.png"],
     "ram": null,
     "rom": null,
     "chipset": "Sony Integrated Processor V1 + HD QN1",
@@ -837,10 +799,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.87,
     "review_count": 94,
     "view_count": 1250,
-    "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/xiaomi-redmibook-pro-15.png",
+    "images": ["/assets/images/xiaomi-redmibook-pro-15.png"],
     "ram": null,
     "rom": null,
     "chipset": "Sony V2 + QN2e Dual Processor",
@@ -865,10 +825,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.8,
     "review_count": 51,
     "view_count": 620,
-    "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/ipad-pro-11-m4-oled.png",
+    "images": ["/assets/images/ipad-pro-11-m4-oled.png"],
     "ram": null,
     "rom": null,
     "chipset": "Bộ khuếch tán âm Line-Shape Diffuser",
@@ -893,10 +851,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.94,
     "review_count": 210,
     "view_count": 2300,
-    "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/ipad-air-6-m2-11-inch.png",
+    "images": ["/assets/images/ipad-air-6-m2-11-inch.png"],
     "ram": null,
     "rom": null,
     "chipset": "Apple H2 chip + U1 chip hộp sạc",
@@ -921,10 +877,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.85,
     "review_count": 48,
     "view_count": 850,
-    "image": "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/ipad-gen-10-64gb.png",
+    "images": ["/assets/images/ipad-gen-10-64gb.png"],
     "ram": null,
     "rom": null,
     "chipset": "Apple H1 chip mỗi bên tai nghe",
@@ -949,10 +903,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.82,
     "review_count": 60,
     "view_count": 780,
-    "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/samsung-galaxy-tab-s9-ultra.png",
+    "images": ["/assets/images/samsung-galaxy-tab-s9-ultra.png"],
     "ram": null,
     "rom": null,
     "chipset": "Dual Amp + Samsung Seamless Codec 24bit/96kHz",
@@ -977,10 +929,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.77,
     "review_count": 82,
     "view_count": 950,
-    "image": "https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/samsung-galaxy-tab-s9-fe.png",
+    "images": ["/assets/images/samsung-galaxy-tab-s9-fe.png"],
     "ram": null,
     "rom": null,
     "chipset": "Codec LHDC 5.0 chuẩn Hi-Res Audio Wireless",
@@ -1005,10 +955,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.88,
     "review_count": 64,
     "view_count": 710,
-    "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/xiaomi-pad-6s-pro.png",
+    "images": ["/assets/images/xiaomi-pad-6s-pro.png"],
     "ram": null,
     "rom": null,
     "chipset": "Công nghệ tăng cường âm trầm BassUp",
@@ -1033,10 +981,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.95,
     "review_count": 76,
     "view_count": 1200,
-    "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/sony-wh-1000xm5.png",
+    "images": ["/assets/images/sony-wh-1000xm5.png"],
     "ram": null,
     "rom": "64GB",
     "chipset": "Apple S9 SiP 64-bit + Chip UWB thế hệ 2",
@@ -1061,10 +1007,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.86,
     "review_count": 92,
     "view_count": 1150,
-    "image": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/sony-wf-1000xm5.png",
+    "images": ["/assets/images/sony-wf-1000xm5.png"],
     "ram": null,
     "rom": "64GB",
     "chipset": "Apple S9 SiP lõi tứ Neural Engine",
@@ -1089,10 +1033,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.9,
     "review_count": 48,
     "view_count": 870,
-    "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/sony-srs-xe300.png",
+    "images": ["/assets/images/sony-srs-xe300.png"],
     "ram": "2GB",
     "rom": "32GB",
     "chipset": "Exynos W1000 3nm 5 nhân",
@@ -1117,10 +1059,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.81,
     "review_count": 65,
     "view_count": 760,
-    "image": "https://images.unsplash.com/photo-1510017803434-a899398421b3?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1510017803434-a899398421b3?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/apple-airpods-pro-2-usb-c.png",
+    "images": ["/assets/images/apple-airpods-pro-2-usb-c.png"],
     "ram": "2GB",
     "rom": "16GB",
     "chipset": "Exynos W930 1.4GHz",
@@ -1145,10 +1085,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.9,
     "review_count": 184,
     "view_count": 1890,
-    "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/apple-airpods-max-usb-c.png",
+    "images": ["/assets/images/apple-airpods-max-usb-c.png"],
     "ram": null,
     "rom": null,
     "chipset": "Công nghệ GaNPrime thế hệ mới nhất",
@@ -1173,10 +1111,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.92,
     "review_count": 98,
     "view_count": 1200,
-    "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/samsung-galaxy-buds3-pro.png",
+    "images": ["/assets/images/samsung-galaxy-buds3-pro.png"],
     "ram": null,
     "rom": null,
     "chipset": "Công nghệ GaN thế hệ mới",
@@ -1201,10 +1137,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.96,
     "review_count": 175,
     "view_count": 1750,
-    "image": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/xiaomi-redmi-buds-5-pro.png",
+    "images": ["/assets/images/xiaomi-redmi-buds-5-pro.png"],
     "ram": null,
     "rom": null,
     "chipset": "Cảm biến Darkfield 8000 DPI trên mọi bề mặt kính",
@@ -1229,10 +1163,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.91,
     "review_count": 88,
     "view_count": 1100,
-    "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/anker-soundcore-motion-boom-plus.png",
+    "images": ["/assets/images/anker-soundcore-motion-boom-plus.png"],
     "ram": null,
     "rom": null,
     "chipset": "Switch cơ học Low Profile độ nảy cao",
@@ -1257,11 +1189,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.88,
     "review_count": 54,
     "view_count": 980,
-    "image": "https://images.unsplash.com/photo-1591337676887-a217a6970a8a?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1591337676887-a217a6970a8a?w=800&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/apple-watch-ultra-2.png",
+    "images": ["/assets/images/apple-watch-ultra-2.png"],
     "ram": "8GB",
     "rom": "128GB",
     "chipset": "Apple A18 3nm",
@@ -1286,10 +1215,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.85,
     "review_count": 110,
     "view_count": 1450,
-    "image": "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/apple-watch-series-9-45mm.png",
+    "images": ["/assets/images/apple-watch-series-9-45mm.png"],
     "ram": "6GB",
     "rom": "128GB",
     "chipset": "Apple A16 Bionic",
@@ -1314,10 +1241,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.89,
     "review_count": 67,
     "view_count": 1120,
-    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/samsung-galaxy-watch-ultra.png",
+    "images": ["/assets/images/samsung-galaxy-watch-ultra.png"],
     "ram": "12GB",
     "rom": "256GB",
     "chipset": "Snapdragon 8 Gen 3 for Galaxy",
@@ -1342,10 +1267,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.78,
     "review_count": 85,
     "view_count": 930,
-    "image": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/samsung-galaxy-watch-6-classic.png",
+    "images": ["/assets/images/samsung-galaxy-watch-6-classic.png"],
     "ram": "8GB",
     "rom": "128GB",
     "chipset": "Exynos 2200 4nm",
@@ -1370,10 +1293,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.87,
     "review_count": 94,
     "view_count": 1280,
-    "image": "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/cu-sac-anker-65w-ganprime.png",
+    "images": ["/assets/images/cu-sac-anker-65w-ganprime.png"],
     "ram": "12GB",
     "rom": "256GB",
     "chipset": "Snapdragon 8 Gen 3",
@@ -1398,10 +1319,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.82,
     "review_count": 135,
     "view_count": 1600,
-    "image": "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/cu-sac-anker-100w-ganprime.png",
+    "images": ["/assets/images/cu-sac-anker-100w-ganprime.png"],
     "ram": "8GB",
     "rom": "256GB",
     "chipset": "MediaTek Dimensity 7200-Ultra 4nm",
@@ -1426,10 +1345,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.9,
     "review_count": 48,
     "view_count": 820,
-    "image": "https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/logitech-mx-master-3s.png",
+    "images": ["/assets/images/logitech-mx-master-3s.png"],
     "ram": "12GB",
     "rom": "256GB",
     "chipset": "Snapdragon 8 Gen 3",
@@ -1454,10 +1371,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.92,
     "review_count": 53,
     "view_count": 1100,
-    "image": "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/logitech-mx-mechanical.png",
+    "images": ["/assets/images/logitech-mx-mechanical.png"],
     "ram": "16GB Unified",
     "rom": "512GB SSD",
     "chipset": "Apple M3 (8 CPU, 10 GPU)",
@@ -1482,10 +1397,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.94,
     "review_count": 36,
     "view_count": 950,
-    "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/iphone-16-128gb.png",
+    "images": ["/assets/images/iphone-16-128gb.png"],
     "ram": "32GB LPDDR5X",
     "rom": "1TB PCIe 4.0 SSD",
     "chipset": "Intel Core Ultra 9 185H NPU AI",
@@ -1510,10 +1423,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.97,
     "review_count": 29,
     "view_count": 780,
-    "image": "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/iphone-16-128gb.png",
+    "images": ["/assets/images/iphone-16-128gb.png"],
     "ram": "32GB DDR5 5600MHz",
     "rom": "2TB PCIe 4.0 SSD",
     "chipset": "Intel Core i9-14900HX",
@@ -1538,10 +1449,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.8,
     "review_count": 41,
     "view_count": 670,
-    "image": "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/iphone-16-128gb.png",
+    "images": ["/assets/images/iphone-16-128gb.png"],
     "ram": "16GB LPDDR5",
     "rom": "512GB NVMe SSD",
     "chipset": "Intel Core i7-1365U vPro",
@@ -1566,10 +1475,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.96,
     "review_count": 38,
     "view_count": 890,
-    "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/iphone-16-128gb.png",
+    "images": ["/assets/images/iphone-16-128gb.png"],
     "ram": "32GB LPDDR5X",
     "rom": "1TB PCIe Gen4 SSD",
     "chipset": "Intel Core Ultra 7 155H NPU",
@@ -1594,10 +1501,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.88,
     "review_count": 57,
     "view_count": 1040,
-    "image": "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/iphone-16-128gb.png",
+    "images": ["/assets/images/iphone-16-128gb.png"],
     "ram": "32GB DDR5 5600MHz",
     "rom": "1TB SSD M.2 NVMe",
     "chipset": "Intel Core i7-14700HX 20 nhân",
@@ -1622,10 +1527,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.81,
     "review_count": 44,
     "view_count": 730,
-    "image": "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/iphone-16-128gb.png",
+    "images": ["/assets/images/iphone-16-128gb.png"],
     "ram": "16GB LPDDR5X",
     "rom": "512GB PCIe Gen4 SSD",
     "chipset": "Intel Core Ultra 5 125H tích hợp Intel Arc",
@@ -1650,10 +1553,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.93,
     "review_count": 31,
     "view_count": 650,
-    "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/iphone-16-128gb.png",
+    "images": ["/assets/images/iphone-16-128gb.png"],
     "ram": "32GB DDR5 5600MHz",
     "rom": "1TB PCIe Gen4 SSD",
     "chipset": "Intel Core i9-14900HX",
@@ -1678,10 +1579,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.98,
     "review_count": 65,
     "view_count": 1200,
-    "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/macbook-air-13-m3.png",
+    "images": ["/assets/images/macbook-air-13-m3.png"],
     "ram": "8GB",
     "rom": "256GB",
     "chipset": "Apple M4 chip 9-core CPU",
@@ -1706,10 +1605,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.86,
     "review_count": 72,
     "view_count": 980,
-    "image": "https://images.unsplash.com/photo-1589739900243-4b52cd9b104e?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1589739900243-4b52cd9b104e?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/macbook-air-13-m3.png",
+    "images": ["/assets/images/macbook-air-13-m3.png"],
     "ram": "8GB",
     "rom": "128GB",
     "chipset": "Apple A17 Pro 3nm",
@@ -1734,10 +1631,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.88,
     "review_count": 59,
     "view_count": 850,
-    "image": "https://images.unsplash.com/photo-1585792180666-f7547c6a28c5?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1585792180666-f7547c6a28c5?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/macbook-air-13-m3.png",
+    "images": ["/assets/images/macbook-air-13-m3.png"],
     "ram": "8GB",
     "rom": "128GB",
     "chipset": "Snapdragon 8 Gen 2 for Galaxy",
@@ -1762,10 +1657,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.75,
     "review_count": 98,
     "view_count": 1100,
-    "image": "https://images.unsplash.com/photo-1527698266440-12104e498b76?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1527698266440-12104e498b76?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/macbook-air-13-m3.png",
+    "images": ["/assets/images/macbook-air-13-m3.png"],
     "ram": "4GB",
     "rom": "64GB",
     "chipset": "Snapdragon 695 5G",
@@ -1790,10 +1683,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.83,
     "review_count": 112,
     "view_count": 1350,
-    "image": "https://images.unsplash.com/photo-1561154464-82e9adf32764?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1561154464-82e9adf32764?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/macbook-air-13-m3.png",
+    "images": ["/assets/images/macbook-air-13-m3.png"],
     "ram": "8GB",
     "rom": "256GB",
     "chipset": "Snapdragon 870",
@@ -1818,10 +1709,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.82,
     "review_count": 35,
     "view_count": 620,
-    "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/macbook-air-13-m3.png",
+    "images": ["/assets/images/macbook-air-13-m3.png"],
     "ram": "8GB LPDDR5",
     "rom": "256GB UFS 3.1",
     "chipset": "Snapdragon 870",
@@ -1846,10 +1735,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.89,
     "review_count": 88,
     "view_count": 1400,
-    "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/macbook-air-13-m3.png",
+    "images": ["/assets/images/macbook-air-13-m3.png"],
     "ram": null,
     "rom": null,
     "chipset": "Apple H2 chip",
@@ -1874,10 +1761,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.95,
     "review_count": 76,
     "view_count": 1250,
-    "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/macbook-air-13-m3.png",
+    "images": ["/assets/images/macbook-air-13-m3.png"],
     "ram": null,
     "rom": null,
     "chipset": "Bộ khuếch tán âm Class D 80W (Woofer 50W + 2 Tweeter 15W)",
@@ -1902,10 +1787,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.91,
     "review_count": 64,
     "view_count": 890,
-    "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/ipad-air-6-m2-11-inch.png",
+    "images": ["/assets/images/ipad-air-6-m2-11-inch.png"],
     "ram": null,
     "rom": null,
     "chipset": "Âm thanh đa hướng True Stereophonic 360 độ",
@@ -1930,10 +1813,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.88,
     "review_count": 105,
     "view_count": 1320,
-    "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/ipad-air-6-m2-11-inch.png",
+    "images": ["/assets/images/ipad-air-6-m2-11-inch.png"],
     "ram": null,
     "rom": null,
     "chipset": "JBL Original Pro Sound công nghệ Bass Radiator kép",
@@ -1958,10 +1839,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.85,
     "review_count": 82,
     "view_count": 1020,
-    "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/ipad-air-6-m2-11-inch.png",
+    "images": ["/assets/images/ipad-air-6-m2-11-inch.png"],
     "ram": null,
     "rom": null,
     "chipset": "Hệ thống loa 2 chiều 30W (Woofer 20W + Tweeter 10W)",
@@ -1986,10 +1865,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.84,
     "review_count": 47,
     "view_count": 760,
-    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/ipad-air-6-m2-11-inch.png",
+    "images": ["/assets/images/ipad-air-6-m2-11-inch.png"],
     "ram": null,
     "rom": null,
     "chipset": "Sony Integrated Processor V1 tối ưu chống ồn",
@@ -2014,10 +1891,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.87,
     "review_count": 118,
     "view_count": 1420,
-    "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/ipad-air-6-m2-11-inch.png",
+    "images": ["/assets/images/ipad-air-6-m2-11-inch.png"],
     "ram": null,
     "rom": null,
     "chipset": "Chuẩn Hi-Res Wireless Audio với codec LDAC",
@@ -2042,10 +1917,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.9,
     "review_count": 52,
     "view_count": 810,
-    "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/ipad-air-6-m2-11-inch.png",
+    "images": ["/assets/images/ipad-air-6-m2-11-inch.png"],
     "ram": null,
     "rom": null,
     "chipset": "Thuật toán âm thanh không gian Spatial Audio 5 kênh",
@@ -2070,10 +1943,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.93,
     "review_count": 62,
     "view_count": 1350,
-    "image": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/apple-airpods-pro-2-usb-c.png",
+    "images": ["/assets/images/apple-airpods-pro-2-usb-c.png"],
     "ram": null,
     "rom": "64GB",
     "chipset": "Apple S10 SiP 64-bit lõi tứ Neural Engine",
@@ -2098,10 +1969,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.82,
     "review_count": 95,
     "view_count": 1280,
-    "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/apple-airpods-pro-2-usb-c.png",
+    "images": ["/assets/images/apple-airpods-pro-2-usb-c.png"],
     "ram": null,
     "rom": "32GB",
     "chipset": "Apple S8 SiP 64-bit",
@@ -2126,10 +1995,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.87,
     "review_count": 51,
     "view_count": 920,
-    "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/apple-airpods-pro-2-usb-c.png",
+    "images": ["/assets/images/apple-airpods-pro-2-usb-c.png"],
     "ram": "2GB",
     "rom": "32GB",
     "chipset": "Exynos W1000 tiến trình 3nm 5 nhân",
@@ -2154,10 +2021,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.79,
     "review_count": 42,
     "view_count": 780,
-    "image": "https://images.unsplash.com/photo-1510017803434-a899398421b3?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1510017803434-a899398421b3?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/apple-airpods-pro-2-usb-c.png",
+    "images": ["/assets/images/apple-airpods-pro-2-usb-c.png"],
     "ram": "1.5GB",
     "rom": "16GB",
     "chipset": "Exynos W920 Dual-Core 1.18GHz",
@@ -2182,10 +2047,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.83,
     "review_count": 39,
     "view_count": 690,
-    "image": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/apple-airpods-pro-2-usb-c.png",
+    "images": ["/assets/images/apple-airpods-pro-2-usb-c.png"],
     "ram": "2GB",
     "rom": "32GB",
     "chipset": "Snapdragon W5+ Gen 1 4nm tiết kiệm điện",
@@ -2210,10 +2073,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.94,
     "review_count": 260,
     "view_count": 2450,
-    "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/apple-airpods-pro-2-usb-c.png",
+    "images": ["/assets/images/apple-airpods-pro-2-usb-c.png"],
     "ram": null,
     "rom": null,
     "chipset": "Chíp bán dẫn GaN III nhỏ hơn 70% củ sạc 30W thường",
@@ -2238,10 +2099,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.91,
     "review_count": 145,
     "view_count": 1680,
-    "image": "https://images.unsplash.com/photo-1609592424109-dd9892f1b177?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1609592424109-dd9892f1b177?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/apple-airpods-pro-2-usb-c.png",
+    "images": ["/assets/images/apple-airpods-pro-2-usb-c.png"],
     "ram": null,
     "rom": null,
     "chipset": "Chuẩn sạc không dây thế hệ mới Qi2 Certified 15W",
@@ -2266,10 +2125,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.89,
     "review_count": 198,
     "view_count": 1900,
-    "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/apple-airpods-pro-2-usb-c.png",
+    "images": ["/assets/images/apple-airpods-pro-2-usb-c.png"],
     "ram": null,
     "rom": null,
     "chipset": "E-Marker chip tích hợp kiểm soát dòng điện an toàn",
@@ -2294,10 +2151,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.95,
     "review_count": 78,
     "view_count": 940,
-    "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/apple-watch-series-9-45mm.png",
+    "images": ["/assets/images/apple-watch-series-9-45mm.png"],
     "ram": null,
     "rom": null,
     "chipset": "Công nghệ không dây Lightspeed độ trễ cực thấp 1ms",
@@ -2322,10 +2177,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.97,
     "review_count": 130,
     "view_count": 1550,
-    "image": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/apple-watch-series-9-45mm.png",
+    "images": ["/assets/images/apple-watch-series-9-45mm.png"],
     "ram": null,
     "rom": null,
     "chipset": "Cảm biến HERO 2 độ phân giải 32.000 DPI, theo dõi 500+ IPS",
@@ -2350,10 +2203,8 @@ const DEFAULT_PRODUCTS = [
     "rating": 4.96,
     "review_count": 115,
     "view_count": 1380,
-    "image": "https://images.unsplash.com/photo-1589739900243-4b52cd9b104e?w=600&auto=format&fit=crop&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1589739900243-4b52cd9b104e?w=800&auto=format&fit=crop&q=80"
-    ],
+    "image": "/assets/images/apple-watch-series-9-45mm.png",
+    "images": ["/assets/images/apple-watch-series-9-45mm.png"],
     "ram": null,
     "rom": null,
     "chipset": "Cảm biến con quay hồi chuyển Barrel Roll xoay thân bút",
@@ -2405,7 +2256,8 @@ const DEFAULT_REVIEWS = [
 // Helper Functions for Local Storage DB
 function getStoredProducts() {
   const p = localStorage.getItem(API_CONFIG.storageKeys.products);
-  if (!p) {
+  // Auto-heal: Invalidate old cached products containing unsplash links or outdated image paths
+  if (!p || p.includes('images.unsplash.com')) {
     localStorage.setItem(API_CONFIG.storageKeys.products, JSON.stringify(DEFAULT_PRODUCTS));
     return DEFAULT_PRODUCTS;
   }
