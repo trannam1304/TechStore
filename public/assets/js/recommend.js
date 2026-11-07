@@ -112,7 +112,7 @@ class RecommendComponent {
               <span style="position: absolute; top: 6px; left: 6px; font-size: 10px; background: #e0f2fe; color: #0369a1; font-weight: 700; padding: 2px 6px; border-radius: 4px;">Sản phẩm chính</span>
               <img src="${mainProduct.image}" style="width: 100px; height: 100px; object-fit: contain; margin: 12px auto 8px;" alt="${escapeAttr(mainProduct.name)}">
               <div style="font-size: 12px; font-weight: 600; line-height: 1.3; height: 2.6em; overflow: hidden; color: #1e293b;">${escapeHtml(mainProduct.name)}</div>
-              <div style="font-size: 13px; font-weight: 800; color: #d70018; margin-top: 4px;">${formatVND(mainProduct.price)}</div>
+              <div id="bundle-main-price" style="font-size: 13px; font-weight: 800; color: #d70018; margin-top: 4px;">${formatVND(mainProduct.price)}</div>
             </div>
 
             ${accessories.map((acc, idx) => `
@@ -146,6 +146,18 @@ class RecommendComponent {
         </div>
       `;
 
+      // Biến theo dõi giá & variant thực tế của sản phẩm chính (đồng bộ khi user chọn dung lượng 1TB/512GB ở trên)
+      let currentMainProductPrice = Number(mainProduct.price) || 0;
+      let currentMainProductVariant = (typeof getSelectedVariant === 'function') ? getSelectedVariant() : 'Mặc định';
+
+      const initialPriceEl = document.getElementById('detail-price');
+      if (initialPriceEl && initialPriceEl.textContent) {
+        const parsed = parseInt(initialPriceEl.textContent.replace(/\D/g, ''), 10);
+        if (parsed > 0) currentMainProductPrice = parsed;
+      }
+      const initialMainPriceEl = container.querySelector('#bundle-main-price');
+      if (initialMainPriceEl) initialMainPriceEl.textContent = formatVND(currentMainProductPrice);
+
       // Hàm tính toán và cập nhật giá combo theo các checkbox
       const updateCombo = () => {
         const checkboxes = container.querySelectorAll('.bundle-accessory-check:checked');
@@ -157,7 +169,7 @@ class RecommendComponent {
           selectedCount++;
         });
 
-        const totalOriginal = mainProduct.price + selectedAccTotal;
+        const totalOriginal = currentMainProductPrice + selectedAccTotal;
         // Áp dụng giảm 8% combo khi mua từ 2 món trở lên
         const hasComboDiscount = selectedCount >= 2;
         const discountAmount = hasComboDiscount ? Math.round(totalOriginal * 0.08) : 0;
@@ -185,6 +197,21 @@ class RecommendComponent {
         }
       };
 
+      // Đăng ký hook toàn cục để product-detail.html gọi mỗi khi đổi biến thể (dung lượng/màu)
+      window.updateBoughtTogetherPrice = function(newPrice, newVariant) {
+        if (newPrice && Number(newPrice) > 0) {
+          currentMainProductPrice = Number(newPrice);
+        }
+        if (newVariant) {
+          currentMainProductVariant = newVariant;
+        }
+        const mainPriceEl = container.querySelector('#bundle-main-price');
+        if (mainPriceEl) {
+          mainPriceEl.textContent = formatVND(currentMainProductPrice);
+        }
+        updateCombo();
+      };
+
       // Lắng nghe sự kiện checkbox thay đổi
       container.querySelectorAll('.bundle-accessory-check').forEach(cb => {
         cb.addEventListener('change', updateCombo);
@@ -202,9 +229,9 @@ class RecommendComponent {
           btnBuyCombo.textContent = 'Đang thêm combo vào giỏ...';
 
           try {
-            // 1. Thêm sản phẩm chính
-            const mainVariant = (typeof getSelectedVariant === 'function') ? getSelectedVariant() : 'Mặc định';
-            await api.cart.addItem(mainProduct.id, 1, `${mainVariant} (Combo)`);
+            // 1. Thêm sản phẩm chính kèm giá biến thể đã chọn (1TB/512GB)
+            const mainVariant = (typeof getSelectedVariant === 'function') ? getSelectedVariant() : currentMainProductVariant;
+            await api.cart.addItem(mainProduct.id, 1, `${mainVariant} (Combo)`, currentMainProductPrice);
 
             // 2. Thêm các phụ kiện đã chọn
             for (const cb of checkedCbs) {
