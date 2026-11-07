@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng Ký Tài Khoản - TechStore</title>
   <link rel="stylesheet" href="/assets/css/base.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     .auth-page {
       min-height: 100vh;
@@ -89,6 +90,16 @@
       <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-reg-submit" style="font-weight: 700; margin-top: 8px;">
         Đăng Ký Tài Khoản
       </button>
+
+      <!-- Divider -->
+      <div style="display: flex; align-items: center; margin: 16px 0 12px 0;">
+        <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+        <span style="padding: 0 10px; font-size: 12px; color: #94a3b8; text-transform: uppercase;">hoặc tiếp tục với</span>
+        <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+      </div>
+
+      <!-- Google Official Sign-In Button Container -->
+      <div id="google-signin-btn-container" style="display: flex; justify-content: center; width: 100%; min-height: 44px; margin-bottom: 8px;"></div>
     </form>
 
     <div style="text-align: center; margin-top: 24px; font-size: 14px; color: var(--color-gray);">
@@ -145,6 +156,79 @@
         btn.textContent = 'Đăng Ký Tài Khoản';
       }
     });
+
+    // Khởi tạo Google Identity Services
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const googleClientId = await api.auth.getGoogleClientId();
+        if (!googleClientId) return;
+
+        const checkGsi = setInterval(() => {
+          if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+            clearInterval(checkGsi);
+            try {
+              google.accounts.id.initialize({
+                client_id: googleClientId,
+                callback: handleGoogleRegisterResponse,
+                auto_select: false,
+                cancel_on_tap_outside: true
+              });
+
+              const container = document.getElementById('google-signin-btn-container');
+              if (container) {
+                container.innerHTML = '';
+                const width = Math.min(380, Math.max(260, container.offsetWidth || 360));
+                google.accounts.id.renderButton(container, {
+                  type: 'standard',
+                  theme: 'outline',
+                  size: 'large',
+                  width: width,
+                  text: 'signup_with',
+                  shape: 'rectangular',
+                  logo_alignment: 'left'
+                });
+              }
+            } catch (err) {
+              console.warn('Lỗi render nút Google:', err);
+            }
+          }
+        }, 100);
+
+        setTimeout(() => clearInterval(checkGsi), 4000);
+      } catch (e) {
+        console.warn('Không thể nạp Google Client ID:', e);
+      }
+    });
+
+    async function handleGoogleRegisterResponse(response) {
+      const credential = response.credential;
+      if (!credential) {
+        showToast('Không nhận được mã xác thực từ Google!', 'danger');
+        return;
+      }
+
+      showToast('Đang kết nối tài khoản Google...', 'info');
+
+      try {
+        const res = await api.auth.google({ credential });
+        if (res && res.success) {
+          const u = res.data?.user || res.user || {};
+          showToast(`Chào mừng ${u.name || 'bạn'} đến với TechStore!`, 'success');
+          setTimeout(() => {
+            const redirect = new URLSearchParams(window.location.search).get('redirect');
+            if (redirect) {
+              window.location.href = redirect;
+              return;
+            }
+            window.location.href = '/pages/account.html';
+          }, 700);
+        } else {
+          showToast(res.message || 'Xác thực Google thất bại!', 'danger');
+        }
+      } catch (err) {
+        showToast('Lỗi kết nối xác thực: ' + err.message, 'danger');
+      }
+    }
   </script>
 </body>
 </html>

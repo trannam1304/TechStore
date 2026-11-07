@@ -239,11 +239,12 @@
 
             const container = document.getElementById('google-signin-btn-container');
             container.innerHTML = '';
+            const containerWidth = Math.min(380, Math.max(260, container.offsetWidth || 360));
             google.accounts.id.renderButton(container, {
               type: 'standard',
               theme: 'outline',
               size: 'large',
-              width: 380,
+              width: containerWidth,
               text: 'continue_with',
               shape: 'rectangular',
               logo_alignment: 'left'
