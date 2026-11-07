@@ -81,7 +81,9 @@ class CartModel extends BaseModel {
 
             foreach ($rows as $row) {
                 $qty = (int)$row['quantity'];
-                $price = (float)$row['price'];
+                $variantStr = !empty($row['variant']) ? $row['variant'] : 'Mặc định';
+                $delta = self::calculateVariantPriceDelta((int)$row['product_id'], $variantStr);
+                $price = (float)$row['price'] + $delta;
                 $stock = (int)($row['stock'] ?? 0);
                 $lineTotal = $price * $qty;
 
@@ -93,7 +95,7 @@ class CartModel extends BaseModel {
                     'name' => $row['name'] ?? $row['product_name'],
                     'price' => $price,
                     'quantity' => $qty,
-                    'variant' => !empty($row['variant']) ? $row['variant'] : 'Mặc định',
+                    'variant' => $variantStr,
                     'image' => $row['image'] ?? '',
                     'stock' => $stock,
                     'status' => ($stock > 0 ? 'active' : 'out_of_stock'),
@@ -251,5 +253,57 @@ class CartModel extends BaseModel {
         } catch (\Throwable $e) {
             return false;
         }
+    }
+
+    /**
+     * Tính toán chênh lệch giá (price_delta) theo biến thể tùy chọn (1TB, 512GB, 256GB SSD...)
+     */
+    public static function calculateVariantPriceDelta(int $productId, ?string $variant): float {
+        if (empty($variant)) return 0.0;
+        $v = mb_strtolower($variant, 'UTF-8');
+
+        // Biến thể 1TB
+        if (str_contains($v, '1tb')) {
+            try {
+                $pdo = Database::getConnection();
+                $stmt = $pdo->prepare("SELECT category_id FROM products WHERE id = ? LIMIT 1");
+                $stmt->execute([$productId]);
+                $catId = (int)$stmt->fetchColumn();
+                if ($catId === 2) return 4500000.0;  // Laptop 1TB SSD
+                if ($catId === 3) return 10500000.0; // iPad 1TB
+                return 8500000.0;                    // Điện thoại 1TB
+            } catch (\Throwable $e) {
+                return 8500000.0;
+            }
+        }
+
+        // Biến thể 512GB
+        if (str_contains($v, '512gb')) {
+            try {
+                $pdo = Database::getConnection();
+                $stmt = $pdo->prepare("SELECT category_id FROM products WHERE id = ? LIMIT 1");
+                $stmt->execute([$productId]);
+                $catId = (int)$stmt->fetchColumn();
+                if ($catId === 3) return 6500000.0; // iPad 512GB
+                return 4000000.0;                   // Điện thoại 512GB
+            } catch (\Throwable $e) {
+                return 4000000.0;
+            }
+        }
+
+        // Biến thể 256GB (khi bản cơ sở là 128GB)
+        if (str_contains($v, '256gb')) {
+            try {
+                $pdo = Database::getConnection();
+                $stmt = $pdo->prepare("SELECT rom FROM products WHERE id = ? LIMIT 1");
+                $stmt->execute([$productId]);
+                $rom = mb_strtolower((string)$stmt->fetchColumn(), 'UTF-8');
+                if (str_contains($rom, '128gb')) {
+                    return 2500000.0;
+                }
+            } catch (\Throwable $e) {}
+        }
+
+        return 0.0;
     }
 }

@@ -516,7 +516,7 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container footer-bottom">
-      © 2026 TechStore Vietnam. Hệ thống tiêu thụ REST API chuẩn theo đề tài (Tuấn Kiệt phụ trách Front-end).
+      © 2026 TechStore Vietnam. Hệ thống thương mại điện tử công nghệ cao cấp. Bản quyền thuộc về TechStore.
     </div>
   </footer>
 
@@ -572,13 +572,14 @@
 
       // Gallery
       const mainImg = document.getElementById('detail-main-img');
+      mainImg.onerror = function() { this.onerror = null; this.src = '/assets/images/iphone-16-128gb.png'; };
       mainImg.src = p.image;
 
       const galleryImages = p.images || [p.image];
       const thumbsContainer = document.getElementById('detail-gallery-thumbs');
       thumbsContainer.innerHTML = galleryImages.map((img, i) => `
         <div class="thumb-item ${i === 0 ? 'active' : ''}" onclick="setMainImage('${img}', this)">
-          <img src="${img}" alt="${escapeAttr(p.name)}">
+          <img src="${img}" alt="${escapeAttr(p.name)}" onerror="this.onerror=null; this.src='/assets/images/iphone-16-128gb.png'">
         </div>
       `).join('');
 
@@ -595,14 +596,18 @@
       document.getElementById('btn-add-cart').onclick = async () => {
         const qty = parseInt(document.getElementById('detail-qty').value, 10) || 1;
         const variant = getSelectedVariant();
-        await api.cart.addItem(p.id, qty, variant);
+        const priceText = document.getElementById('detail-price')?.textContent;
+        const dynamicPrice = priceText ? parseInt(priceText.replace(/\D/g, ''), 10) : p.price;
+        await api.cart.addItem(p.id, qty, variant, dynamicPrice);
         showToast(`Đã thêm ${qty} x ${p.name} (${variant}) vào giỏ hàng!`, 'success');
       };
 
       document.getElementById('btn-buy-now').onclick = async () => {
         const qty = parseInt(document.getElementById('detail-qty').value, 10) || 1;
         const variant = getSelectedVariant();
-        await api.cart.addItem(p.id, qty, variant);
+        const priceText = document.getElementById('detail-price')?.textContent;
+        const dynamicPrice = priceText ? parseInt(priceText.replace(/\D/g, ''), 10) : p.price;
+        await api.cart.addItem(p.id, qty, variant, dynamicPrice);
         window.location.href = '/pages/checkout.html';
       };
     }
@@ -659,6 +664,11 @@
 
       const currentPrice = Math.max(0, p.price + totalDelta);
       document.getElementById('detail-price').textContent = formatVND(currentPrice);
+
+      // Đồng bộ giá sang khối Combo Mua Kèm (Frequently Bought Together)
+      if (typeof window.updateBoughtTogetherPrice === 'function') {
+        window.updateBoughtTogetherPrice(currentPrice, getSelectedVariant());
+      }
 
       const oldPriceEl = document.getElementById('detail-old-price');
       const discountBadge = document.getElementById('detail-discount-badge');
@@ -817,7 +827,9 @@
         const specLabel = `${p.ram || '16GB'} | ${p.rom || '512GB SSD'}`;
         return [
           { id: 'spec', title: 'Chọn cấu hình hiệu năng:', values: [
-            { label: specLabel, price_delta: 0, default: true }
+            { label: specLabel, price_delta: 0, default: true },
+            { label: `${p.ram || '16GB'} | 1TB SSD`, price_delta: 4500000 },
+            { label: `32GB | 1TB SSD`, price_delta: 9000000 }
           ]},
           { id: 'color', title: 'Chọn màu sắc:', values: [
             { label: 'Space Gray (Xám Không Gian)', default: true },
@@ -830,7 +842,8 @@
           { id: 'storage', title: 'Chọn dung lượng lưu trữ:', values: [
             { label: p.rom || '128GB', price_delta: 0, default: true },
             { label: '256GB', price_delta: 2500000 },
-            { label: '512GB', price_delta: 6500000 }
+            { label: '512GB', price_delta: 6500000 },
+            { label: '1TB', price_delta: 10500000 }
           ]},
           { id: 'color', title: 'Chọn màu sắc:', values: [
             { label: 'Xám Không Gian', default: true },
@@ -841,7 +854,8 @@
       return [
         { id: 'storage', title: 'Chọn dung lượng bộ nhớ:', values: [
           { label: p.rom || '256GB', price_delta: 0, default: true },
-          { label: '512GB', price_delta: 4000000 }
+          { label: '512GB', price_delta: 4000000 },
+          { label: '1TB', price_delta: 8500000 }
         ]},
         { id: 'color', title: 'Chọn màu sắc:', values: [
           { label: 'Titan Tự Nhiên', default: true },

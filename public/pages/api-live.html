@@ -70,9 +70,48 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      gap: 12px;
       font-size: 12px;
       color: var(--color-success);
       font-weight: 600;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-action {
+      background: #1e293b;
+      color: #38bdf8;
+      border: 1px solid #334155;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action:hover {
+      background: #0284c7;
+      color: #fff;
+      border-color: #38bdf8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+    }
+
+    .btn-action.btn-danger-action {
+      color: #f87171;
+    }
+
+    .btn-action.btn-danger-action:hover {
+      background: #dc2626;
+      color: #fff;
+      border-color: #ef4444;
     }
 
     .status-dot {
@@ -372,12 +411,16 @@
     <div class="topbar-brand">
       <span>TechStore RESTful API</span>
       <span class="brand-badge">Live Inspector</span>
-      <span style="color: var(--text-muted); font-size: 12px; font-weight: normal;">| Topic 1: RESTful
-        Architecture</span>
+      <span style="color: var(--text-muted); font-size: 12px; font-weight: normal;">| Topic 1: RESTful Architecture</span>
     </div>
     <div class="topbar-status">
       <div class="status-dot"></div>
-      <span>ĐANG ĐỒNG BỘ TELEMETRY THỜI GIAN THỰC</span>
+      <span id="sync-status-text">ĐỒNG BỘ TELEMETRY THỜI GIAN THỰC</span>
+      <div class="topbar-actions">
+        <button class="btn-action" onclick="loadDefaultSuite()" title="Nạp nhanh 8 kịch bản kiểm thử">⚡ Nạp 8 Bước Test</button>
+        <button class="btn-action" id="btn-autoplay" onclick="toggleAutoPlay()" title="Mô phỏng tự động từng request">▶ Chạy Mô Phỏng</button>
+        <button class="btn-action btn-danger-action" onclick="clearStream()" title="Xóa trắng danh sách để chờ lệnh mới">🗑️ Xóa</button>
+      </div>
     </div>
   </div>
 
@@ -441,7 +484,183 @@
   </div>
 
   <script>
-    const requests = [];
+    const DEFAULT_SUITE = [
+      {
+        name: "12.0 [200 OK] GET /products?limit=10 (ETag, Cache-Control & HATEOAS)",
+        method: "GET",
+        url: "/api/v1/products?limit=10",
+        status: 200,
+        statusText: "OK",
+        time: "21.8 ms",
+        size: "14.0 KB",
+        securityNote: "Chuẩn REST Cấp độ 3 (Richardson Level 3): Cache-Control: max-age=300, ETag và HATEOAS _links điều hướng.",
+        reqHeaders: {
+          "Accept": "application/json",
+          "If-None-Match": "\"c1d8b3db7f980887b85ffb3773ca0857\""
+        },
+        resBody: {
+          "success": true,
+          "data": {
+            "items": [
+              { "id": 1, "name": "iPhone 15 Pro Max 256GB", "price": 28990000 },
+              { "id": 2, "name": "MacBook Air M3 16GB", "price": 27990000 }
+            ],
+            "pagination": { "total_items": 42, "current_page": 1, "per_page": 10 }
+          },
+          "_links": {
+            "self": { "href": "/api/v1/products?page=1&limit=10", "method": "GET" },
+            "next": { "href": "/api/v1/products?page=2&limit=10", "method": "GET" }
+          }
+        }
+      },
+      {
+        name: "12.1 [401 Unauthorized] GET /auth/me (Thiếu Header Authorization)",
+        method: "GET",
+        url: "/api/v1/auth/me",
+        status: 401,
+        statusText: "Unauthorized",
+        time: "14.2 ms",
+        size: "486 B",
+        securityNote: "OWASP API02: Broken Authentication - Hệ thống từ chối mọi request không có Bearer token trong Header theo chuẩn RFC 7807.",
+        reqHeaders: {
+          "Authorization": "[Chưa truyền Header Token]"
+        },
+        resBody: {
+          "type": "https://techstore.local/errors/unauthorized",
+          "title": "Unauthorized",
+          "status": 401,
+          "detail": "Yêu cầu xác thực: Vui lòng cung cấp Bearer token trong Header Authorization",
+          "success": false,
+          "error": { "code": "UNAUTHORIZED" }
+        }
+      },
+      {
+        name: "12.4 [200 OK] POST /auth/login (Cấp JWT Access + Refresh Token)",
+        method: "POST",
+        url: "/api/v1/auth/login",
+        status: 200,
+        statusText: "OK",
+        time: "58.4 ms",
+        size: "1.05 KB",
+        securityNote: "Mật khẩu băm an toàn bằng PASSWORD_BCRYPT. Access Token ký bằng HMAC-SHA256 (hạn 15-60p), Refresh Token lưu an toàn trong MySQL (hạn 7 ngày).",
+        reqHeaders: { "Content-Type": "application/json" },
+        resBody: {
+          "success": true,
+          "message": "Đăng nhập thành công",
+          "data": {
+            "user": { "id": 2, "name": "Khách hàng mẫu", "email": "user@techstore.local", "role": "customer" },
+            "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoidXNlckB0ZWNoc3RvcmUubG9jYWwiLCJyb2xlIjoiY3VzdG9tZXIiLCJleHAiOjE3OTM4NzkyMDB9.signature...",
+            "refresh_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImp0aSI6ImZhOTNjNDk5OTU4YjE0YWY1NjA4MDk5NjEyNzk2M2JjIn0.signature..."
+          }
+        }
+      },
+      {
+        name: "12.5 [403 Forbidden] GET /admin/stats (Chặn quyền RBAC - OWASP API05)",
+        method: "GET",
+        url: "/api/v1/admin/stats",
+        status: 403,
+        statusText: "Forbidden",
+        time: "16.1 ms",
+        size: "512 B",
+        securityNote: "OWASP API05: Broken Function Level Authorization - Token hợp lệ nhưng Role = 'customer' không có quyền truy cập endpoint quản trị.",
+        reqHeaders: {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9...[Role: customer]"
+        },
+        resBody: {
+          "type": "https://techstore.local/errors/forbidden",
+          "title": "Forbidden",
+          "status": 403,
+          "detail": "Quyền truy cập bị từ chối: Yêu cầu vai trò quản trị viên (Admin)",
+          "success": false,
+          "error": { "code": "FORBIDDEN" }
+        }
+      },
+      {
+        name: "12.6 [403 Forbidden] POST /orders/1029/cancel (Chống lỗ hổng IDOR)",
+        method: "POST",
+        url: "/api/v1/orders/1029/cancel",
+        status: 403,
+        statusText: "Forbidden",
+        time: "17.9 ms",
+        size: "530 B",
+        securityNote: "OWASP API01: Broken Object Level Authorization (IDOR) - Kiểm tra user_id trong token không trùng khớp với chủ sở hữu đơn hàng trong CSDL MySQL.",
+        reqHeaders: {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9...[User ID: 2]"
+        },
+        resBody: {
+          "type": "https://techstore.local/errors/forbidden",
+          "title": "Forbidden",
+          "status": 403,
+          "detail": "Bạn không có quyền hủy đơn hàng của người khác",
+          "success": false,
+          "error": { "code": "FORBIDDEN" }
+        }
+      },
+      {
+        name: "12.8 [200 OK] POST /auth/refresh (Cơ chế Refresh Token Rotation)",
+        method: "POST",
+        url: "/api/v1/auth/refresh",
+        status: 200,
+        statusText: "OK",
+        time: "26.3 ms",
+        size: "980 B",
+        securityNote: "Cơ chế bảo mật tiên tiến RTR: Thu hồi refresh_token cũ, cấp refresh_token mới, chống tấn công replay token đánh cắp phiên.",
+        reqHeaders: { "Content-Type": "application/json" },
+        resBody: {
+          "success": true,
+          "message": "Làm mới phiên làm việc thành công",
+          "data": {
+            "access_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImV4cCI6MTc5Mzg4MjgwMH0.NEW_TOKEN...",
+            "refresh_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImp0aSI6ImRkNmVkOTlj..."
+          }
+        }
+      },
+      {
+        name: "12.9 [200 OK] GET /admin/audit-logs (Nhật ký kiểm toán bất biến)",
+        method: "GET",
+        url: "/api/v1/admin/audit-logs",
+        status: 200,
+        statusText: "OK",
+        time: "24.5 ms",
+        size: "2.4 KB",
+        securityNote: "Tuân thủ tiêu chuẩn Audit Logging: Mọi hành động can thiệp dữ liệu, đăng nhập, phân quyền đều được lưu vết vĩnh viễn trong MySQL.",
+        reqHeaders: {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9...[Role: admin]"
+        },
+        resBody: {
+          "success": true,
+          "data": [
+            { "id": 85, "user_id": 1, "action": "LOGIN_SUCCESS", "details": "Đăng nhập tài khoản Admin", "created_at": "2026-11-05 17:45:10" },
+            { "id": 84, "user_id": 2, "action": "TOKEN_REFRESH", "details": "Xoay vòng Refresh Token", "created_at": "2026-11-05 17:44:30" },
+            { "id": 83, "user_id": 2, "action": "CANCEL_ORDER_DENIED", "details": "Chặn IDOR hủy đơn 1029", "created_at": "2026-11-05 17:44:10" }
+          ]
+        }
+      },
+      {
+        name: "12.10 [200 OK] GET /orders/ORD-2026-8899/payment-status (VietQR Polling)",
+        method: "GET",
+        url: "/api/v1/orders/ORD-2026-8899/payment-status",
+        status: 200,
+        statusText: "OK",
+        time: "19.2 ms",
+        size: "612 B",
+        securityNote: "Cơ chế Polling chu kỳ 3s: Client tự động truy vấn trạng thái gạch nợ ngân hàng MBBank qua Napas247, tự động cập nhật đơn hàng sang PAID.",
+        reqHeaders: {
+          "Accept": "application/json"
+        },
+        resBody: {
+          "success": true,
+          "order_code": "ORD-2026-8899",
+          "payment_method": "vietqr",
+          "payment_status": "paid",
+          "transaction_id": "MB_2026110599812",
+          "amount": 28990000
+        }
+      }
+    ];
+
+    let requests = [];
+    let autoPlayTimer = null;
 
     window.triggerApiStep = function (step) {
       requests.push(step);
@@ -449,14 +668,72 @@
       selectStep(requests.length - 1);
     };
 
+    function loadDefaultSuite() {
+      requests = JSON.parse(JSON.stringify(DEFAULT_SUITE));
+      renderList();
+      // Mặc định chọn ngay bước 12.1 (401 Unauthorized) để sẵn sàng thuyết trình bảo mật
+      selectStep(1);
+    }
+
+    function clearStream() {
+      if (autoPlayTimer) {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+        document.getElementById('btn-autoplay').innerText = '▶ Chạy Mô Phỏng';
+      }
+      requests = [];
+      renderList();
+      resetDetailView();
+    }
+
+    function toggleAutoPlay() {
+      const btn = document.getElementById('btn-autoplay');
+      if (autoPlayTimer) {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+        btn.innerText = '▶ Chạy Mô Phỏng';
+      } else {
+        requests = [];
+        renderList();
+        btn.innerText = '⏸ Tạm Dừng';
+        let stepIdx = 0;
+        autoPlayTimer = setInterval(() => {
+          if (stepIdx < DEFAULT_SUITE.length) {
+            window.triggerApiStep(DEFAULT_SUITE[stepIdx]);
+            stepIdx++;
+          } else {
+            clearInterval(autoPlayTimer);
+            autoPlayTimer = null;
+            btn.innerText = '▶ Chạy Lại';
+          }
+        }, 2200);
+      }
+    }
+
+    function resetDetailView() {
+      document.getElementById('detail-banner-text').innerText = 'Hệ thống sẵn sàng tiếp nhận tiến trình kiểm thử bảo mật.';
+      document.getElementById('detail-method').className = 'method-pill method-GET';
+      document.getElementById('detail-method').innerText = 'GET';
+      document.getElementById('detail-url').innerText = '/api/v1/auth/me';
+      document.getElementById('detail-status').className = 'status-badge status-200';
+      document.getElementById('detail-status').innerText = '200 OK';
+      document.getElementById('detail-time').innerText = '-- ms';
+      document.getElementById('detail-size').innerText = '-- B';
+      const alert = document.getElementById('detail-sec-alert');
+      alert.className = 'sec-alert';
+      alert.innerHTML = '<strong>Cơ chế bảo vệ:</strong> Chờ kích hoạt kiểm thử hoặc bấm nút "Nạp 8 Bước Test".';
+      document.getElementById('detail-req-headers').innerText = 'Authorization: Bearer [Chưa truyền token]';
+      document.getElementById('detail-res-body').innerText = JSON.stringify({ "status": "ready" }, null, 2);
+    }
+
     function renderList() {
       const list = document.getElementById('stream-list');
       list.innerHTML = '';
-      document.getElementById('request-count').innerText = `${requests.length} / 8 hoàn thành`;
+      document.getElementById('request-count').innerText = `${requests.length} / ${DEFAULT_SUITE.length} hoàn thành`;
 
       requests.forEach((req, idx) => {
         const item = document.createElement('div');
-        item.className = 'stream-item' + (idx === requests.length - 1 ? ' active' : '');
+        item.className = 'stream-item' + (idx === 1 ? ' active' : '');
         item.onclick = () => selectStep(idx);
 
         const statusClass = 'status-' + (req.status || 200);
@@ -518,6 +795,13 @@
       document.getElementById('detail-res-body').innerText = typeof req.resBody === 'string'
         ? req.resBody
         : JSON.stringify(req.resBody, null, 2);
+    }
+
+    // Tự động nạp sẵn 8 kịch bản ngay lập tức khi script load
+    try {
+      loadDefaultSuite();
+    } catch (e) {
+      console.error('Lỗi khi nạp suite mặc định:', e);
     }
   </script>
 </body>

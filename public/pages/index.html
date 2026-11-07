@@ -688,7 +688,7 @@
 
     <div class="footer-bottom">
       <div class="container">
-        © 2026 TechStore Vietnam. Thiết kế & phát triển bởi Nhóm thực hiện (Tuấn Kiệt - Front-end). Bản quyền thuộc về TechStore.
+        © 2026 TechStore Vietnam. Thiết kế & phát triển bởi TechStore. Bản quyền thuộc về TechStore.
       </div>
     </div>
   </footer>
@@ -817,7 +817,7 @@
           <button class="btn-wishlist" onclick="toggleWishlist(${p.id}, this)">${heartIcon}</button>
           
           <a href="/pages/product-detail.html?id=${p.id}" class="product-thumb-wrap">
-            <img src="${p.image}" class="product-thumb" alt="${p.name}" loading="lazy">
+            <img src="${p.image}" class="product-thumb" alt="${p.name}" loading="lazy" onerror="this.onerror=null; this.src='/assets/images/iphone-16-128gb.png'">
           </a>
           
           <a href="/pages/product-detail.html?id=${p.id}">
