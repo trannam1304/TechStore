@@ -78,8 +78,9 @@ if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
     $reqMethod = strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
 }
 
-// Bỏ tiền tố /api/v1 hoặc /api
-$subPath = preg_replace('#^/api(/v1)?#', '', $reqUri);
+// Bỏ tiền tố /api/v1 hoặc /api (tương thích cả Apache, Nginx, PHP CLI server và Vercel Serverless)
+$subPath = preg_replace('#^(/public)?(/api)?(/index\.php)?/api(/v1)?#', '', $reqUri);
+$subPath = preg_replace('#^/api(/v1)?#', '', $subPath);
 $subPath = '/' . ltrim($subPath, '/');
 if ($subPath === '' || $subPath === '/') {
     $subPath = '/';

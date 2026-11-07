@@ -55,7 +55,7 @@ class ReviewWishlistController extends BaseController {
             return;
         }
 
-        $comment = trim($body['comment'] ?? '');
+        $comment = Validator::sanitize($body['comment'] ?? '');
         if (!$comment) {
             Response::error('Vui lòng nhập nội dung đánh giá', 'VALIDATION_ERROR', 422);
             return;

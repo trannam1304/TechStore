@@ -23,6 +23,31 @@ class Validator {
         return $validator;
     }
 
+    /**
+     * Làm sạch chuỗi dữ liệu chống lỗ hổng XSS (Cross-Site Scripting)
+     * Tuân thủ chuẩn bảo mật mục 3.4
+     */
+    public static function sanitize(string $input): string {
+        return htmlspecialchars(trim($input), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
+
+    /**
+     * Làm sạch toàn bộ mảng dữ liệu đệ quy chống XSS
+     */
+    public static function sanitizeArray(array $data): array {
+        $clean = [];
+        foreach ($data as $key => $val) {
+            if (is_array($val)) {
+                $clean[$key] = self::sanitizeArray($val);
+            } elseif (is_string($val)) {
+                $clean[$key] = self::sanitize($val);
+            } else {
+                $clean[$key] = $val;
+            }
+        }
+        return $clean;
+    }
+
     public function validate(): bool {
         $this->errors = [];
 

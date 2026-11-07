@@ -44,12 +44,39 @@ $activePort = $port;
 $connected = false;
 $pdoServer = null;
 
+$defaultPdoOptions = [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
+];
+
+$caBundle = ini_get('openssl.cafile') ?: ini_get('curl.cainfo');
+if (!$caBundle || !file_exists($caBundle)) {
+    $candidates = [
+        'C:\\xampp\\apache\\bin\\curl-ca-bundle.crt',
+        'C:\\xampp\\perl\\vendor\\lib\\Mozilla\\CA\\cacert.pem',
+        '/etc/ssl/certs/ca-certificates.crt',
+        '/etc/pki/tls/certs/ca-bundle.crt',
+        '/etc/ssl/ca-bundle.pem',
+        '/etc/ssl/cert.pem'
+    ];
+    foreach ($candidates as $cand) {
+        if (file_exists($cand)) {
+            $caBundle = $cand;
+            break;
+        }
+    }
+}
+
+if (defined('PDO::MYSQL_ATTR_SSL_CA') && $caBundle && file_exists($caBundle)) {
+    $defaultPdoOptions[PDO::MYSQL_ATTR_SSL_CA] = $caBundle;
+}
+if (defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')) {
+    $defaultPdoOptions[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+}
+
 try {
     $dsnServer = "mysql:host={$host};port={$port};charset=utf8mb4";
-    $pdoServer = new PDO($dsnServer, $user, $pass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
-    ]);
+    $pdoServer = new PDO($dsnServer, $user, $pass, $defaultPdoOptions);
     $connected = true;
 } catch (PDOException $e) {
     // Thử cổng thay thế (3306 <-> 3307)
@@ -58,10 +85,7 @@ try {
         try {
             echo "[*] Cổng {$port} không phản hồi, đang tự động thử cổng {$altPort}...\n";
             $dsnServer = "mysql:host={$host};port={$altPort};charset=utf8mb4";
-            $pdoServer = new PDO($dsnServer, $user, $pass, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
-            ]);
+            $pdoServer = new PDO($dsnServer, $user, $pass, $defaultPdoOptions);
             $activePort = $altPort;
             $connected = true;
             echo "[OK] Kết nối thành công qua cổng thay thế {$activePort}!\n";
@@ -85,11 +109,9 @@ echo "[OK] Đã kiểm tra/tạo CSDL `{$dbname}`.\n";
 // 2. Kết nối trực tiếp vào database techstore
 try {
     $dsnDb = "mysql:host={$host};port={$activePort};dbname={$dbname};charset=utf8mb4";
-    $pdo = new PDO($dsnDb, $user, $pass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_EMULATE_PREPARES => false,
-        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
-    ]);
+    $dbOptions = $defaultPdoOptions;
+    $dbOptions[PDO::ATTR_EMULATE_PREPARES] = false;
+    $pdo = new PDO($dsnDb, $user, $pass, $dbOptions);
 } catch (PDOException $e) {
     echo "[ERROR] Kết nối database `{$dbname}` thất bại: " . $e->getMessage() . "\n";
     exit(1);
