@@ -15,7 +15,9 @@ class RecommendComponent {
 
     try {
       const res = await api.recommendations.getForMe();
-      const products = res.data?.for_you || (await api.products.getAll()).data.slice(0, 8);
+      const allRes = await api.products.getAll();
+      const allData = Array.isArray(allRes.data) ? allRes.data : (allRes.data?.items || []);
+      const products = res.data?.for_you || allData.slice(0, 8);
       this.renderCarousel(container, title, products, 'recommend-for-you');
     } catch (e) {
       console.error('Error rendering For You carousel', e);
@@ -33,7 +35,8 @@ class RecommendComponent {
       const res = await api.recommendations.getSimilar(productId);
       let products = res.data?.similar || [];
       if (!products.length) {
-        const all = (await api.products.getAll()).data;
+        const allRes = await api.products.getAll();
+        const all = Array.isArray(allRes.data) ? allRes.data : (allRes.data?.items || []);
         products = all.filter(p => p.id != productId).slice(0, 6);
       }
       this.renderCarousel(container, title, products, 'recommend-similar');

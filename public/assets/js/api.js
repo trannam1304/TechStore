@@ -2586,7 +2586,21 @@ class ApiClient {
         return this.handleMockFallback(endpoint, options);
       }
 
-      const json = JSON.parse(text);
+      let json;
+      try {
+        json = JSON.parse(text);
+      } catch (parseErr) {
+        return this.handleMockFallback(endpoint, options);
+      }
+
+      // Khi chạy trên Vercel / GitHub Pages (không có PHP backend) hoặc server 404/502/503:
+      // Vercel trả về HTTP 404 kèm JSON { error: { code: "404", message: "..." } }
+      if (!response.ok) {
+        if (response.status === 404 || response.status === 502 || response.status === 503 || (json && json.error && !('success' in json))) {
+          return this.handleMockFallback(endpoint, options);
+        }
+      }
+
       return json;
     } catch (err) {
       // If server is not responding, fallback to client-side smart mock
