@@ -2727,7 +2727,7 @@ class ApiClient {
     if (endpoint === '/auth/google/client-id' && method === 'GET') {
       return {
         success: true,
-        data: { client_id: localStorage.getItem('techstore_google_client_id') || '152613175620-8t8kutdrhtlsqr0c64u08ghfe1186lre.apps.googleusercontent.com' }
+        data: { client_id: localStorage.getItem('techstore_google_client_id') || '406067407406-7s6sarleafmbnca6av316pcoo0af2594.apps.googleusercontent.com' }
       };
     }
 
